@@ -492,3 +492,21 @@ td div.comment {
     line-height: 1.375rem;
     color: #454F5B;
 }
+.capitalize {
+    text-transform: capitalize;
+}
+/* Костыли */
+.table>:not(caption)>*>* {
+    color: unset;
+    background-color: unset;
+}
+tr {
+    white-space: nowrap;
+}
+.big-table {
+    width: 100%;
+    overflow: scroll;
+}
+#root {
+    height: 100%;
+}

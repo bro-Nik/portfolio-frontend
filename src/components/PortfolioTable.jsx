@@ -1,8 +1,12 @@
 // components/PortfolioTable.jsx
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useMemo } from 'react';
+import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, flexRender } from '@tanstack/react-table';
+
+const fallbackData = [];
 
 const PortfolioTable = memo(({ portfolios, onUpdate }) => {
-  const [expandedRow, setExpandedRow] = useState(null);
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -20,128 +24,198 @@ const PortfolioTable = memo(({ portfolios, onUpdate }) => {
     });
   };
 
-  const toggleRow = (portfolioId) => {
-    setExpandedRow(expandedRow === portfolioId ? null : portfolioId);
-  };
+  // const toggleRow = (portfolioId) => {
+  // };
+
+  // Определяем колонки для React Table
+  const columns = useMemo(() => [
+    {
+      id: 'expand',
+      header: '',
+      cell: ({ row }) => (
+        <input className="form-check-input to-check" type="checkbox" value="{{ portfolio.id }}"/>
+      ),
+      size: 60,
+    },
+    {
+      accessorKey: 'name',
+      header: 'Название',
+      cell: ({ row }) => (
+        <div className="d-grid name text-average">
+          <span>{row.original.name}</span>
+          <span className="text-muted small-text capitalize">{row.original.market}</span>
+        </div>
+      ),
+      size: 300,
+    },
+    {
+      accessorKey: 'cost_now',
+      header: 'Стоимость сейчас',
+      cell: ({ row }) => (
+        <span className="">
+          {formatCurrency(row.original.cost_now)}
+        </span>
+      ),
+      size: 200,
+    },
+    {
+      accessorKey: 'amount',
+      header: 'Вложено',
+      cell: ({ row }) => (
+        <span>
+          {formatCurrency(row.original.amount)}
+        </span>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: 'profit',
+      header: 'Прибыль / Убыток',
+      cell: ({ row }) => (
+        <span className="text-red">
+          {formatCurrency(row.original.cost_now - row.original.amount)}
+        </span>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: 'share',
+      header: 'Доля от всех инвестиций',
+      cell: ({ row }) => (
+        <span className="text-red">
+          ~10%
+        </span>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: 'buy_orders',
+      header: 'В ордерах на покупку',
+      cell: ({ row }) => (
+        <span className="text-red">
+          {formatCurrency(row.original.buy_orders)}
+        </span>
+      ),
+      size: 120,
+    },
+    {
+      accessorKey: 'comment',
+      header: 'Комментарий',
+      cell: ({ row }) => (
+        <div className="d-flex comment">
+          <span className="text-truncate">
+            {row.original.comment}
+          </span>
+        </div>
+      ),
+      size: 120,
+    },
+    {
+      id: 'actions',
+      header: 'Действия',
+      cell: ({ row }) => (
+        <div className="action-buttons">
+          <button 
+            className="btn btn-sm btn-outline-secondary"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <i className="bi bi-pencil"></i>
+          </button>
+        </div>
+      ),
+      size: 100,
+    },
+  ], []);
+
+  // Создаем таблицу
+  const table = useReactTable({
+    data: portfolios ?? fallbackData,
+    columns,
+    state: {
+      sorting,
+      globalFilter,
+    },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
 
   return (
-    <div className="portfolio-table">
-      {/* Заголовки таблицы */}
-      <div className="table-header d-none d-md-grid">
-        <div className="table-row header-row">
-          <div className="table-cell">Название</div>
-          <div className="table-cell">Описание</div>
-          <div className="table-cell text-end">Стоимость</div>
-          <div className="table-cell text-end">Создан</div>
-          <div className="table-cell text-center">Действия</div>
+    <div className="table-wrapper">
+    {/* Поиск и элементы управления */}
+    <div className="table-controls mb-3">
+      <div className="row align-items-center">
+        <div className="col-md-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Поиск по портфелям..."
+            value={globalFilter ?? ''}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          />
         </div>
       </div>
-
-      {/* Тело таблицы */}
-      <div className="table-body">
-        {portfolios.map(portfolio => (
-          <div key={portfolio.id} className="table-item">
-            {/* Основная строка */}
-            <div 
-              className={`table-row main-row ${expandedRow === portfolio.id ? 'expanded' : ''}`}
-              onClick={() => toggleRow(portfolio.id)}
-            >
-              <div className="table-cell">
-                <div className="portfolio-name">
-                  <strong>{portfolio.name}</strong>
-                  <span className="badge bg-primary ms-2">#{portfolio.id}</span>
-                </div>
-                <div className="mobile-only text-muted small mt-1">
-                  {portfolio.description || 'Описание отсутствует'}
-                </div>
-              </div>
-              
-              <div className="table-cell d-none d-md-block">
-                <span className="text-muted">
-                  {portfolio.description || '—'}
-                </span>
-              </div>
-              
-              <div className="table-cell text-end">
-                <span className="value-amount text-success">
-                  {formatCurrency(portfolio.total_value)}
-                </span>
-              </div>
-              
-              <div className="table-cell text-end d-none d-md-block">
-                <span className="text-muted">
-                  {formatDate(portfolio.created_at)}
-                </span>
-              </div>
-              
-              <div className="table-cell text-center">
-                <div className="action-buttons">
-                  <button 
-                    className="btn btn-sm btn-outline-primary me-1"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleRow(portfolio.id);
-                    }}
-                  >
-                    <i className={`bi ${expandedRow === portfolio.id ? 'bi-eye-slash' : 'bi-eye'}`}></i>
-                  </button>
-                  <button 
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <i className="bi bi-pencil"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Раскрывающаяся секция с деталями */}
-            {expandedRow === portfolio.id && (
-              <div className="table-details">
-                <div className="details-content">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <h6 className="text-muted mb-3">Детали портфеля</h6>
-                      <div className="detail-item">
-                        <span className="label">ID пользователя:</span>
-                        <span className="value">{portfolio.user_id}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="label">ID портфеля:</span>
-                        <span className="value">{portfolio.id}</span>
-                      </div>
-                      <div className="detail-item">
-                        <span className="label">Обновлен:</span>
-                        <span className="value">
-                          {portfolio.updated_at ? formatDate(portfolio.updated_at) : 'Не обновлялся'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <h6 className="text-muted mb-3">Быстрые действия</h6>
-                      <div className="d-flex gap-2 flex-wrap">
-                        <button className="btn btn-outline-primary btn-sm">
-                          <i className="bi bi-graph-up me-1"></i>
-                          Аналитика
-                        </button>
-                        <button className="btn btn-outline-success btn-sm">
-                          <i className="bi bi-download me-1"></i>
-                          Экспорт
-                        </button>
-                        <button className="btn btn-outline-info btn-sm">
-                          <i className="bi bi-share me-1"></i>
-                          Поделиться
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
+
+    <div class="big-table">
+      {/* Таблица с использованием React Table */}
+      <table class="table table-sm align-middle bootstrap-table">
+        <thead>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th
+                  key={header.id}
+                  style={{ width: header.getSize() }}
+                >
+                  {header.isPlaceholder ? null : (
+                    <div
+                      {...{
+                        className: header.column.getCanSort() 
+                          ? 'cursor-pointer select-none' 
+                          : '',
+                        onClick: header.column.getToggleSortingHandler(),
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {{
+                        asc: ' 🔼',
+                        desc: ' 🔽',
+                      }[header.column.getIsSorted()] ?? null}
+                    </div>
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr 
+              key={row.id}
+              // onClick={() => toggleRow(row.original.id)}
+            >
+              {row.getVisibleCells().map(cell => (
+                <td
+                  key={cell.id}
+                  style={{ width: cell.column.getSize() }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
   );
 });
 
