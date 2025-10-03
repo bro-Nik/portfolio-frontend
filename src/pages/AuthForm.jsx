@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/auth-context';
+import { useAuth } from '../contexts/AuthContext';
+import Toast from '../components/Toast';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '../constants/routes';
+import { useToast } from '../hooks/useToast';
 
 const AuthForm = ({ type }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
+  const { addToast, ToastContainer, clearToasts } = useToast();
   const { login, register } = useAuth();
   const navigate = useNavigate();
   const isLogin = type == 'login';
@@ -16,11 +19,11 @@ const AuthForm = ({ type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    clearToasts();
 
     // Валидация для регистрации
     if (!isLogin && password !== confirmPassword) {
-      setError('Пароли не совпадают');
+      addToast('Пароли не совпадают', 'error');
       setLoading(false);
       return;
     }
@@ -30,9 +33,9 @@ const AuthForm = ({ type }) => {
       : await register(email, password);
     
     if (result.success) {
-      navigate('/portfolios');
+      navigate(ROUTES.APP);
     } else {
-      setError(result.error);
+      addToast(result.error, 'error');
     }
     
     setLoading(false);
@@ -40,13 +43,13 @@ const AuthForm = ({ type }) => {
 
   const title = isLogin ? 'Вход' : 'Регистрация';
   const submitText = isLogin ? 'Вход' : 'Зарегистрироваться';
-  const alternativeLink = isLogin ? '/register' : '/login';
+  const alternativeLink = isLogin ? ROUTES.REGISTER : ROUTES.LOGIN;
   const alternativeText = isLogin ? 'Регистрация' : 'Вход';
 
   return (
     <main className="m-auto">
       <form onSubmit={handleSubmit} style={{width: '330px'}}>
-        <a href="/" className="d-flex align-items-center mb-5 justify-content-center link-body-emphasis text-decoration-none">
+        <a href={ROUTES.HOME} className="d-flex align-items-center mb-5 justify-content-center link-body-emphasis text-decoration-none">
           <img className="mb-0 me-2" src="/favicon.png" alt="" width="32" height="32" />
           <span className="fs-4">Portfolios</span>
         </a>
@@ -57,15 +60,9 @@ const AuthForm = ({ type }) => {
             <a className="text-decoration-none" href={alternativeLink}>
               {alternativeText}
             </a>
-            <a className="text-decoration-none" href="/demo_user">Демо</a>
+            <a className="text-decoration-none" href={ROUTES.DEMO}>Демо</a>
           </div>
         </div>
-
-        {error && (
-          <div className="alert bg-warning px-4 py-3 my-3">
-            {error}
-          </div>
-        )}
 
         <div className="mb-2">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
