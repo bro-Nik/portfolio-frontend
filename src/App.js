@@ -18,7 +18,6 @@ const ProtectedLayout = ({ children }) => (
 );
 
 function App() {
-
   return (
     <>
       <Router>
