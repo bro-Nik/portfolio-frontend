@@ -1,20 +1,27 @@
-// pages/PortfoliosPage.jsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import PortfolioCard from '../components/PortfolioCard';
-import PortfolioTable from '../components/PortfolioTable';
-import PortfolioStats from '../components/PortfolioStats';
-import LoadingSpinner from '../components/LoadingSpinner';
-import EmptyState from '../components/EmptyState';
-import { useMediaQuery } from '../hooks/useMediaQuery';
-import { useReactTable } from '@tanstack/react-table'
-import './PortfoliosPage.css';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const PortfoliosPage = () => {
+import PortfolioCard from './components/PortfolioCard';
+import PortfolioTable from './components/PortfolioTable';
+import PortfolioStats from './components/PortfolioStats';
+import LoadingSpinner from '/app/src/components/LoadingSpinner';
+import EmptyState from '/app/src/components/EmptyState';
+import { useMediaQuery } from '/app/src/hooks/useMediaQuery';
+import { useReactTable } from '@tanstack/react-table'
+import { useAuth } from '/app/src/hooks/useAuth.js'
+import { ROUTES } from '/app/src/constants/routes';
+import './styles/App.css';
+
+const AppPage = () => {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState('auto'); // 'auto', 'table', 'cards'
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
 
   // Автоматический выбор режима просмотра
   const displayMode = useMemo(() => {
@@ -46,7 +53,7 @@ const PortfoliosPage = () => {
     }
   }, []);
 
-  // Загрузка данных при монтировании
+
   useEffect(() => {
     fetchPortfolios();
   }, [fetchPortfolios]);
@@ -82,6 +89,7 @@ const PortfoliosPage = () => {
       <div className="row xs-mb-3">
         <div className="col-auto">
           <h1>Портфели</h1>
+            <h2>{user.email}</h2>
         </div>
         <div className="col-auto ms-auto">
           <button className="btn btn-primary">
@@ -161,4 +169,4 @@ const PortfoliosPage = () => {
   );
 };
 
-export default PortfoliosPage;
+export default AppPage;

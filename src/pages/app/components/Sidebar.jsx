@@ -1,29 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useAuth } from '/app/src/hooks/useAuth.js'
 
-const Navbar = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // TODO: Replace with actual user data fetching
-    setUser({
-      email: "user@example.com",
-      type: "user"
-    });
-    
-  }, []);
-
-  const fetchWorkedAlertsCount = async () => {
-    try {
-    } catch (error) {
-      console.error('Error fetching alerts count:', error);
-    }
-  };
-
-  const getUserName = (email) => {
-    return email ? email.split('@')[0] : '';
-  };
-
-  if (!user) return null;
+const Sidebar = () => {
+  const { user } = useAuth();
 
   return (
     <div className="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style={{ width: '250px' }}>
@@ -111,38 +90,38 @@ const UserDropdown = ({ user }) => {
   return (
     <div className="dropdown">
       <a href="#" className="d-flex align-items-center text-decoration-none dropdown-toggle link-secondary"
-        data-bs-toggle="dropdown" aria-expanded="false" title={getUserName(user.email)}>
+        data-bs-toggle="dropdown" aria-expanded="false" title={user ? getUserName(user.email) : ''}>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-person-circle me-2" viewBox="0 0 16 16">
           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
           <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
         </svg>
-        <strong>{getUserName(user.email)}</strong>
+        <strong>{user ? getUserName(user.email) : ''}</strong>
       </a>
       <ul className="dropdown-menu">
-        {user.type !== 'demo' ? (
-          <>
-            <li>
-              <a className="dropdown-item" href="/user/settings/profile">
-                Настройки
-              </a>
-            </li>
-            <li><hr className="dropdown-divider" /></li>
-            <li>
-              <a className="dropdown-item" href="/user/logout">
-                Выход
-              </a>
-            </li>
-          </>
-        ) : (
-          <li>
-            <a className="dropdown-item" href="/user/register">
-              Регистрация
-            </a>
-          </li>
-        )}
+        {/* {user.type !== 'demo' ? ( */}
+        {/*   <> */}
+        {/*     <li> */}
+        {/*       <a className="dropdown-item" href="/user/settings/profile"> */}
+        {/*         Настройки */}
+        {/*       </a> */}
+        {/*     </li> */}
+        {/*     <li><hr className="dropdown-divider" /></li> */}
+        {/*     <li> */}
+        {/*       <a className="dropdown-item" href="/user/logout"> */}
+        {/*         Выход */}
+        {/*       </a> */}
+        {/*     </li> */}
+        {/*   </> */}
+        {/* ) : ( */}
+        {/*   <li> */}
+        {/*     <a className="dropdown-item" href="/user/register"> */}
+        {/*       Регистрация */}
+        {/*     </a> */}
+        {/*   </li> */}
+        {/* )} */}
       </ul>
     </div>
   );
 };
 
-export default Navbar;
+export default Sidebar;

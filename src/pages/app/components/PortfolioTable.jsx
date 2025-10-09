@@ -159,9 +159,9 @@ const PortfolioTable = memo(({ portfolios, onUpdate }) => {
       </div>
     </div>
 
-    <div class="big-table">
+    <div className="big-table">
       {/* Таблица с использованием React Table */}
-      <table class="table table-sm align-middle bootstrap-table">
+      <table className="table table-sm align-middle bootstrap-table">
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>

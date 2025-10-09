@@ -1,10 +1,10 @@
 import React from 'react';
-import Navbar from './Navbar';
+import Sidebar from './Sidebar';
 
 const Layout = ({ children, title = '' }) => {
   return (
     <React.Fragment>
-      <Navbar />
+      <Sidebar />
       
       <div id="wrapper">
         <div id="content" className="p-5">

@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import Toast from '../components/Toast';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../constants/routes';
-import { useToast } from '../hooks/useToast';
+import { Navigate } from 'react-router-dom';
+import { ROUTES } from '/app/src/constants/routes';
+import { useToast } from '/app/src/hooks/useToast';
+import { authService } from '/app/src/services/auth';
+import { useAuth } from '/app/src/hooks/useAuth.js'
 
-const AuthForm = ({ type }) => {
+const AuthPage = ({ type }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { addToast, ToastContainer, clearToasts } = useToast();
-  const { login, register } = useAuth();
-  const navigate = useNavigate();
-  const isLogin = type == 'login';
+  const { addToast, clearToasts } = useToast();
+  const { login, register } = authService();
+  const { isAuthenticated, loading: userLoading, tryLogin } = useAuth();
+  const isLogin = type === 'login';
+
+  if (userLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to={ROUTES.APP} replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +31,7 @@ const AuthForm = ({ type }) => {
 
     // Валидация для регистрации
     if (!isLogin && password !== confirmPassword) {
-      addToast('Пароли не совпадают', 'error');
+      addToast('Пароли не совпадают', 'warning');
       setLoading(false);
       return;
     }
@@ -33,7 +41,7 @@ const AuthForm = ({ type }) => {
       : await register(email, password);
     
     if (result.success) {
-      navigate(ROUTES.APP);
+      await tryLogin();
     } else {
       addToast(result.error, 'error');
     }
@@ -57,62 +65,26 @@ const AuthForm = ({ type }) => {
         <div className="d-flex align-items-center gap-2 mb-3">
           <h1 className="h3 fw-normal">{title}</h1>
           <div className="ms-auto d-flex gap-3">
-            <a className="text-decoration-none" href={alternativeLink}>
-              {alternativeText}
-            </a>
+            <a className="text-decoration-none" href={alternativeLink}>{alternativeText}</a>
             <a className="text-decoration-none" href={ROUTES.DEMO}>Демо</a>
           </div>
         </div>
 
         <div className="mb-2">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <input id="email" type="email" required placeholder="Email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
 
         <div className="mb-2">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-            Пароль
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input type="password" required placeholder="Пароль" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         {!isLogin && (
           <div className="mb-3">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Подтверждение пароля
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              required
-              className="form-control"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <input type="password" placeholder="Подтверждение пароля" required className="form-control" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           </div>
         )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-100 btn btn-sm btn-primary"
-        >
+        <button type="submit" disabled={loading} className="w-100 btn btn-sm btn-primary" >
           {loading ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
@@ -127,4 +99,4 @@ const AuthForm = ({ type }) => {
   );
 };
 
-export default AuthForm;
+export default AuthPage;
