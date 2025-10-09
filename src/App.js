@@ -1,19 +1,18 @@
-// App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import PortfoliosPage from './pages/PortfoliosPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import AuthForm from './pages/AuthForm';
-import MainPage from './pages/MainPage';
+import LandingPage from './pages/landing/LandingPage';
+import AuthPage from './pages/auth/AuthPage';
+import AppPage from './pages/app/AppPage';
+import AppLayout from './pages/app/components/Layout';
 import { ROUTES } from './constants/routes';
 
 // Компонент для защищенных маршрутов с Layout
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
-    <Layout>
+    <AppLayout>
       {children}
-    </Layout>
+    </AppLayout>
   </ProtectedRoute>
 );
 
@@ -22,10 +21,10 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route path={ROUTES.HOME} element={<MainPage />} />
-          <Route path={ROUTES.LOGIN} element={<AuthForm type={'login'} />} />
-          <Route path={ROUTES.REGISTER} element={<AuthForm type={'register'} />} />
-          <Route path={ROUTES.APP} element={<ProtectedLayout><PortfoliosPage /></ProtectedLayout>} />
+          <Route path={ROUTES.HOME} element={<LandingPage />} />
+          <Route path={ROUTES.LOGIN} element={<AuthPage type={'login'} />} />
+          <Route path={ROUTES.REGISTER} element={<AuthPage type={'register'} />} />
+          <Route path={ROUTES.APP} element={<ProtectedLayout><AppPage /></ProtectedLayout>} />
         </Routes>
       </Router>
     </>
