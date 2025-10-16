@@ -13,16 +13,12 @@ const AuthPage = ({ type }) => {
   
   const { addToast, clearToasts } = useToast();
   const { login, register } = authService();
-  const { isAuthenticated, loading: userLoading, tryLogin } = useAuth();
+  const { isAuthenticated, loading: authLoading, login: authLogin } = useAuth();
   const isLogin = type === 'login';
 
-  if (userLoading) {
-    return <div>Loading...</div>;
-  }
+  if (authLoading) return <div></div>;
 
-  if (isAuthenticated) {
-    return <Navigate to={ROUTES.APP} replace />;
-  }
+  if (isAuthenticated) return <Navigate to={ROUTES.APP} replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,12 +32,11 @@ const AuthPage = ({ type }) => {
       return;
     }
 
-    const result = isLogin 
-      ? await login(email, password)
-      : await register(email, password);
+    const handler = isLogin ? login : register;
+    const result = await handler(email, password)
     
     if (result.success) {
-      await tryLogin();
+      authLogin();
     } else {
       addToast(result.error, 'error');
     }

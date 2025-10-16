@@ -1,0 +1,43 @@
+.portfolio-submenu {
+  margin-left: 20px;
+  border-left: 2px solid #34495e;
+}
+
+.portfolio-subitem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 15px;
+  color: #bdc3c7;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.portfolio-subitem:hover {
+  background-color: #34495e;
+  color: white;
+}
+
+.portfolio-subitem.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.portfolio-subitem.minimized {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.portfolio-close-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.portfolio-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

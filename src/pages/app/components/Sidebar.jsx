@@ -1,8 +1,59 @@
 import React from 'react';
 import { useAuth } from '/app/src/hooks/useAuth.js'
+import '../styles/Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ 
+  activeSection, 
+  onSectionChange, 
+  openedItems, 
+  onItemClick,
+  onItemClose 
+}) => {
+  const menuItems = [
+    { 
+      id: 'portfolios', 
+      label: 'Портфели', 
+      icon: <i className="bi bi-briefcase me-2"></i>,
+    },
+    { 
+      id: 'wallets', 
+      label: 'Кошельки', 
+      icon: <i className="bi bi-wallet me-2"></i>,
+    },
+    { 
+      id: 'wishlist', 
+      label: 'Избранное', 
+      icon: <i className="bi bi-star me-2"></i>,
+    }
+  ];
+  
   const { user } = useAuth();
+
+  // Группируем открытые элементы: портфели и их активы
+  const groupedItems = openedItems.reduce((acc, item) => {
+    if (item.itemType === 'portfolio') {
+      acc.portfolios.push(item);
+    } else if (item.itemType === 'asset') {
+      const portfolioId = item.portfolio_id;
+      if (!acc.assetsByPortfolio[portfolioId]) {
+        acc.assetsByPortfolio[portfolioId] = [];
+      }
+      acc.assetsByPortfolio[portfolioId].push(item);
+    }
+    return acc;
+  }, { portfolios: [], assetsByPortfolio: {} });
+
+  // Функция для получения иконки элемента
+  const getItemIcon = (itemType) => {
+    switch (itemType) {
+      case 'portfolio':
+        return 'bi-folder';
+      case 'asset':
+        return 'bi-coin';
+      default:
+        return 'bi-file-earmark';
+    }
+  };
 
   return (
     <div className="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style={{ width: '250px' }}>
@@ -22,21 +73,103 @@ const Sidebar = () => {
 
       <hr />
       <ul className="nav nav-pills flex-column mb-auto">
-        <NavItem 
-          href="/portfolio/portfolios" 
-          icon="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"
-          text="Портфели"
-        />
-        <NavItem 
-          href="/wallet/wallets"
-          icon="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"
-          text="Кошельки"
-        />
-        <NavItem 
-          href="/watchlist/assets"
-          icon="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z M2.242 2.194a.27.27 0 0 1 .516 0l.162.53c.035.115.14.194.258.194h.551c.259 0 .37.333.164.493l-.468.363a.277.277 0 0 0-.094.3l.173.569c.078.256-.213.462-.423.3l-.417-.324a.267.267 0 0 0-.328 0l-.417.323c-.21.163-.5-.043-.423-.299l.173-.57a.277.277 0 0 0-.094-.299l-.468-.363c-.206-.16-.095-.493.164-.493h.55a.271.271 0 0 0 .259-.194l.162-.53zm0 4a.27.27 0 0 1 .516 0l.162.53c.035.115.14.194.258.194h.551c.259 0 .37.333.164.493l-.468.363a.277.277 0 0 0-.094.3l.173.569c.078.255-.213.462-.423.3l-.417-.324a.267.267 0 0 0-.328 0l-.417.323c-.21.163-.5-.043-.423-.299l.173-.57a.277.277 0 0 0-.094-.299l-.468-.363c-.206-.16-.095-.493.164-.493h.55a.271.271 0 0 0 .259-.194l.162-.53zm0 4a.27.27 0 0 1 .516 0l.162.53c.035.115.14.194.258.194h.551c.259 0 .37.333.164.493l-.468.363a.277.277 0 0 0-.094.3l.173.569c.078.255-.213.462-.423.3l-.417-.324a.267.267 0 0 0-.328 0l-.417.323c-.21.163-.5-.043-.423-.299l.173-.57a.277.277 0 0 0-.094-.299l-.468-.363c-.206-.16-.095-.493.164-.493h.55a.271.271 0 0 0 .259-.194l.162-.53z"
-          text="Избранное"
-        />
+        {menuItems.map(item => {
+          // Для раздела "Портфели" показываем группированные элементы
+          const showPortfolioItems = item.id === 'portfolios' && 
+            (groupedItems.portfolios.length > 0 || Object.keys(groupedItems.assetsByPortfolio).length > 0);
+          
+          return (
+            <li key={item.id} className="nav-item">
+              <a
+                href="#"
+                className={`nav-link ${activeSection === item.id ? 'active' : 'link-body-emphasis'}`}
+                onClick={() => onSectionChange(item.id)}
+              >
+                {item.icon}
+                {item.label}
+              </a>
+
+              {/* Подменю для открытых портфелей и их активов */}
+              {showPortfolioItems && (
+                <div className="opened-items">
+                  <ul className="list-unstyled mt-2">
+                    {groupedItems.portfolios.map(portfolio => {
+                      const portfolioAssets = groupedItems.assetsByPortfolio[portfolio.id] || [];
+                      const isPortfolioActive = activeSection === `portfolio-${portfolio.id}`;
+                      
+                      return (
+                        <li key={`portfolio-${portfolio.id}`} className="mb-1">
+                          {/* Портфель */}
+                          <div className={`d-flex align-items-center ps-3 ${isPortfolioActive ? 'active' : ''}`}>
+                            <a 
+                              href="#" 
+                              className="flex-grow-1 text-truncate small"
+                              onClick={(e) => { 
+                                e.preventDefault(); 
+                                onItemClick(portfolio); 
+                              }}
+                              title={portfolio.name}
+                            >
+                              <i className={`bi me-2 ${getItemIcon(portfolio.itemType)}`}></i>
+                              {portfolio.name}
+                            </a>
+                            <button 
+                              className="btn btn-sm btn-link text-muted p-0 ms-2"
+                              onClick={(e) => { 
+                                e.stopPropagation(); 
+                                onItemClose(portfolio); 
+                              }}
+                              title="Закрыть"
+                            >
+                              <i className="bi bi-x"></i>
+                            </button>
+                          </div>
+                          
+                          {/* Активы этого портфеля */}
+                          {portfolioAssets.length > 0 && (
+                            <ul className="list-unstyled ms-4">
+                              {portfolioAssets.map(asset => (
+                                <li 
+                                  key={`asset-${asset.id}`}
+                                  className={activeSection === `asset-${asset.id}` ? 'active' : ''}
+                                >
+                                  <div className="d-flex align-items-center">
+                                    <a 
+                                      href="#" 
+                                      className="flex-grow-1 text-truncate small"
+                                      onClick={(e) => { 
+                                        e.preventDefault(); 
+                                        onItemClick(asset); 
+                                      }}
+                                      title={asset.name}
+                                    >
+                                      <i className={`bi me-2 ${getItemIcon(asset.itemType)}`}></i>
+                                      {asset.name}
+                                    </a>
+                                    <button 
+                                      className="btn btn-sm btn-link text-muted p-0 ms-2"
+                                      onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        onItemClose(asset); 
+                                      }}
+                                      title="Закрыть"
+                                    >
+                                      <i className="bi bi-x"></i>
+                                    </button>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <LocaleSelectors />
@@ -47,22 +180,7 @@ const Sidebar = () => {
   );
 };
 
-const NavItem = ({ href, icon, text, isActive = false }) => {
-  // TODO: Implement active state based on current route
-  return (
-    <li className="nav-item">
-      <a href={href} className={`nav-link ${isActive ? 'active' : 'link-body-emphasis'}`}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="me-2" viewBox="0 0 16 16">
-          <path d={icon} />
-        </svg>
-        {text}
-      </a>
-    </li>
-  );
-};
-
 const LocaleSelectors = () => {
-  // TODO: Implement locale and currency selection logic
   return (
     <div className="d-flex align-items-center">
       <div>
@@ -83,42 +201,20 @@ const LocaleSelectors = () => {
 };
 
 const UserDropdown = ({ user }) => {
-  const getUserName = (email) => {
-    return email ? email.split('@')[0] : '';
-  };
-
   return (
     <div className="dropdown">
       <a href="#" className="d-flex align-items-center text-decoration-none dropdown-toggle link-secondary"
-        data-bs-toggle="dropdown" aria-expanded="false" title={user ? getUserName(user.email) : ''}>
+        data-bs-toggle="dropdown" aria-expanded="false" title={user?.login}>
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-person-circle me-2" viewBox="0 0 16 16">
           <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
           <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
         </svg>
-        <strong>{user ? getUserName(user.email) : ''}</strong>
+        <strong>{user?.login}</strong>
       </a>
       <ul className="dropdown-menu">
-        {/* {user.type !== 'demo' ? ( */}
-        {/*   <> */}
-        {/*     <li> */}
-        {/*       <a className="dropdown-item" href="/user/settings/profile"> */}
-        {/*         Настройки */}
-        {/*       </a> */}
-        {/*     </li> */}
-        {/*     <li><hr className="dropdown-divider" /></li> */}
-        {/*     <li> */}
-        {/*       <a className="dropdown-item" href="/user/logout"> */}
-        {/*         Выход */}
-        {/*       </a> */}
-        {/*     </li> */}
-        {/*   </> */}
-        {/* ) : ( */}
-        {/*   <li> */}
-        {/*     <a className="dropdown-item" href="/user/register"> */}
-        {/*       Регистрация */}
-        {/*     </a> */}
-        {/*   </li> */}
-        {/* )} */}
+        <li><a className="dropdown-item" href="#">Настройки</a></li>
+        <li><hr className="dropdown-divider" /></li>
+        <li><a className="dropdown-item" href="#">Выход</a></li>
       </ul>
     </div>
   );

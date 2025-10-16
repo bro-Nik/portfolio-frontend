@@ -52,7 +52,7 @@ const Toast = ({ message, type = 'info', onClose }) => {
         <div className="toast-body toast-message">
           {message}
         </div>
-        {type == 'error' && (
+        {type === 'error' && (
           <button
             type="button"
             className="btn-close me-2 m-auto"

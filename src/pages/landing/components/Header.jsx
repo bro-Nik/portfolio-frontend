@@ -16,14 +16,12 @@ const Header = () => {
         <div className="d-flex align-items-center ms-auto gap-3 text-nowrap">
           <div>
             <select className="form-select border-0 fw-medium">
-              <option selected value="ru">RU</option>
+              <option selected value={'ru'}>RU</option>
             </select>
           </div>
 
           {user && (
-            <a className="text-decoration-none text-capitalize fw-medium" href={ROUTES.APP}>
-              { user.email.split('@')[0] }
-            </a>
+            <a className="text-decoration-none text-capitalize fw-medium" href={ROUTES.APP}>{ user.login }</a>
           )}
 
           {!user && (

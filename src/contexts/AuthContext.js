@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useRef } from 'react';
 import { authService } from '../services/auth';
-import { getToken, isTokenValid, clearTokens } from '../services/token';
+import { clearTokens } from '../services/token';
 
 export const AuthContext = createContext();
 
@@ -9,40 +9,26 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  const { refreshTokens, getProfile } = authService();
-
-  const checkAuth = async () => {
-    const token = getToken();
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    if (!isTokenValid(token)) {
-      console.log('токен просрочен')
-      await refreshTokens();
-    }
-
-    await tryLogin();
-    setLoading(false);
-  };
+  const { getCurrentUser } = authService();
+  const isInitialized = useRef(false); // Защита от повторного вызова
 
   useEffect(() => {
-    checkAuth();
+    // Защита от двойного вызова в Strict Mode
+    if (isInitialized.current) return;
+    isInitialized.current = true;
+
+    const initializeAuth = async () => {
+      await login();
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
-  const tryLogin = async () => {
-    const data = await getProfile();
-    if (data) {
-      login(data);
-    } else {
-      logout()
-    }
-  };
-
-  const login = (data) => {
-    setUser(data);
-    setIsAuthenticated(true);
+  const login = async () => {
+    const userData = await getCurrentUser();
+    setUser(userData);
+    setIsAuthenticated(!!userData);
   };
 
   const logout = () => {
@@ -57,7 +43,6 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated,
-    tryLogin
   };
 
   return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>;

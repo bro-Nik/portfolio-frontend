@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode';
+
 export function getToken () {
   return localStorage.getItem('accessToken')
 }
@@ -16,11 +18,30 @@ export function clearTokens () {
   localStorage.removeItem('refreshToken');
 }
 
+export const decodeToken = (token) => {
+  try {
+    return jwtDecode(token);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const isTokenExpired = (decoded) => {
+  if (!decoded || !decoded.exp) return true;
+  
+  // Погрешность (sec)
+  const threshold = 5;
+
+  const currentTime = Date.now() / 1000;
+  return decoded.exp - currentTime < threshold;
+};
+
 export function isTokenValid (token) {
   if (!token) return false;
 
-  // Проверка структуры токена
   const parts = token.split('.');
+
+  // Проверка структуры токена
   if (parts.length !== 3) return false;
 
   try {

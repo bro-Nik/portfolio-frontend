@@ -1,48 +1,62 @@
 import { apiService } from './api';
-import { getRefreshToken, setTokens } from './token';
+import { getToken, getRefreshToken, setTokens, decodeToken, isTokenExpired } from './token';
 
 export const authService = () => {
   const api = apiService(process.env.REACT_APP_AUTH_SERVICE_URL);
 
-  const authenticationProcessing = async (url, data) => {
-    const result = await api.post(url, data);
+  const getCurrentUser = async () => {
+    const token = await getValidToken();
+    let decodedToken = decodeToken(token);
+    if (!decodedToken) return;
 
-    if (result.success) {
-      const { access_token, refresh_token } = result.data;
-      setTokens(access_token, refresh_token);
+    return {
+      id: decodedToken.sub,
+      login: decodedToken.login,
     }
+  };
 
-    return result;
+  const getValidToken = async () => {
+    let token = getToken();
+    let decodedToken = decodeToken(token);
+    if (!decodedToken) return;
+
+    // Если токен просрочен, пытаемся обновить
+    if (isTokenExpired(decodedToken)) {
+      console.log('Токен просрочен, пытаемся обновить...');
+      token = await refreshTokens();
+      decodedToken = decodeToken(token);
+      if (!decodedToken) return;
+      console.log('Токен обновлен');
+    }
+    return token;
+
+  };
+
+  const setTokensFromResponse = (data) => {
+    const { access_token, refresh_token } = data;
+    setTokens(access_token, refresh_token);
   };
 
   const login = async (email, password) => {
-    return await authenticationProcessing('/login', { email, password })
+    const result = await api.post('/login', { email, password });
+    if (result.success) setTokensFromResponse(result.data);
+    return result;
   };
 
   const register = async (email, password) => {
-    return await authenticationProcessing('/register', { email, password })
+    const result = await api.post('/register', { email, password });
+    if (result.success) setTokensFromResponse(result.data);
+    return result;
   };
 
   const refreshTokens = async () => {
     const token = getRefreshToken();
-    // const token = JSON.parse(token2);
     if (!token) throw new Error('No refresh token');
 
-    return await authenticationProcessing('/refresh', { token } );
-    // const result = await apiPost('/refresh', { refreshToken });
-
-    // if (result.success) {
-    //   const { access_token, refresh_token } = result.data;
-    //   setTokens(access_token, refresh_token);
-    // }
-
-    // return result.success;
-  };
-
-  const getProfile = async () => {
-    const response = await api.get('/me');
-    if (response.success) {
-      return response.data
+    const result = await api.post('/refresh', { token });
+    if (result.success) {
+      setTokensFromResponse(result.data);
+      return result.data.access_token;
     }
   };
 
@@ -50,6 +64,6 @@ export const authService = () => {
     login,
     register,
     refreshTokens,
-    getProfile
+    getCurrentUser,
   };
 };

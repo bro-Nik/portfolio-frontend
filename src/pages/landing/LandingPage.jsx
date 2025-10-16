@@ -1,5 +1,4 @@
 import Header from './components/Header';
-import { ROUTES } from '/app/src/constants/routes';
 import heroBanner from './images/hero-banner.jpg';
 
 const LandingPage = () => {

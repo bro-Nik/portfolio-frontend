@@ -4,15 +4,15 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/landing/LandingPage';
 import AuthPage from './pages/auth/AuthPage';
 import AppPage from './pages/app/AppPage';
-import AppLayout from './pages/app/components/Layout';
+// import AppLayout from './pages/app/components/Layout';
 import { ROUTES } from './constants/routes';
 
 // Компонент для защищенных маршрутов с Layout
 const ProtectedLayout = ({ children }) => (
   <ProtectedRoute>
-    <AppLayout>
+    {/* <AppLayout> */}
       {children}
-    </AppLayout>
+    {/* </AppLayout> */}
   </ProtectedRoute>
 );
 
