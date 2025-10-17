@@ -1,12 +1,15 @@
 import React, { useState, memo, useMemo } from 'react';
 import { useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, flexRender } from '@tanstack/react-table';
 import { formatCurrency, formatPercentage } from '/app/src/utils/format';
+import { useNavigation } from '/app/src/hooks/useNavigation';
 
 const fallbackData = [];
 
-const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => {
+const AllPortfoliosTable = memo(({ portfolios }) => {
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
+
+  const { openItem } = useNavigation();
 
   // Определяем колонки для React Table
   const columns = useMemo(() => [
@@ -14,12 +17,10 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       accessorKey: 'name',
       header: 'Название',
       cell: ({ row }) => (
-        <div className="d-grid name text-average" onClick={() => onPortfolioClick(row.original)}>
+        <div className="d-grid name text-average" onClick={() => openItem(row.original, 'portfolio')}>
           <span>{row.original.name}</span>
           <span className="text-muted small-text capitalize">{row.original.market}</span>
-          <span className="text-muted small-text">
-            {row.original.assets?.length || 0} активов
-          </span>
+          <span className="text-muted small-text">{row.original.assets?.length || 0} активов</span>
         </div>
       ),
       size: 300,
@@ -28,9 +29,7 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       accessorKey: 'costNow',
       header: 'Стоимость',
       cell: ({ row }) => (
-        <span className="">
-          {formatCurrency(row.original.costNow)}
-        </span>
+        <span className="">{formatCurrency(row.original.costNow)}</span>
       ),
       size: 200,
     },
@@ -38,9 +37,7 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       accessorKey: 'amount',
       header: 'Вложено',
       cell: ({ row }) => (
-        <span>
-          {formatCurrency(row.original.invested)}
-        </span>
+        <span>{formatCurrency(row.original.invested)}</span>
       ),
       size: 120,
     },
@@ -65,9 +62,7 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       // header: 'Доля от всех инвестиций',
       cell: ({ row }) => {
         return (
-          <span className="text-muted">
-            {formatPercentage(row.original.share)}
-          </span>
+          <span className="text-muted">{formatPercentage(row.original.share)}</span>
         );
       },
       size: 120,
@@ -77,9 +72,7 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       header: 'В ордерах',
       // header: 'В ордерах на покупку',
       cell: ({ row }) => (
-        <span>
-          {formatCurrency(row.original.buyOrders)}
-        </span>
+        <span>{formatCurrency(row.original.buyOrders)}</span>
       ),
       size: 120,
     },
@@ -88,20 +81,14 @@ const AllPortfoliosTable = memo(({ onPortfolioClick, portfolios, onUpdate }) => 
       header: '',
       cell: ({ row }) => (
         <div className="action-buttons">
-          {/* <button  */}
-          {/*   className="btn btn-sm btn-outline-secondary" */}
-          {/*   onClick={(e) => e.stopPropagation()} */}
-          {/* > */}
-            {/* <i className="bi bi-pencil"></i> */}
           <a className="link-secondary">
             <i className="bi bi-three-dots-vertical"></i>
           </a>
-          {/* </button> */}
         </div>
       ),
       size: 100,
     },
-  ], [onPortfolioClick]);
+  ], [openItem]);
 
   // Создаем таблицу
   const table = useReactTable({

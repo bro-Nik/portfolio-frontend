@@ -1,33 +1,19 @@
 import React from 'react';
+import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 
-const AssetHeader = ({ assetData, onClose, onMinimize }) => {
-
+const AssetHeader = ({ data }) => {
   return (
     <div className="asset-header mb-4">
       <div className="row align-items-center">
         <div className="col">
           <div className="d-flex align-items-center">
-            <button 
-              className="btn btn-outline-secondary btn-sm"
-              onClick={() => onMinimize()}
-              title="Свернуть"
-            >
-              <i className="bi bi-dash-lg"></i>
-            </button>
-            <button 
-              className="btn btn-outline-danger btn-sm me-3"
-              onClick={() => onClose()}
-              title="Закрыть"
-            >
-              <i className="bi bi-x-lg"></i>
-            </button>
             <div>
               <h1 className="h3 mb-1">
-                {assetData.asset_info.name} ({assetData.asset_info.symbol})
+                {data.asset_info.name} ({data.asset_info.symbol})
               </h1>
               <div className="text-muted small">
-                <span className="me-3">Портфель: {assetData.portfolio_info.portfolio_name}</span>
-                <span>Рынок: {assetData.portfolio_info.portfolio_market}</span>
+                <span className="me-3">Портфель: {data.portfolio_info.portfolio_name}</span>
+                <span>Рынок: {data.portfolio_info.portfolio_market}</span>
               </div>
             </div>
           </div>
@@ -38,6 +24,7 @@ const AssetHeader = ({ assetData, onClose, onMinimize }) => {
               <i className="bi bi-pencil me-2"></i>
               Редактировать
             </button>
+            <CloseMinimizeBtns id={data.asset_info.id} type='portfolio_asset' parentId={data.portfolio_info.portfolio_id} />
           </div>
         </div>
       </div>

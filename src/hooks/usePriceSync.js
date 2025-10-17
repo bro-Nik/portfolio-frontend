@@ -13,7 +13,8 @@ export const usePriceSync = () => {
     // Интервальное обновление
     const interval = setInterval(() => {
       fetchAssetPrices();
-    }, 30000);
+    // }, 30000);
+    }, 3000000);
     
     return () => clearInterval(interval);
   }, [uniqueAssets.size, fetchAssetPrices]);

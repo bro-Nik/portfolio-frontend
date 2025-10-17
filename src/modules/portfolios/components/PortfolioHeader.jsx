@@ -1,26 +1,12 @@
 import React from 'react';
+import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 
-const PortfolioHeader = ({ portfolio, onClose, onMinimize }) => {
-
+const PortfolioHeader = ({ portfolio }) => {
   return (
     <div className="portfolio-header mb-4">
       <div className="row align-items-center">
         <div className="col">
           <div className="d-flex align-items-center">
-            <button 
-              className="btn btn-outline-secondary btn-sm"
-              onClick={() => onMinimize()}
-              title="Свернуть"
-            >
-              <i className="bi bi-dash-lg"></i>
-            </button>
-            <button 
-              className="btn btn-outline-danger btn-sm me-3"
-              onClick={() => onClose()}
-              title="Закрыть"
-            >
-              <i className="bi bi-x-lg"></i>
-            </button>
             <div>
               <h1 className="h3 mb-1">{portfolio.name}</h1>
               <div className="text-muted small">
@@ -36,6 +22,7 @@ const PortfolioHeader = ({ portfolio, onClose, onMinimize }) => {
               <i className="bi bi-pencil me-2"></i>
               Редактировать
             </button>
+            <CloseMinimizeBtns id={portfolio.id} type='portfolio' />
           </div>
         </div>
       </div>

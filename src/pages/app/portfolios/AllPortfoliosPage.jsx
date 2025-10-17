@@ -4,7 +4,7 @@ import AllPortfoliosTable from '/app/src/modules/portfolios/components/AllPortfo
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
 import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 
-const PortfoliosPage = ({ onPortfolioClick }) => {
+const PortfoliosPage = () => {
   const { portfolios, overallStats, loading } = usePortfoliosData();
 
   if (loading) return <LoadingSpinner />;
@@ -24,10 +24,7 @@ const PortfoliosPage = ({ onPortfolioClick }) => {
       </div>
 
       <div className="row">
-        <AllPortfoliosTable 
-          portfolios={portfolios} 
-          onPortfolioClick={onPortfolioClick}
-        />
+        <AllPortfoliosTable portfolios={portfolios} />
       </div>
     </>
   );

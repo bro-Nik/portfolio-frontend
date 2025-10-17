@@ -2,15 +2,17 @@ import PortfolioTable from '/app/src/modules/portfolios/components/PortfolioTabl
 import PortfolioStatistic from '/app/src/modules/portfolios/components/PortfolioStatistic';
 import PortfolioHeader from '/app/src/modules/portfolios/components/PortfolioHeader';
 
-const PortfolioPage = ({ portfolio, onClose, onMinimize, onAssetClick }) => {
+const PortfolioPage = ({ portfolio }) => {
+  console.log('PortfolioPage')
+  console.log(portfolio)
 
   return (
     <div className="portfolio-detail">
       {/* Хедер портфеля */}
       <PortfolioHeader
         portfolio={portfolio}
-        onClose={onClose}
-        onMinimize={onMinimize}
+        // onClose={onClose}
+        // onMinimize={onMinimize}
       />
 
       {/* Статистика портфеля */}
@@ -22,7 +24,7 @@ const PortfolioPage = ({ portfolio, onClose, onMinimize, onAssetClick }) => {
         <PortfolioTable 
           portfolio={portfolio}
           assets={portfolio.assets}
-          onAssetClick={onAssetClick}
+          // onAssetClick={onAssetClick}
         />
       </div>
     </div>

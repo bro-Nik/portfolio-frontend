@@ -1,9 +1,11 @@
 import React from 'react';
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { formatCurrency, formatPercentage } from '/app/src/utils/format';
+import { useNavigation } from '/app/src/hooks/useNavigation';
 
-const PortfolioTable = ({ portfolio, assets, onAssetClick, ...props }) => {
+const PortfolioTable = ({ portfolio, assets, ...props }) => {
   const { getAssetPrice, getAssetImage } = useAssetsStore();
+  const { openItem } = useNavigation();
 
   return (
     <div className="card">
@@ -38,7 +40,7 @@ const PortfolioTable = ({ portfolio, assets, onAssetClick, ...props }) => {
                   <tr key={asset.asset_id}>
                     <td
                       className="cursor-pointer"
-                      onClick={() => onAssetClick(asset, portfolio)}
+                      onClick={() => openItem(asset, 'portfolio_asset', portfolio.id)}
                     >
                       <div className="text-average d-flex gap-2 name">
                         <img className="img-asset-min" loading="lazy" src={getAssetImage(asset.asset_id)} />

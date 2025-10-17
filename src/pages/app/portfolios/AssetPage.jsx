@@ -24,11 +24,7 @@ const AssetPage = ({ asset, onClose, onMinimize }) => {
   return (
     <div className="asset-detail">
       {/* Хедер актива */}
-        <AssetHeader
-          assetData={assetData}
-          onClose={onClose}
-          onMinimize={onMinimize}
-        />
+      <AssetHeader data={assetData} />
 
       {/* Статистика портфеля */}
       <AssetStatistic data={assetData} />

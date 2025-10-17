@@ -7,7 +7,6 @@ export const formatCurrency = (amount, currency = 'USD', locale = 'ru-RU') => {
 };
 
 export const formatPercentage = (value, decimals = 0) => {
-    console.log(Math.abs(value.toFixed(decimals)))
     return `${Math.abs(value.toFixed(decimals))}%`;
   };
 
