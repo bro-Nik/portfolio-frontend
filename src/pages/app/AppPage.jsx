@@ -1,14 +1,13 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import PortfolioPage from './portfolios/PortfolioPage';
 import AssetPage from './portfolios/AssetPage';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { usePriceSync } from '/app/src/hooks/usePriceSync';
 import './styles/App.css';
-
-const PortfoliosPage = React.lazy(() => import('./portfolios/AllPortfoliosPage'));
-const WalletsPage = React.lazy(() => import('./wallets/AllWalletsPage'));
-const WishlistPage = React.lazy(() => import('./WishlistPage'));
+import PortfoliosPage from './portfolios/AllPortfoliosPage'
+import WalletsPage from './wallets/AllWalletsPage'
+import WishlistPage from './WishlistPage'
 
 const AppPage = () => {
   const { activeSection, openedItems, setActiveSection } = useNavigation();
@@ -21,14 +20,16 @@ const AppPage = () => {
 
   // Рендер основных разделов
   const renderMainSection = () => {
-    const Section = mainSections[activeSection];
-    if (!Section) return null;
-
-    return (
-      <Suspense fallback={<div>Загрузка...</div>}>
-        <Section style={{ display: 'block' }} />
-      </Suspense>
-    );
+    return Object.entries(mainSections).map(([sectionName, SectionComponent]) => (
+      <div 
+        key={sectionName} 
+        style={{ display: activeSection === sectionName ? 'block' : 'none' }}
+      >
+        <Suspense>
+          <SectionComponent />
+        </Suspense>
+      </div>
+    ));
   };
 
   // Рендер всех открытых элементов

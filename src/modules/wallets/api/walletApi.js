@@ -5,7 +5,7 @@ const api = apiService('/api/wallets');
 export const walletApi = {
   // getAllPortfolios: (userId) => api.get(`/user/${userId}`),
   getAllWallets: (userId) => {
-    console.log('Запрос портфелей...');
+    console.log('Запрос кошельков...');
     return api.get(`/user/${userId}`);
   },
   // getPortfolio: (id) => api.get(`/${id}`),

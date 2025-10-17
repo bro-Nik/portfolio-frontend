@@ -19,7 +19,6 @@ const useNavigationStore = create((set, get) => ({
     // Универсальные методы для использования в компонентах
     openItem: (item, itemType, parentId = null) => {
       const section = getMainSectionByItemType(itemType);
-      console.log(get().activeSection)
 
       // Проверяем, не открыт ли уже
       if (!!get().actions.getItem(section, item.id, itemType, parentId)) {
@@ -53,7 +52,6 @@ const useNavigationStore = create((set, get) => ({
     },
 
     toggleMinimizeItem: (itemId, itemType, parentId = null) => {
-      console.log(itemId)
       const section = getMainSectionByItemType(itemType);
 
       if (parentId) {
@@ -65,7 +63,6 @@ const useNavigationStore = create((set, get) => ({
       // Если закрыли активный элемент, переключаемся
       if (get().activeSection === `${itemType}-${itemId}`) {
         const item = get().actions.getItem(section, itemId, itemType, parentId);
-        console.log(item)
         set({ activeSection: item.openFrom || section });
       } else {
         set({ activeSection: `${itemType}-${itemId}` });

@@ -3,8 +3,6 @@ import PortfolioStatistic from '/app/src/modules/portfolios/components/Portfolio
 import PortfolioHeader from '/app/src/modules/portfolios/components/PortfolioHeader';
 
 const PortfolioPage = ({ portfolio }) => {
-  console.log('PortfolioPage')
-  console.log(portfolio)
 
   return (
     <div className="portfolio-detail">
