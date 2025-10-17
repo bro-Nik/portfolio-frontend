@@ -7,7 +7,7 @@ import { usePriceSync } from '/app/src/hooks/usePriceSync';
 import './styles/App.css';
 
 const PortfoliosPage = React.lazy(() => import('./portfolios/AllPortfoliosPage'));
-const WalletsPage = React.lazy(() => import('./WalletsPage'));
+const WalletsPage = React.lazy(() => import('./wallets/AllWalletsPage'));
 const WishlistPage = React.lazy(() => import('./WishlistPage'));
 
 const AppPage = () => {
