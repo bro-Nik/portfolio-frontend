@@ -6,7 +6,6 @@ import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 
 const WalletsPage = () => {
   const { wallets, overallStats, loading } = useWalletsData();
-  console.log(wallets)
 
   if (loading) return <LoadingSpinner />;
 

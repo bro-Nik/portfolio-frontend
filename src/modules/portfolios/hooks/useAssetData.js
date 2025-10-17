@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '/app/src/hooks/useAuth.js'
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { portfolioApi } from '../api/portfolioApi';
 

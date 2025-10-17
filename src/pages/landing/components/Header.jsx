@@ -1,8 +1,8 @@
-import { useAuth } from '/app/src/hooks/useAuth.js'
 import { ROUTES } from '/app/src/constants/routes';
+import { useAuthStore } from '/app/src/stores/authStore';
 
 const Header = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAuthStore();
 
   return (
     <header className="d-flex py-3 container">
@@ -20,11 +20,11 @@ const Header = () => {
             </select>
           </div>
 
-          {user && (
-            <a className="text-decoration-none text-capitalize fw-medium" href={ROUTES.APP}>{ user.login }</a>
+          {isAuthenticated && (
+            <a className="text-decoration-none text-capitalize fw-medium" href={ROUTES.APP}>{ user?.login }</a>
           )}
 
-          {!user && (
+          {!isAuthenticated && (
             <>
               <a href={ROUTES.LOGIN} className="text-decoration-none fw-medium">Вход</a>
               <a href={ROUTES.DEMO} className="text-decoration-none fw-medium">Демо</a>

@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAuth } from '/app/src/hooks/useAuth.js';
+import { useAuthStore } from '/app/src/stores/authStore';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import '../styles/Sidebar.css';
 
 const Sidebar = () => {
   const { activeSection, setActiveSection, openedItems, openItem, closeItem } = useNavigation();
-  const { user } = useAuth();
+  const { user } = useAuthStore();
 
   const menuItems = [
     { id: 'portfolios', label: 'Портфели', icon: <i className="bi bi-briefcase me-2" /> },

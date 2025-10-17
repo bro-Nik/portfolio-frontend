@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '/app/src/hooks/useAuth.js'
+import { useAuthStore } from '/app/src/stores/authStore';
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { walletApi } from '../api/walletApi';
 
 export const useWalletsData = () => {
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const { prices, addAssets } = useAssetsStore();
 
   const fetchWallets = useCallback(async () => {

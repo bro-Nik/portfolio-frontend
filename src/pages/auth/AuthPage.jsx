@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { ROUTES } from '/app/src/constants/routes';
 import { useToast } from '/app/src/hooks/useToast';
 import { authService } from '/app/src/services/auth';
-import { useAuth } from '/app/src/hooks/useAuth.js'
+import { useAuthStore } from '/app/src/stores/authStore';
 
 const AuthPage = ({ type }) => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ const AuthPage = ({ type }) => {
   
   const { addToast, clearToasts } = useToast();
   const { login, register } = authService();
-  const { isAuthenticated, loading: authLoading, login: authLogin } = useAuth();
+  const { isAuthenticated, loading: authLoading, login: authLogin } = useAuthStore();
   const isLogin = type === 'login';
 
   if (authLoading) return <div></div>;
@@ -36,7 +36,7 @@ const AuthPage = ({ type }) => {
     const result = await handler(email, password)
     
     if (result.success) {
-      authLogin();
+      authLogin(result.data);
     } else {
       addToast(result.error, 'error');
     }

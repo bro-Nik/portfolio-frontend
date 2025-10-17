@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '/app/src/hooks/useAuth.js'
+import { useAuthStore } from '/app/src/stores/authStore';
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { portfolioApi } from '../api/portfolioApi';
 
 export const usePortfoliosData = () => {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const { prices, addAssets } = useAssetsStore();
 
   const fetchPortfolios = useCallback(async () => {
