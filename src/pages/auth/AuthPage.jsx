@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ROUTES } from '/app/src/constants/routes';
-import { useToast } from '/app/src/hooks/useToast';
+import { useToastStore } from '/app/src/stores/toastStore';
 import { authService } from '/app/src/services/auth';
 import { useAuthStore } from '/app/src/stores/authStore';
 
@@ -11,7 +11,7 @@ const AuthPage = ({ type }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { addToast, clearToasts } = useToast();
+  const { addToast, clearToasts } = useToastStore();
   const { login, register } = authService();
   const { isAuthenticated, loading: authLoading, login: authLogin } = useAuthStore();
   const isLogin = type === 'login';

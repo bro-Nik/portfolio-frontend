@@ -8,7 +8,7 @@ import { ROUTES } from './constants/routes';
 import { useAuthStore } from '/app/src/stores/authStore';
 
 function App() {
-  const { initializeAuth, loading } = useAuthStore();
+  const { initializeAuth } = useAuthStore();
 
   // Инициализация авторизации
   useEffect(() => {

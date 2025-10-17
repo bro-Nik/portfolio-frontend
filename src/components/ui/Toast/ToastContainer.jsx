@@ -1,13 +1,11 @@
 import React from 'react';
 import Toast from './Toast';
-import { useToast } from '../../../hooks/useToast';
+import { useToastStore } from '/app/src/stores/toastStore';
 
 const ToastContainer = () => {
-  const { toasts, removeToast } = useToast();
+  const { toasts, removeToast } = useToastStore();
 
-  if (toasts.length === 0) {
-    return null;
-  }
+  if (toasts.length === 0) return null;
 
   return (
     <div className="toast-container position-fixed top-0 end-0 p-3">
