@@ -1,24 +1,22 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuthStore } from '/app/src/stores/authStore';
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { walletApi } from '../api/walletApi';
 
 export const useWalletsData = () => {
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuthStore();
   const { prices, addAssets } = useAssetsStore();
 
   const fetchWallets = useCallback(async () => {
     setLoading(true);
-    const result = await walletApi.getAllWallets(user.id);
+    const result = await walletApi.getAllWallets();
     if (result.success) {
       const walletsData = result.data.wallets || [];
       setWallets(walletsData);
       addAssets(walletsData);
     }
     setLoading(false);
-  }, [user.id, addAssets]);
+  }, [addAssets]);
 
   // Расчет статистики
   const { walletsWithStats, overallStats } = useMemo(() => {

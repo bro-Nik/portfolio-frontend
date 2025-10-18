@@ -1,24 +1,22 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuthStore } from '/app/src/stores/authStore';
 import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { portfolioApi } from '../api/portfolioApi';
 
 export const usePortfoliosData = () => {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuthStore();
   const { prices, addAssets } = useAssetsStore();
 
   const fetchPortfolios = useCallback(async () => {
     setLoading(true);
-    const result = await portfolioApi.getAllPortfolios(user.id);
+    const result = await portfolioApi.getAllPortfolios();
     if (result.success) {
       const portfoliosData = result.data.portfolios || [];
       setPortfolios(portfoliosData);
       addAssets(portfoliosData);
     }
     setLoading(false);
-  }, [user.id, addAssets]);
+  }, [addAssets]);
 
   // Расчет статистики
   const { portfoliosWithStats, overallStats } = useMemo(() => {

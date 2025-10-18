@@ -1,18 +1,20 @@
-import { getToken } from './token';
+export const apiService = (baseUrl = '', getToken) => {
 
-export const apiService = (baseUrl = '') => {
-  const getAuthHeaders = () => {
-    const token = getToken();
+const getAuthHeaders = async () => {
+    if (!getToken) return {};
+    
+    const token = await getToken();
     return token ? { 'Authorization': `Bearer ${token}` } : {};
   };
 
   const request = async (url, options = {}) => {
     const fullUrl = `${baseUrl}${url}`;
+    console.log('Старт запроса, ', fullUrl)
     try {
       const response = await fetch(fullUrl, {
         headers: {
           'Content-Type': 'application/json',
-          ...getAuthHeaders(),
+          ... await getAuthHeaders(),
         },
         ...options,
       });
@@ -22,8 +24,10 @@ export const apiService = (baseUrl = '') => {
       if (!response.ok) {
         return { success: false, error: responseData?.detail || 'Request failed' };
       }
+      console.log('Запрос завершен, ', fullUrl)
       return { success: true, data: responseData };
     } catch (error) {
+      console.log('Ошибка запроса, ', fullUrl)
       return { success: false, error: 'Ошибка сети' };
     }
   };

@@ -59,8 +59,6 @@ export const useAssetsStore = create(
       },
       
       fetchAssetPrices: async (assetIds = null) => {
-        console.log('загрузка цен')
-
         const ids = assetIds || Array.from(get().uniqueAssets);
         if (ids.length === 0) return;
         
@@ -69,7 +67,6 @@ export const useAssetsStore = create(
           const result = await api.post('/prices', ids);
           
           if (result.success) {
-          console.log('загрузка цен успешно')
             set(state => ({
               prices: { ...state.prices, ...result.data },
               lastPriceUpdate: new Date().toISOString()

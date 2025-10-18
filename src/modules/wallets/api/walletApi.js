@@ -1,23 +1,9 @@
 import { apiService } from '/app/src/services/api';
+import { authService } from '/app/src/services/auth';
 
-const api = apiService('/api/wallets');
+const { getValidToken } = authService();
+const api = apiService('/api/wallets', getValidToken);
 
 export const walletApi = {
-  // getAllPortfolios: (userId) => api.get(`/user/${userId}`),
-  getAllWallets: (userId) => {
-    console.log('Запрос кошельков...');
-    return api.get(`/user/${userId}`);
-  },
-  // getPortfolio: (id) => api.get(`/${id}`),
-  // getPortfolio: (id) => {
-  //   console.log('Запрос активов портфеля...');
-  //   return api.get(`/${id}/assets`);
-  // },
-  getAsset: (id) => {
-    console.log('Запрос активов портфеля...');
-    return api.get(`/assets/${id}/detail`);
-  },
-  create: (data) => api.post('/', data),
-  update: (id, data) => api.put(`/${id}`, data),
-  delete: (id) => api.delete(`/${id}`)
+  getAllWallets: () => api.get('/'),
 };

@@ -27,7 +27,7 @@ const AssetDetail = ({ data }) => {
             <div className="row mb-2">
               <div className="col-6">
                 <small className="text-muted">Текущая стоимость</small>
-                <div className="fw-bold">{formatCurrency(data.current_market_data.current_value)}</div>
+                {/* <div className="fw-bold">{formatCurrency(data.current_market_data.costNow)}</div> */}
               </div>
               <div className="col-6">
                 <small className="text-muted">Доля в портфеле</small>

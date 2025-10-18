@@ -29,7 +29,6 @@ export const authService = () => {
       console.log('Токен обновлен');
     }
     return token;
-
   };
 
   const setTokensFromResponse = (data) => {
@@ -65,5 +64,6 @@ export const authService = () => {
     register,
     refreshTokens,
     getCurrentUser,
+    getValidToken
   };
 };
