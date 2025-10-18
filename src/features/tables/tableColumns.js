@@ -13,11 +13,42 @@ export const createNameColumn = (openItem, itemType = 'portfolio') => ({
   size: 300,
 });
 
+export const createAssetNameColumn = (openItem, itemType, parentId) => ({
+  accessorKey: 'asset',
+  header: 'Актив',
+  cell: ({ row }) => (
+    <div className="text-average d-flex gap-2 name" onClick={() => openItem(row.original, itemType, parentId)}>
+      <img className="img-asset-min" loading="lazy" src={row.original.image} />
+      <span className="text-truncate" title={row.original.name}>{row.original.name}</span>
+      <span className="text-muted text-uppercase">{row.original.ticker}</span>
+    </div>
+  ),
+  size: 300,
+});
+
 export const createCostColumn = () => ({
   accessorKey: 'costNow',
   header: 'Стоимость',
   cell: ({ row }) => (
     <span className="">{formatCurrency(row.original.costNow)}</span>
+  ),
+  size: 200,
+});
+
+export const createAveragePriceColumn = () => ({
+  accessorKey: 'averagePrice',
+  header: 'Средняя цена',
+  cell: ({ row }) => (
+    <span className="">{formatCurrency(row.original.averagePrice)}</span>
+  ),
+  size: 200,
+});
+
+export const createQuantityColumn = () => ({
+  accessorKey: 'quantity',
+  header: 'Количество',
+  cell: ({ row }) => (
+    <span className="">{row.original.quantity}</span>
   ),
   size: 200,
 });
