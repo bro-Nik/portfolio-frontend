@@ -8,6 +8,7 @@ import './styles/App.css';
 import PortfoliosPage from './portfolios/AllPortfoliosPage'
 import WalletsPage from './wallets/AllWalletsPage'
 import WishlistPage from './WishlistPage'
+import ModalManager from '/app/src/features/modals/ModalManager';
 
 const AppPage = () => {
   const { activeSection, openedItems, setActiveSection } = useNavigation();
@@ -86,6 +87,7 @@ const AppPage = () => {
           {renderOpenedItems()}
         </div>
       </div>
+      <ModalManager />
     </>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency, formatPercentage } from '/app/src/utils/format';
 import StatisticCards from '/app/src/features/statistics/StatisticCards';
 
-export const AllPortfoliosStatistic = ({ stats }) => {
+const AllPortfoliosStatistic = ({ stats }) => {
   const profitPercentage = stats.totalInvested > 0 ? (stats.totalProfit / stats.totalInvested) * 100 : 0;
 
   const statCards = [
@@ -27,3 +27,5 @@ export const AllPortfoliosStatistic = ({ stats }) => {
 
   return <StatisticCards cards={statCards} />;
 };
+
+export default AllPortfoliosStatistic;
