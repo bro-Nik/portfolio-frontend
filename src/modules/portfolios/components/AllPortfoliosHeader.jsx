@@ -1,8 +1,10 @@
 import React from 'react';
-import { useModals } from '/app/src/hooks/useModals';
+import { useModalStore } from '/app/src/stores/modalStore';
+import PortfolioEdit from '/app/src/modules/portfolios/modals/PortfolioEdit';
 
 const AllPortfoliosHeader = () => {
-  const { portfolio } = useModals();
+  // const { portfolio } = useModals();
+  const { openModal } = useModalStore();
 
   return (
     <div class="mb-5">
@@ -11,7 +13,7 @@ const AllPortfoliosHeader = () => {
           <h1>Портфели</h1>
         </div>
         <div class="col-auto ms-auto">
-          <button className="btn btn-primary" onClick={() => portfolio.open(null)} >
+          <button className="btn btn-primary" onClick={() => openModal(PortfolioEdit)} >
             Добавить портфель
           </button>
         </div>

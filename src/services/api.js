@@ -9,7 +9,6 @@ const getAuthHeaders = async () => {
 
   const request = async (url, options = {}) => {
     const fullUrl = `${baseUrl}${url}`;
-    console.log('Старт запроса, ', fullUrl)
     try {
       const response = await fetch(fullUrl, {
         headers: {
@@ -43,5 +42,18 @@ const getAuthHeaders = async () => {
     });
   };
 
-  return { get, post };
+  const put = (url, body) => {
+    return request(url, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+  };
+
+  const del = (url) => {
+    return request(url, {
+      method: 'DELETE',
+    });
+  };
+
+  return { get, post, put, del };
 };

@@ -1,26 +1,26 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { portfolioApi } from '../api/portfolioApi';
+import { useDataStore } from '/app/src/stores/dataStore';
 
 export const usePortfoliosData = () => {
-  const [portfolios, setPortfolios] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { prices, addAssets } = useAssetsStore();
+  // Берем данные из единого store
+  const portfolios = useDataStore(state => state.portfolios);
+  const assetPrices = useDataStore(state => state.assetPrices);
+  const setPortfolios = useDataStore(state => state.setPortfolios);
 
-  const fetchPortfolios = useCallback(async () => {
-    setLoading(true);
-    const result = await portfolioApi.getAllPortfolios();
-    if (result.success) {
-      const portfoliosData = result.data.portfolios || [];
-      setPortfolios(portfoliosData);
-      addAssets(portfoliosData);
-    }
-    setLoading(false);
-  }, [addAssets]);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const result = await portfolioApi.getAllPortfolios();
+      if (result.success) setPortfolios(result.data.portfolios || []);
+    };
+
+    // Загружаем только один раз
+    if (portfolios === null) fetchInitialData();
+  }, []); // Только при монтировании
 
   // Расчет статистики
   const { portfoliosWithStats, overallStats } = useMemo(() => {
-    if (portfolios.length === 0) return { portfoliosWithStats: [], overallStats: {} };
+    if (portfolios === null || portfolios.length === 0) return { portfoliosWithStats: [], overallStats: {} };
 
     let totalCostNow = 0;
     let totalInvested = 0;
@@ -32,7 +32,7 @@ export const usePortfoliosData = () => {
       let buyOrders = 0;
 
       portfolio.assets?.forEach(asset => {
-        const currentPrice = prices[asset.asset_id] || 0;
+        const currentPrice = assetPrices[asset.asset_id] || 0;
         costNow += asset.quantity * currentPrice;
         invested += asset.amount;
         buyOrders += asset.buy_orders || 0;
@@ -69,16 +69,11 @@ export const usePortfoliosData = () => {
         totalBuyOrders
       }
     };
-  }, [portfolios, prices]);
-
-  useEffect(() => {
-    fetchPortfolios();
-  }, [fetchPortfolios]);
+  }, [portfolios, assetPrices]);
 
   return {
     portfolios: portfoliosWithStats,
     overallStats,
-    loading,
-    refetch: fetchPortfolios
+    loading: portfolios === null
   };
 };

@@ -1,17 +1,26 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import Sidebar from './components/Sidebar';
 import PortfolioPage from './portfolios/PortfolioPage';
 import AssetPage from './portfolios/AssetPage';
 import { useNavigation } from '/app/src/hooks/useNavigation';
-import { usePriceSync } from '/app/src/hooks/usePriceSync';
+// import { usePriceSync } from '/app/src/hooks/usePriceSync';
 import './styles/App.css';
 import PortfoliosPage from './portfolios/AllPortfoliosPage'
 import WalletsPage from './wallets/AllWalletsPage'
 import WishlistPage from './WishlistPage'
-import ModalManager from '/app/src/features/modals/ModalManager';
+import { useModalStore } from '/app/src/stores/modalStore';
+
+
+const ModalContainer = () => {
+  const { currentModal: ModalComponent, modalProps } = useModalStore();
+  if (!ModalComponent) return null;
+
+  return <ModalComponent {...modalProps} />;
+};
+
 
 const AppPage = () => {
-  const { activeSection, openedItems, setActiveSection } = useNavigation();
+  const { activeSection, openedItems } = useNavigation();
 
   const mainSections = {
     'portfolios': PortfoliosPage,
@@ -78,7 +87,7 @@ const AppPage = () => {
 
   return (
     <>
-      {usePriceSync()}
+      {/* {usePriceSync()} */}
       <Sidebar />
       
       <div id="wrapper">
@@ -87,7 +96,7 @@ const AppPage = () => {
           {renderOpenedItems()}
         </div>
       </div>
-      <ModalManager />
+      <ModalContainer />
     </>
   );
 };

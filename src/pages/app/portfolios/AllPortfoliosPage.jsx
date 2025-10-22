@@ -8,7 +8,6 @@ import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoli
 const PortfoliosPage = () => {
   const { portfolios, overallStats, loading } = usePortfoliosData();
 
-
   if (loading) return <LoadingSpinner />;
 
   return (

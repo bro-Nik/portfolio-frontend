@@ -16,6 +16,6 @@ export const portfolioApi = {
       return api.post('/', portfolioData);
     }
   },
-  // deletePortfolio: (portfolioId) => api.delete(`/portfolios/${portfolioId}`),
+  deletePortfolio: (portfolioId) => api.del(`/${portfolioId}`),
   getAsset: (id) => api.get(`/assets/${id}`),
 };

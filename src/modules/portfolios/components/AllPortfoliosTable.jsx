@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { createCostColumn, createShareColumn, createBuyOrdersColumn, createActionsColumn, createProfitColumn, createInvestedColumn, createNameColumn } from '/app/src/features/tables/tableColumns';
+import PortfolioActionsDropdown from './PortfolioActionsDropdown'
 
 const AllPortfoliosTable = memo(({ portfolios }) => {
   const { openItem } = useNavigation();
@@ -13,7 +14,13 @@ const AllPortfoliosTable = memo(({ portfolios }) => {
     createProfitColumn(),
     createShareColumn(),
     createBuyOrdersColumn(),
-    createActionsColumn(),
+    // createActionsColumn(),
+    {
+      id: 'actions',
+      // header: '',
+      cell: ({ row }) => <PortfolioActionsDropdown portfolio={row.original} />,
+      size: 100,
+    },
   ], [openItem]);
 
   return (

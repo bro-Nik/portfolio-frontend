@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAssetsStore } from '/app/src/stores/assetsStore';
 import { portfolioApi } from '../api/portfolioApi';
 
 export const useAssetData = (asset) => {
@@ -10,9 +9,7 @@ export const useAssetData = (asset) => {
   const fetchAssetData = useCallback(async () => {
     setLoading(true);
     const result = await portfolioApi.getAsset(asset.id);
-    if (result.success) {
-      setAssetData(result.data || []);
-    }
+    if (result.success) setAssetData(result.data || []);
     setLoading(false);
   }, [asset.id]);
 
