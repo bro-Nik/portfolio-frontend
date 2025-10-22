@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, Button, Space, message } from 'antd';
+import { Modal, Form, Input, Button, Space, message } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useModalStore } from '/app/src/stores/modalStore';
-import { walletApi } from '../api/walletApi';
-import { useDataStore } from '/app/src/stores/dataStore';
+import { useWalletOperations } from '../hooks/useWalletOperations';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const WalletEdit = () => {
   const { modalProps, closeModal } = useModalStore();
@@ -18,9 +15,7 @@ const WalletEdit = () => {
 
   const [form] = Form.useForm();
   const [showMore, setShowMore] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const addWallet = useDataStore(state => state.addWallet);
-  const updateWallet = useDataStore(state => state.updateWallet);
+  const { editWallet, loading } = useWalletOperations();
 
   useEffect(() => {
     form.setFieldsValue({
@@ -31,28 +26,21 @@ const WalletEdit = () => {
   }, [wallet, form]);
 
   const handleSubmit = async (values) => {
-    setLoading(true);
     const submitData = {
       ...values,
       // Добавляем ID если редактируем
       ...(wallet && { id: wallet.id })
     };
 
-    const result = await walletApi.saveWallet(submitData);
+    const result = await editWallet(submitData);
     
     if (result.success) {
-      if (wallet?.id) {
-        updateWallet(wallet.id, result.data);
-      } else {
-        addWallet(result.data);
-      }
       message.success(wallet ? 'Кошелек обновлен' : 'Кошелек создан');
       closeModal();
     } else {
-      // message.error(result.error || 'Произошла ошибка');
+      message.error(result.error || 'Произошла ошибка');
       console.log(result.error || 'Произошла ошибка')
     }
-    setLoading(false);
   };
 
   const handleCancel = () => {

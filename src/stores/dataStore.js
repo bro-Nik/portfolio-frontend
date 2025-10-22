@@ -172,5 +172,5 @@ const extractUniqueAssets = (data) => {
 };
 
 
-export const getAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);
-export const getAssetImage = (id) => useDataStore(state => state.assetImages[id]);
+export const useAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);
+export const useAssetImage = (id) => useDataStore(state => state.assetImages[id]);

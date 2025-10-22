@@ -3,8 +3,7 @@ import { Modal, Form, Input, Select, Button, Space, message } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useModalStore } from '/app/src/stores/modalStore';
-import { portfolioApi } from '../api/portfolioApi';
-import { useDataStore } from '/app/src/stores/dataStore';
+import { usePortfolioOperations } from '../hooks/usePortfolioOperations';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -18,10 +17,7 @@ const PortfolioEdit = () => {
 
   const [form] = Form.useForm();
   const [showMore, setShowMore] = useState(false);
-  const [loading, setLoading] = useState(false);
-  // const portfolios = useDataStore(state => state.portfolios);
-  const addPortfolio = useDataStore(state => state.addPortfolio);
-  const updatePortfolio = useDataStore(state => state.updatePortfolio);
+  const { editPortfolio, loading } = usePortfolioOperations();
 
   useEffect(() => {
     form.setFieldsValue({
@@ -33,29 +29,21 @@ const PortfolioEdit = () => {
   }, [portfolio, form]);
 
   const handleSubmit = async (values) => {
-    setLoading(true);
     const submitData = {
       ...values,
       // Добавляем ID если редактируем
       ...(portfolio && { id: portfolio.id })
     };
 
-    const result = await portfolioApi.savePortfolio(submitData);
-    
+    const result = await editPortfolio(submitData);
+
     if (result.success) {
-      if (portfolio?.id) {
-        updatePortfolio(portfolio.id, result.data);
-      } else {
-        console.log(result.data)
-        addPortfolio(result.data);
-      }
       message.success(portfolio ? 'Портфель обновлен' : 'Портфель создан');
       closeModal();
     } else {
-      // message.error(result.error || 'Произошла ошибка');
+      message.error(result.error || 'Произошла ошибка');
       console.log(result.error || 'Произошла ошибка')
     }
-    setLoading(false);
   };
 
   const handleCancel = () => {

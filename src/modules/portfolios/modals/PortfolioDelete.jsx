@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { portfolioApi } from '../api/portfolioApi';
-import { useDataStore } from '/app/src/stores/dataStore';
-import { useNavigation } from '/app/src/hooks/useNavigation';
+import { usePortfolioOperations } from '../hooks/usePortfolioOperations';
 
 const PortfolioDelete = () => {
   const { modalProps, closeModal } = useModalStore();
   const { portfolio } = modalProps;
-  const [loading, setLoading] = useState(false);
-  const deletePortfolio = useDataStore(state => state.deletePortfolio);
-  const { closeItem } = useNavigation();
+  const { deletePortfolio, loading } = usePortfolioOperations();
 
-  const handleSubmit = async (values) => {
-    setLoading(true);
+  const handleSubmit = async () => {
+    const result = await deletePortfolio(portfolio);
 
-    message.success('Тестовое сообщение');
-    const result = await portfolioApi.deletePortfolio(portfolio.id);
     if (result.success) {
-      deletePortfolio(result.data.portfolio_id);
-      closeItem(result.data.portfolio_id, 'portfolio')
+      message.success('Портфель удален');
+    } else {
+      message.error(result.error);
     }
-    message.success('Портфель удален');
-
-    setLoading(false);
     closeModal();
   };
 
   const handleCancel = () => {
     closeModal();
   };
-    message.success('Тестовое сообщение');
 
   return (
     <Modal

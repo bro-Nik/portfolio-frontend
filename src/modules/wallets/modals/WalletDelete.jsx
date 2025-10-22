@@ -1,35 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { walletApi } from '../api/walletApi';
-import { useDataStore } from '/app/src/stores/dataStore';
-import { useNavigation } from '/app/src/hooks/useNavigation';
+import { useWalletOperations } from '../hooks/useWalletOperations';
 
 const WalletDelete = () => {
   const { modalProps, closeModal } = useModalStore();
   const { wallet } = modalProps;
-  const [loading, setLoading] = useState(false);
-  const deleteWallet = useDataStore(state => state.deleteWallet);
-  const { closeItem } = useNavigation();
+  const { deleteWallet, loading } = useWalletOperations();
 
-  const handleSubmit = async (values) => {
-    setLoading(true);
+  const handleSubmit = async () => {
+    const result = await deleteWallet(wallet);
 
-    const result = await walletApi.deleteWallet(wallet.id);
     if (result.success) {
-      deleteWallet(result.data.wallet_id);
-      closeItem(result.data.wallet_id, 'wallet')
+      message.success('Кошелек удален');
+    } else {
+      message.error(result.error);
     }
-    message.success('Кошелек удален');
-
-    setLoading(false);
     closeModal();
   };
 
   const handleCancel = () => {
     closeModal();
   };
-    message.success('Тестовое сообщение');
 
   return (
     <Modal
