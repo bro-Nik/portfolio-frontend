@@ -1,26 +1,27 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAssetsStore } from '/app/src/stores/assetsStore';
+import { useDataStore } from '/app/src/stores/dataStore';
 import { walletApi } from '../api/walletApi';
 
 export const useWalletsData = () => {
-  const [wallets, setWallets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { prices, addAssets } = useAssetsStore();
+  // Берем данные из единого store
+  const wallets = useDataStore(state => state.wallets);
+  const prices = useDataStore(state => state.assetPrices);
+  const setWallets = useDataStore(state => state.setWallets);
 
-  const fetchWallets = useCallback(async () => {
-    setLoading(true);
-    const result = await walletApi.getAllWallets();
-    if (result.success) {
-      const walletsData = result.data.wallets || [];
-      setWallets(walletsData);
-      addAssets(walletsData);
-    }
-    setLoading(false);
-  }, [addAssets]);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const result = await walletApi.getAllWallets();
+      if (result.success) setWallets(result.data.wallets || []);
+    };
+
+    // Загружаем только один раз
+    if (wallets === null) fetchInitialData();
+  }, []); // Только при монтировании
+
 
   // Расчет статистики
   const { walletsWithStats, overallStats } = useMemo(() => {
-    if (wallets.length === 0) return { walletsWithStats: [], overallStats: {} };
+    if (wallets === null || wallets.length === 0) return { walletsWithStats: [], overallStats: {} };
 
     let totalCostNow = 0;
     let totalInvested = 0;
@@ -71,14 +72,9 @@ export const useWalletsData = () => {
     };
   }, [wallets, prices]);
 
-  useEffect(() => {
-    fetchWallets();
-  }, [fetchWallets]);
-
   return {
     wallets: walletsWithStats,
     overallStats,
-    loading,
-    refetch: fetchWallets
+    loading: wallets === null
   };
 };

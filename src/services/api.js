@@ -18,13 +18,13 @@ const getAuthHeaders = async () => {
         ...options,
       });
 
-      const responseData = await response.json().catch(() => null);
+      const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        return { success: false, error: responseData?.detail || 'Request failed' };
+        return { success: false, error: data?.detail || 'Request failed' };
       }
       console.log('Запрос завершен, ', fullUrl)
-      return { success: true, data: responseData };
+      return { success: true, data };
     } catch (error) {
       console.log('Ошибка запроса, ', fullUrl)
       return { success: false, error: 'Ошибка сети' };
