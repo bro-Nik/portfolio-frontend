@@ -24,10 +24,10 @@ const AssetHeader = ({ data }) => {
               <i className="bi bi-pencil me-2"></i>
               Редактировать
             </button>
-            <CloseMinimizeBtns id={data.asset_info.id} type='portfolio_asset' parentId={data.portfolio_info.portfolio_id} />
           </div>
         </div>
       </div>
+      <CloseMinimizeBtns id={data.asset_info.id} type='portfolio_asset' parentId={data.portfolio_info.portfolio_id} />
     </div>
   );
 };

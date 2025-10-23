@@ -27,11 +27,7 @@ const PortfolioHeader = ({ portfolio }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            {/* <Button type="primary">Добавить актив</Button> */}
-            {/* <Button  onClick={() => openModal(AddAsset, { portfolio: portfolio })} > */}
-            {/*   Добавить актив */}
-            {/* </Button> */}
-            <Button  onClick={() => openModal(PortfolioAddAssetModal, { portfolio: portfolio })} >
+            <Button type="primary"  onClick={() => openModal(PortfolioAddAssetModal, { portfolio: portfolio })} >
               Добавить актив
             </Button>
             <PortfolioActionsDropdown
@@ -40,12 +36,10 @@ const PortfolioHeader = ({ portfolio }) => {
             />
           </Space>
 
-          <div class="close-minimize-btns">
-            <CloseMinimizeBtns id={portfolio.id} type='portfolio' />
-          </div>
         </div>
 
       </div>
+      <CloseMinimizeBtns id={portfolio.id} type='portfolio' />
     </div>
   );
 };

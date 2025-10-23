@@ -1,26 +1,26 @@
 import React from 'react';
+import { XMarkIcon, MinusIcon } from '@heroicons/react/24/solid'
 import { useNavigation } from '/app/src/hooks/useNavigation';
 
 const CloseMinimizeBtns = ({ id, type, parentId }) => {
   const { closeItem, minimizeItem } = useNavigation();
 
   return (
-    <>
-    <button 
-      className="btn btn-outline-secondary btn-sm"
-      onClick={() => minimizeItem(id, type, parentId)}
-      title="Свернуть"
-    >
-      <i className="bi bi-dash-lg"></i>
-    </button>
-    <button 
-      className="btn btn-outline-danger btn-sm me-3"
-      onClick={() => closeItem(id, type, parentId)}
-      title="Закрыть"
-    >
-      <i className="bi bi-x-lg"></i>
-    </button>
-    </>
+    <div class="close-minimize-btns">
+      <div 
+        onClick={() => minimizeItem(id, type, parentId)}
+        title="Свернуть"
+      >
+        <MinusIcon />
+      </div>
+
+      <div 
+        onClick={() => closeItem(id, type, parentId)}
+        title="Закрыть"
+      >
+        <XMarkIcon />
+      </div>
+    </div>
   );
 };
 
