@@ -35,6 +35,8 @@ export const useDataStore = create(
             portfolio.id === portfolioId ? { ...portfolio, ...updatedData } : portfolio
           )
         }));
+        // Автоматически добавляем активы портфеля
+        get().addAssets([updatedData]);
       },
       
       deletePortfolio: (portfolioId) => {
@@ -172,5 +174,5 @@ const extractUniqueAssets = (data) => {
 };
 
 
-export const useAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);
-export const useAssetImage = (id) => useDataStore(state => state.assetImages[id]);
+// export const useAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);
+// export const useAssetImage = (id) => useDataStore(state => state.assetImages[id]);

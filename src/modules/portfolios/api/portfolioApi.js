@@ -6,7 +6,6 @@ const api = apiService('/api/portfolios', getValidToken);
 
 export const portfolioApi = {
   getAllPortfolios: (userId) => api.get('/'),
-  // savePortfolio: (portfolioData) => api.post('/portfolio_settings'),
   savePortfolio: (portfolioData) => {
     if (portfolioData.id) {
       // Редактирование
@@ -18,4 +17,6 @@ export const portfolioApi = {
   },
   deletePortfolio: (portfolioId) => api.del(`/${portfolioId}`),
   getAsset: (id) => api.get(`/assets/${id}`),
+  addAssetToPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/add`, {ticker_id: tickerId}),
+  delAssetFromPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/del`, {ticker_id: tickerId}),
 };

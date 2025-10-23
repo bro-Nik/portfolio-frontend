@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { portfolioService } from '../services/portfolioService'
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { useDataStore } from '/app/src/stores/dataStore';
@@ -59,6 +59,50 @@ export const usePortfolioOperations = () => {
     setLoading(false);
     return result;
   };
+
+  const addAsset = async (portfolio, asset) => {
+    // Валидация бизнес-правилами
+    const validation = portfolioService.validateAddAsset(portfolio, asset);
+    if (!validation.isValid) {
+      return { success: false, error: validation.error };
+    }
+    
+    setLoading(true);
+
+    // Вызов API
+    const result = await portfolioApi.addAssetToPortfolio(portfolio.id, asset.id);
+
+    if (result.success) {
+      updatePortfolioInStore(portfolio.id, result.data.portfolio);
+      
+      // Добавляем актив в общее хранилище активов
+      // const { addAssets } = useDataStore.getState();
+      // addAssets([result.data]);
+    }
+    
+    setLoading(false);
+    return result;
+  }; 
+
+  const deleteAsset = async (portfolio, asset) => {
+    // Валидация бизнес-правилами
+    const validation = portfolioService.validateDeleteAsset(portfolio, asset);
+    if (!validation.isValid) {
+      return { success: false, error: validation.error };
+    }
+    
+    setLoading(true);
+
+    // Вызов API
+    const result = await portfolioApi.removeAssetFromPortfolio(portfolio.id, asset.id);
+      
+    if (result.success) {
+      updatePortfolioInStore(portfolio.id, result.data);
+    }
+      
+    setLoading(false);
+    return result;
+  };
   
-  return { editPortfolio, deletePortfolio, loading };
+  return { editPortfolio, deletePortfolio, addAsset, deleteAsset, loading };
 };
