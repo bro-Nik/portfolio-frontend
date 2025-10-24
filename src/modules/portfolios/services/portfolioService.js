@@ -27,16 +27,16 @@ export const portfolioService = {
     return { isValid: true };
   },
 
-  // validateDeleteAsset(portfolio, asset) {
-  //   if (!portfolio?.id) {
-  //     return { isValid: false, error: 'Портфель не указан' };
-  //   }
-  //   
-  //   if (!asset?.id) {
-  //     return { isValid: false, error: 'Актив не указан' };
-  //   }
-  //
-  //   return { isValid: true };
-  // },
+  validateDeleteAsset(portfolio, asset) {
+    if (!portfolio?.id) {
+      return { isValid: false, error: 'Портфель не указан' };
+    }
+    
+    if (!asset?.id) {
+      return { isValid: false, error: 'Актив не указан' };
+    }
+
+    return { isValid: true };
+  },
   
 };

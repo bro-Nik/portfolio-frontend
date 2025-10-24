@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { portfolioService } from '../services/portfolioService'
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { useDataStore } from '/app/src/stores/dataStore';
@@ -94,10 +94,10 @@ export const usePortfolioOperations = () => {
     setLoading(true);
 
     // Вызов API
-    const result = await portfolioApi.removeAssetFromPortfolio(portfolio.id, asset.id);
+    const result = await portfolioApi.delAssetFromPortfolio(portfolio.id, asset.id);
       
     if (result.success) {
-      updatePortfolioInStore(portfolio.id, result.data);
+      updatePortfolioInStore(portfolio.id, result.data.portfolio);
     }
       
     setLoading(false);
