@@ -5,22 +5,22 @@ import { useAssetData } from '/app/src/modules/portfolios/hooks/useAssetData';
 import AssetStatistic from '/app/src/modules/portfolios/components/AssetStatistic';
 import AssetDetails from '/app/src/modules/portfolios/components/AssetDetails';
 
-const AssetPage = ({ asset, onClose, onMinimize }) => {
+const AssetPage = ({ portfolio, asset }) => {
   const { assetData, loading } = useAssetData(asset);
 
   if (loading) return <LoadingSpinner />;
 
-  if (!assetData) {
-    return (
-      <div className="asset-detail">
-        <div className="alert alert-danger">Не удалось загрузить данные актива</div>
-      </div>
-    );
-  }
+  // if (!assetData) {
+  //   return (
+  //     <div className="asset-detail">
+  //       <div className="alert alert-danger">Не удалось загрузить данные актива</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="asset-detail">
-      <AssetHeader data={assetData} />
+      <AssetHeader portfolio={portfolio} asset={asset} data={assetData} />
       <AssetStatistic data={assetData} />
       <AssetDetails data={assetData} />
     </div>
