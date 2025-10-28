@@ -22,7 +22,7 @@ const useNavigationStore = create((set, get) => ({
 
       // Проверяем, не открыт ли уже
       if (!!get().actions.getItem(section, item.id, itemType, parentId)) {
-        set({ activeSection: `${itemType}-${item.id}` });
+        get().actions.toggleMinimizeItem(item.id, itemType, parentId);
         return;
       }
 
@@ -77,9 +77,9 @@ const useNavigationStore = create((set, get) => ({
         const sectionItems = [...state.openedItems[section]];
         
         const newItem = {
-          ...item,
-          id: item.id || item._id,
-          itemType,
+          id: item.id,
+          name: item.name,
+          type: itemType,
           isMinimized: false,
           openFrom: get().activeSection,
           openedAssets: []
@@ -93,6 +93,7 @@ const useNavigationStore = create((set, get) => ({
           activeSection: `${itemType}-${item.id}`
         };
       });
+
     },
 
     // Активы
@@ -105,11 +106,11 @@ const useNavigationStore = create((set, get) => ({
 
         const parent = { ...sectionItems[parentIndex] };
         const parentAssets = [...parent.openedAssets];
-        
+
         const newAsset = {
-          ...item,
-          id: item.id || item._id,
-          itemType,
+          id: item.id,
+          name: item.name,
+          type: itemType,
           isMinimized: false,
           openFrom: get().activeSection,
           parentId
@@ -183,7 +184,7 @@ const useNavigationStore = create((set, get) => ({
           isMinimized: !item.isMinimized,
           openFrom: item.isMinimized ? get().activeSection : item.openFrom
         };
-        
+
         return {
           openedItems: {
             ...state.openedItems,

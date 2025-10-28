@@ -58,30 +58,16 @@ const AppPage = () => {
       
       // Активы портфеля
       portfolio.openedAssets.forEach(asset => {
+        const assetData = portfolioData.assets.find(a => a.id === asset.id);
+        if (!assetData) return;
+
         if (activeSection === `portfolio_asset-${asset.id}`) {
           renderItems.push(
-            <AssetPage key={`asset-${asset.id}`} portfolio={portfolio} asset={asset} />
+            <AssetPage key={`asset-${asset.id}`} portfolio={portfolioData} asset={assetData} />
           );
         }
       });
     });
-    
-    // Аналогично для wallets и wishlist
-    // openedItems.wallets.forEach(wallet => {
-    //   if (activeSection === `wallet-${wallet.id}`) {
-    //     renderItems.push(
-    //       <WalletPage key={`wallet-${wallet.id}`} wallet={wallet} />
-    //     );
-    //   }
-    //   
-    //   wallet.assets.forEach(asset => {
-    //     if (activeSection === `wallet_asset-${asset.id}`) {
-    //       renderItems.push(
-    //         <WalletAssetPage key={`wallet-asset-${asset.id}`} asset={asset} />
-    //       );
-    //     }
-    //   });
-    // });
     
     return renderItems;
   };
