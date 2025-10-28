@@ -17,26 +17,14 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
     if (!assets) return [];
 
     return assets.map(asset => {
-      const price = prices[asset.ticker_id];
-      const costNow = asset.quantity * price;
-      const invested = asset.amount;
-      const profit = costNow - invested;
-      const ticker = info[asset.ticker_id];
+      const ticker = info[asset.tickerId];
 
       return {
         ...asset,
-        price,
-        invested,
-        averagePrice: invested / asset.quantity,
-        profit,
-        profitPercentage: invested > 0 ? (profit / invested) * 100 : 0,
-        share: portfolio.costNow > 0 ? (costNow / portfolio.costNow) * 100 : 0,
+        share: portfolio.costNow > 0 ? (asset.costNow / portfolio.costNow) * 100 : 0,
         image: ticker.image,
         name: ticker.name,
         symbol: ticker.symbol,
-        costNow,
-        quantity: asset.quantity,
-        buyOrders: asset.buy_orders || 0 // если есть поле ордеров
       };
     });
   }, [assets, prices]);

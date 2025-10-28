@@ -1,9 +1,12 @@
-export const formatCurrency = (amount, currency = 'USD', locale = 'ru-RU') => {
+export const formatCurrency = (number, currency = 'USD', locale = 'ru-RU') => {
+  number = Number(number);
+  if (isNaN(number)) return;
+
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 0
-  }).format(amount);
+  }).format(number);
 };
 
 export const formatPercentage = (value, decimals = 0) => {

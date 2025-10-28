@@ -26,17 +26,34 @@ export const usePortfoliosData = () => {
     let totalInvested = 0;
     let totalBuyOrders = 0;
     
+    // Расчет статистики для каждого портфеля
     const portfoliosWithStats = portfolios.map(portfolio => {
       let costNow = 0;
       let invested = 0;
       let buyOrders = 0;
 
-      portfolio.assets?.forEach(asset => {
-        const currentPrice = prices[asset.ticker_id] || 0;
-        costNow += asset.quantity * currentPrice;
-        invested += asset.amount;
-        buyOrders += asset.buy_orders || 0;
-      });
+      // Расчет статистики для каждого актива
+      const assetsWithStats = portfolio.assets?.map(asset => {
+        const price = prices[asset.tickerId] || 0;
+        const assetCostNow = asset.quantity * price;
+        const assetInvested = asset.amount;
+        const assetProfit = assetCostNow - assetInvested;
+        const assetAveragePrice = assetInvested / asset.quantity;
+
+        costNow += assetCostNow;
+        invested += assetInvested;
+        buyOrders += asset.buyOrders || 0;
+
+        return {
+          ...asset,
+          costNow: assetCostNow,
+          averagePrice: assetAveragePrice,
+          invested: assetInvested,
+          profit: assetProfit,
+          profitPercentage: assetInvested > 0 ? (assetProfit / assetInvested) * 100 : 0,
+          price
+        };
+      }) || [];
 
       const profit = costNow - invested;
       const profitPercentage = invested > 0 ? (profit / invested) * 100 : 0;
@@ -47,6 +64,7 @@ export const usePortfoliosData = () => {
 
       return {
         ...portfolio,
+        assets: assetsWithStats,
         costNow,
         invested,
         buyOrders,
