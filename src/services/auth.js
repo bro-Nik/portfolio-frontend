@@ -32,8 +32,8 @@ export const authService = () => {
   };
 
   const setTokensFromResponse = (data) => {
-    const { access_token, refresh_token } = data;
-    setTokens(access_token, refresh_token);
+    const { accessToken, refreshToken } = data;
+    setTokens(accessToken, refreshToken);
   };
 
   const login = async (email, password) => {
@@ -53,9 +53,10 @@ export const authService = () => {
     if (!token) throw new Error('No refresh token');
 
     const result = await api.post('/refresh', { token });
+    console.log(result)
     if (result.success) {
       setTokensFromResponse(result.data);
-      return result.data.access_token;
+      return result.data.accessToken;
     }
   };
 

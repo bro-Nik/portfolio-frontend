@@ -154,7 +154,7 @@ const extractUniqueAssets = (data) => {
   const processItem = (item) => {
     if (item.assets) {
       item.assets.forEach(asset => {
-        if (asset.ticker_id) assetSet.add(asset.ticker_id);
+        if (asset.tickerId) assetSet.add(asset.tickerId);
       });
     }
     if (item.portfolios) item.portfolios.forEach(processItem);

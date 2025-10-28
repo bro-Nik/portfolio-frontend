@@ -18,7 +18,8 @@ const getAuthHeaders = async () => {
         ...options,
       });
 
-      const data = await response.json().catch(() => null);
+      let data = await response.json().catch(() => null);
+      data = snakeToCamel(data);
 
       if (!response.ok) {
         return { success: false, error: data?.detail || 'Request failed' };
@@ -35,17 +36,17 @@ const getAuthHeaders = async () => {
     return request(url);
   };
 
-  const post = (url, body) => {
+  const post = (url, body, convert = false) => {
     return request(url, {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify(convert ? camelToSnake(body) : body),
     });
   };
 
-  const put = (url, body) => {
+  const put = (url, body, convert = false) => {
     return request(url, {
       method: 'PUT',
-      body: JSON.stringify(body),
+      body: JSON.stringify(convert ? camelToSnake(body) : body),
     });
   };
 
@@ -56,4 +57,31 @@ const getAuthHeaders = async () => {
   };
 
   return { get, post, put, del };
+};
+
+const snakeToCamel = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(v => snakeToCamel(v));
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.keys(obj).reduce((result, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      result[camelKey] = snakeToCamel(obj[key]);
+      return result;
+    }, {});
+  }
+  return obj;
+};
+
+const camelToSnake = (obj) => {
+  const oldObj = obj;
+  if (Array.isArray(obj)) {
+    return obj.map(v => camelToSnake(v));
+  } else if (obj !== null && obj.constructor === Object) {
+    return Object.keys(obj).reduce((result, key) => {
+      const snakeKey = key.replace(/([A-Z])/g, (_, letter) => `_${letter.toLowerCase()}`);
+      result[snakeKey] = camelToSnake(obj[key]);
+      return result;
+    }, {});
+  }
+  return obj;
 };
