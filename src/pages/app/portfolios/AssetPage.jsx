@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import AssetHeader from '/app/src/modules/portfolios/components/AssetHeader';
 import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 import { useAssetData } from '/app/src/modules/portfolios/hooks/useAssetData';
@@ -9,8 +9,9 @@ import { useDataStore } from '/app/src/stores/dataStore';
 const AssetPage = ({ portfolio, asset }) => {
   const { assetData, loading } = useAssetData(asset);
   const info = useDataStore(state => state.assetInfo);
+  console.log('рендер страницы актива')
 
-  const preparedAssets = useMemo(() => {
+  const preparedAsset = useMemo(() => {
     const ticker = info[asset.tickerId];
 
     return {
@@ -26,8 +27,8 @@ const AssetPage = ({ portfolio, asset }) => {
 
   return (
     <div className="asset-detail">
-      <AssetHeader portfolio={portfolio} asset={asset} data={assetData} />
-      <AssetStatistic portfolio={portfolio} asset={asset} />
+      <AssetHeader portfolio={portfolio} asset={preparedAsset} data={assetData} />
+      <AssetStatistic portfolio={portfolio} asset={preparedAsset} />
       <AssetDetails data={assetData} />
     </div>
   );
