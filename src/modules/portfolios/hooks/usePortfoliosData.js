@@ -5,7 +5,7 @@ import { useDataStore } from '/app/src/stores/dataStore';
 export const usePortfoliosData = () => {
   // Берем данные из единого store
   const portfolios = useDataStore(state => state.portfolios);
-  const assetPrices = useDataStore(state => state.assetPrices);
+  const prices = useDataStore(state => state.assetPrices);
   const setPortfolios = useDataStore(state => state.setPortfolios);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const usePortfoliosData = () => {
       let buyOrders = 0;
 
       portfolio.assets?.forEach(asset => {
-        const currentPrice = assetPrices[asset.ticker_id] || 0;
+        const currentPrice = prices[asset.ticker_id] || 0;
         costNow += asset.quantity * currentPrice;
         invested += asset.amount;
         buyOrders += asset.buy_orders || 0;
@@ -69,7 +69,7 @@ export const usePortfoliosData = () => {
         totalBuyOrders
       }
     };
-  }, [portfolios, assetPrices]);
+  }, [portfolios, prices]);
 
   return {
     portfolios: portfoliosWithStats,

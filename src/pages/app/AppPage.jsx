@@ -9,18 +9,16 @@ import PortfoliosPage from './portfolios/AllPortfoliosPage'
 import WalletsPage from './wallets/AllWalletsPage'
 import WishlistPage from './WishlistPage'
 import { useModalStore } from '/app/src/stores/modalStore';
-
+import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
 
 const ModalContainer = () => {
   const { currentModal: ModalComponent, modalProps } = useModalStore();
-  if (!ModalComponent) return null;
-
-  return <ModalComponent {...modalProps} />;
+  if (ModalComponent) return <ModalComponent {...modalProps} />;
 };
-
 
 const AppPage = () => {
   const { activeSection, openedItems } = useNavigation();
+  const { portfolios, loading } = usePortfoliosData();
 
   const mainSections = {
     'portfolios': PortfoliosPage,
@@ -48,10 +46,13 @@ const AppPage = () => {
     
     // Рендер портфелей и их активов
     openedItems.portfolios.forEach(portfolio => {
+      const portfolioData = portfolios?.find(p => p.id === portfolio.id);
+      if (!portfolioData) return;
+
       // Портфель
       if (activeSection === `portfolio-${portfolio.id}`) {
         renderItems.push(
-          <PortfolioPage key={`portfolio-${portfolio.id}`} portfolio={portfolio} />
+          <PortfolioPage key={`portfolio-${portfolio.id}`} portfolio={portfolioData} />
         );
       }
       
@@ -59,7 +60,7 @@ const AppPage = () => {
       portfolio.openedAssets.forEach(asset => {
         if (activeSection === `portfolio_asset-${asset.id}`) {
           renderItems.push(
-            <AssetPage key={`asset-${asset.id}`} asset={asset} />
+            <AssetPage key={`asset-${asset.id}`} portfolio={portfolio} asset={asset} />
           );
         }
       });
