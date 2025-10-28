@@ -73,7 +73,7 @@ export const usePortfolioOperations = () => {
     const result = await portfolioApi.addAssetToPortfolio(portfolio.id, asset.id);
 
     if (result.success) {
-      updatePortfolioInStore(portfolio.id, result.data.portfolio);
+      updatePortfolioInStore(portfolio.id, result.data);
       
       // Добавляем актив в общее хранилище активов
       // const { addAssets } = useDataStore.getState();
@@ -97,7 +97,7 @@ export const usePortfolioOperations = () => {
     const result = await portfolioApi.delAssetFromPortfolio(portfolio.id, asset.id);
       
     if (result.success) {
-      updatePortfolioInStore(portfolio.id, result.data.portfolio);
+      updatePortfolioInStore(portfolio.id, result.data);
     }
       
     setLoading(false);

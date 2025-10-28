@@ -17,6 +17,6 @@ export const portfolioApi = {
   },
   deletePortfolio: (portfolioId) => api.del(`/${portfolioId}`),
   getAsset: (id) => api.get(`/assets/${id}`),
-  addAssetToPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/add`, {ticker_id: tickerId}),
+  addAssetToPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/assets`, {ticker_id: tickerId}),
   delAssetFromPortfolio: (portfolioId, assetId) => api.del(`/${portfolioId}/assets/${assetId}`),
 };
