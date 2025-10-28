@@ -32,7 +32,7 @@ export const usePortfoliosData = () => {
       let buyOrders = 0;
 
       portfolio.assets?.forEach(asset => {
-        const currentPrice = assetPrices[asset.asset_id] || 0;
+        const currentPrice = assetPrices[asset.ticker_id] || 0;
         costNow += asset.quantity * currentPrice;
         invested += asset.amount;
         buyOrders += asset.buy_orders || 0;

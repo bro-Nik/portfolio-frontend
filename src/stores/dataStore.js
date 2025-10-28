@@ -10,7 +10,7 @@ export const useDataStore = create(
       wishlist: [],
       
       assetPrices: {},        // { assetId: price }
-      assetImages: {},        // { assetId: imagePath }
+      assetInfo: {},        // { assetId: info }
       uniqueAssets: new Set(), // Set для отслеживания уникальных активов
       lastPriceUpdate: null,
       
@@ -50,7 +50,7 @@ export const useDataStore = create(
       // === ДЕЙСТВИЯ ДЛЯ АКТИВОВ ===
       addAssets: (assetsData) => {
         const assetIds = extractUniqueAssets(assetsData);
-        const { uniqueAssets, assetImages } = get();
+        const { uniqueAssets } = get();
         
         // Добавляем только новые активы
         const newAssetIds = assetIds.filter(id => !uniqueAssets.has(id));
@@ -62,28 +62,12 @@ export const useDataStore = create(
           return { uniqueAssets: newUniqueAssets };
         });
         
-        // Загружаем изображения для новых активов
-        get().fetchAssetImages(newAssetIds);
-
         // Загружаем цены для новых активов
+        console.log('Загружаем цены для новых активов')
         get().fetchAssetPrices(newAssetIds);
-      },
-      
-      fetchAssetImages: async (assetIds) => {
-        if (assetIds.length === 0) return;
-        
-        try {
-          const api = apiService(process.env.REACT_APP_MARKET_SERVICE_URL);
-          const result = await api.post('/assets/images', assetIds);
-          
-          if (result.success) {
-            set(state => ({
-              assetImages: { ...state.assetImages, ...result.data },
-            }));
-          }
-        } catch (err) {
-          console.warn('Ошибка загрузки изображений:', err);
-        }
+
+        // Загружаем информацию для новых активов
+        get().fetchAssetInfo(newAssetIds);
       },
       
       fetchAssetPrices: async (assetIds = null) => {
@@ -91,12 +75,12 @@ export const useDataStore = create(
         if (ids.length === 0) return;
         
         try {
-          const api = apiService('/api/portfolios/assets');
+          const api = apiService('/market/api/tickers');
           const result = await api.post('/prices', ids);
           
           if (result.success) {
             set(state => ({
-              assetPrices: { ...state.assetPrices, ...result.data },
+              assetPrices: { ...state.assetPrices, ...result.data.prices },
               lastPriceUpdate: new Date().toISOString()
             }));
           }
@@ -104,16 +88,29 @@ export const useDataStore = create(
           console.warn('Ошибка загрузки цен:', err);
         }
       },
+
+      fetchAssetInfo: async (assetIds) => {
+        if (assetIds.length === 0) return;
+        const ids = assetIds || Array.from(get().uniqueAssets);
+        if (ids.length === 0) return;
+        
+        try {
+          const api = apiService('/market/api/tickers');
+          const result = await api.post('/info', ids);
+          
+          if (result.success) {
+            console.log(result.data.info)
+            set(state => ({
+              assetInfo: { ...state.assetInfo, ...result.data.info },
+            }));
+          }
+        } catch (err) {
+          console.warn('Ошибка загрузки информации:', err);
+        }
+      },
       
       // === ГЕТТЕРЫ ДЛЯ АКТИВОВ ===
       getAssetPrice: (assetId) => get().assetPrices[assetId] || 0,
-      
-      getAssetImage: (assetId) => {
-        const imagePath = get().assetImages[assetId];
-        return imagePath 
-          ? process.env.REACT_APP_MARKET_SERVICE_URL + imagePath
-          : '/images/placeholder.png';
-      },
       
       // === ДЕЙСТВИЯ ДЛЯ КОШЕЛЬКОВ ===
       setWallets: (wallets) => {
@@ -157,7 +154,7 @@ const extractUniqueAssets = (data) => {
   const processItem = (item) => {
     if (item.assets) {
       item.assets.forEach(asset => {
-        if (asset.asset_id) assetSet.add(asset.asset_id);
+        if (asset.ticker_id) assetSet.add(asset.ticker_id);
       });
     }
     if (item.portfolios) item.portfolios.forEach(processItem);
@@ -175,4 +172,3 @@ const extractUniqueAssets = (data) => {
 
 
 // export const useAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);
-// export const useAssetImage = (id) => useDataStore(state => state.assetImages[id]);

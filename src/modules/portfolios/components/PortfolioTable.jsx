@@ -10,17 +10,18 @@ import AssetActionsDropdown from './AssetActionsDropdown';
 const PortfolioTable = memo(({ portfolio, assets }) => {
   const { openItem } = useNavigation();
   const prices = useDataStore(state => state.assetPrices);
-  const images = useDataStore(state => state.assetImages);
+  const info = useDataStore(state => state.assetInfo);
 
   // Подготавливаем данные для таблицы
   const preparedAssets = useMemo(() => {
     if (!assets) return [];
 
     return assets.map(asset => {
-      const price = prices[asset.asset_id];
+      const price = prices[asset.ticker_id];
       const costNow = asset.quantity * price;
       const invested = asset.amount;
       const profit = costNow - invested;
+      const ticker = info[asset.ticker_id];
 
       return {
         ...asset,
@@ -30,7 +31,9 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
         profit,
         profitPercentage: invested > 0 ? (profit / invested) * 100 : 0,
         share: portfolio.costNow > 0 ? (costNow / portfolio.costNow) * 100 : 0,
-        image: `${process.env.REACT_APP_MARKET_SERVICE_URL}${images[asset.asset_id]}`,
+        image: ticker.image,
+        name: ticker.name,
+        symbol: ticker.symbol,
         costNow,
         quantity: asset.quantity,
         buyOrders: asset.buy_orders || 0 // если есть поле ордеров
