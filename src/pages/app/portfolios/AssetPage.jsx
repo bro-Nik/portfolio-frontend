@@ -5,11 +5,11 @@ import { useAssetData } from '/app/src/modules/portfolios/hooks/useAssetData';
 import AssetStatistic from '/app/src/modules/portfolios/components/AssetStatistic';
 import AssetDetails from '/app/src/modules/portfolios/components/AssetDetails';
 import { useDataStore } from '/app/src/stores/dataStore';
+import AssetTable from '/app/src/modules/portfolios/components/AssetTable';
 
 const AssetPage = ({ portfolio, asset }) => {
   const { assetData, loading } = useAssetData(asset);
   const info = useDataStore(state => state.assetInfo);
-  console.log('рендер страницы актива')
 
   const preparedAsset = useMemo(() => {
     const ticker = info[asset.tickerId];
@@ -25,11 +25,15 @@ const AssetPage = ({ portfolio, asset }) => {
 
   if (loading) return <LoadingSpinner />;
 
+  console.log('рендер страницы актива')
+  console.log(assetData)
+
   return (
     <div className="asset-detail">
       <AssetHeader portfolio={portfolio} asset={preparedAsset} data={assetData} />
       <AssetStatistic portfolio={portfolio} asset={preparedAsset} />
       <AssetDetails data={assetData} />
+      <AssetTable asset={asset} transactions={assetData.transactions} />
     </div>
   );
 };
