@@ -4,8 +4,11 @@ import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import AssetActionsDropdown from './AssetActionsDropdown';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { formatCurrency } from '/app/src/utils/format';
+import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
+import { useModalStore } from '/app/src/stores/modalStore';
 
 const AssetHeader = ({ portfolio, asset, data }) => {
+  const { openModal } = useModalStore();
   return (
     <div className="asset-header mb-4">
       <div className="row">
@@ -14,7 +17,7 @@ const AssetHeader = ({ portfolio, asset, data }) => {
             <div>
               <h1 className="fs-6 text-muted m-0">
                 {asset.name} 
-                <span className="text-uppercase">({asset.ticker})</span>
+                <span className="text-uppercase">({asset.symbol})</span>
                 {/* <span class="badge text-bg-light text-muted">#{rank}</span> */}
               </h1>
 
@@ -33,8 +36,7 @@ const AssetHeader = ({ portfolio, asset, data }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            {/* <Button type="primary"  onClick={() => openModal(AssetModal, {  })} > */}
-            <Button type="primary" >
+            <Button type="primary"  onClick={() => openModal(TransactionEdit, { asset, portfolioId: portfolio.id })} >
               Добавить транзакцию
             </Button>
             <AssetActionsDropdown portfolio={portfolio} asset={asset}

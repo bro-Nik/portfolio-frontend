@@ -5,14 +5,18 @@ import { createCostColumn, createShareColumn, createBuyOrdersColumn,
   createAssetNameColumn, createQuantityColumn, createAveragePriceColumn } from '/app/src/features/tables/tableColumns';
 import { formatCurrency } from '/app/src/utils/format';
 import TransactionActionsDropdown from '/app/src/modules/portfolios/components/TransactionActionsDropdown'
+import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
+import { useModalStore } from '/app/src/stores/modalStore';
 
-const AssetTable = memo(({ asset, transactions }) => {
+const AssetTable = memo(({ portfolio, asset, transactions }) => {
+  const { openModal } = useModalStore();
+
   const columns = useMemo(() => [
     {
       accessorKey: 'type',
       header: 'Тип',
       cell: ({ row }) => (
-        <div>
+        <div onClick={() => openModal(TransactionEdit, { asset, portfolioId: portfolio.id, transaction: row.original })} >
           <span className="text-green">{row.original.type}</span>
           <br />
           <span className="small-text text-muted">{row.original.date}</span>

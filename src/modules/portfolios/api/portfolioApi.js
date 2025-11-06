@@ -19,4 +19,15 @@ export const portfolioApi = {
   getAsset: (id) => api.get(`/assets/${id}`),
   addAssetToPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/assets`, {ticker_id: tickerId}),
   delAssetFromPortfolio: (portfolioId, assetId) => api.del(`/${portfolioId}/assets/${assetId}`),
+
+  saveTransaction: (transactionData) => {
+    const url = `/${transactionData.portfolioId}/assets/${transactionData.assetId}/transaction`;
+    if (transactionData.id) {
+      // Редактирование
+      return api.put(`${url}/${transactionData.id}`, transactionData, true);
+    } else {
+      // Создание
+      return api.post(url, transactionData, true);
+    }
+  },
 };
