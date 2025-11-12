@@ -16,12 +16,12 @@ export const portfolioApi = {
     }
   },
   deletePortfolio: (portfolioId) => api.del(`/${portfolioId}`),
-  getAsset: (id) => api.get(`/assets/${id}`),
+  getAsset: (assetId) => api.get(`/assets/${assetId}`),
   addAssetToPortfolio: (portfolioId, tickerId) => api.post(`/${portfolioId}/assets`, {ticker_id: tickerId}),
   delAssetFromPortfolio: (portfolioId, assetId) => api.del(`/${portfolioId}/assets/${assetId}`),
 
   saveTransaction: (transactionData) => {
-    const url = `/${transactionData.portfolioId}/assets/${transactionData.assetId}/transaction`;
+    const url = `/${transactionData.portfolioId}/transaction`;
     if (transactionData.id) {
       // Редактирование
       return api.put(`${url}/${transactionData.id}`, transactionData, true);

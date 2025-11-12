@@ -71,9 +71,12 @@ const TransactionEdit = () => {
       // Добавляем ID если редактируем
       ...(transaction && { id: transaction.id }),
       assetId: asset?.id,
+      tickerId: asset?.tickerId,
+      priceUsd: form.getFieldValue('price') * tickerPrice(selectedTicker),
       portfolioId: portfolioId,
-      walletId: asset?.walletId,
+      // walletId: asset?.walletId,
     };
+    console.log(submitData)
 
     const result = await editTransaction(submitData);
 
@@ -174,14 +177,24 @@ const TransactionEdit = () => {
           {['TransferIn', 'TransferOut'].includes(transactionType) && portfolioId && (
             <Form.Item 
               label="Портфель" 
-              name="portfolio_id"
+              name="portfolio2Id"
               rules={[{ required: true, message: 'Выберите портфель' }]}
             >
               <Select 
                 placeholder="-"
                 suffixIcon={<ChevronDownIcon />}
-                // Здесь нужно добавить загрузку портфелей через API
               >
+                {portfolios
+                  .filter(portfolio => portfolio.id !== portfolioId)
+                  .map(portfolio => (
+                  <Option
+                    key={portfolio.id}
+                    value={portfolio.id}
+                    label={portfolio.name}
+                  >
+                    {portfolio.name}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           )}

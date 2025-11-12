@@ -77,7 +77,7 @@ export const useWallets = (asset, transaction, transactionType) => {
     
     // Загрузка информации о свободных средствах/активах
     if (walletId) {
-      const assets = await fetchWalletAssets(walletId, transactionType.toLowerCase());
+      const assets = await fetchWalletAssets(walletId, transactionType.toLowerCase()) || [];
       const currentAsset = assets.find(a => a.tickerId === asset?.tickerId);
       setWalletFreeAmount(currentAsset?.free || 0);
     }
