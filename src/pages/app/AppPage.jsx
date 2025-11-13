@@ -6,10 +6,13 @@ import './styles/App.css';
 import PortfoliosPage from '/app/src/modules/portfolios/components/portfolio-list/PortfoliosPage'
 import PortfolioPage from '/app/src/modules/portfolios/components/portfolio/PortfolioPage';
 import PortfolioAssetPage from '/app/src/modules/portfolios/components/asset/AssetPage';
-import WalletsPage from './wallets/AllWalletsPage'
+import WalletsPage from '/app/src/modules/wallets/components/wallet-list/WalletsPage'
+import WalletPage from '/app/src/modules/wallets/components/wallet/WalletPage';
+import WalletAssetPage from '/app/src/modules/wallets/components/asset/AssetPage';
 import WishlistPage from './WishlistPage'
 import { useModalStore } from '/app/src/stores/modalStore';
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
+import { useWalletsData } from '/app/src/modules/wallets/hooks/useWalletsData';
 
 const ModalContainer = () => {
   const { currentModal: ModalComponent, modalProps } = useModalStore();
@@ -18,7 +21,8 @@ const ModalContainer = () => {
 
 const AppPage = () => {
   const { activeSection, openedItems } = useNavigation();
-  const { portfolios, loading } = usePortfoliosData();
+  const { portfolios } = usePortfoliosData();
+  const { wallets } = useWalletsData();
 
   const mainSections = {
     'portfolios': PortfoliosPage,
@@ -64,6 +68,31 @@ const AppPage = () => {
         if (activeSection === `portfolio_asset-${asset.id}`) {
           renderItems.push(
             <PortfolioAssetPage key={`asset-${asset.id}`} portfolio={portfolioData} asset={assetData} />
+          );
+        }
+      });
+    });
+
+    // Рендер кошельков и их активов
+    openedItems.wallets.forEach(wallet => {
+      const walletData = wallets?.find(w => w.id === wallet.id);
+      if (!walletData) return;
+
+      // Кошелек
+      if (activeSection === `wallet-${wallet.id}`) {
+        renderItems.push(
+          <WalletPage key={`wallet-${wallet.id}`} wallet={walletData} />
+        );
+      }
+      
+      // Активы кошелька
+      wallet.openedAssets.forEach(asset => {
+        const assetData = walletData.assets.find(a => a.id === asset.id);
+        if (!assetData) return;
+
+        if (activeSection === `wallet_asset-${asset.id}`) {
+          renderItems.push(
+            <WalletAssetPage key={`asset-${asset.id}`} wallet={walletData} asset={assetData} />
           );
         }
       });

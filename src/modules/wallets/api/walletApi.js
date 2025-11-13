@@ -16,4 +16,5 @@ export const walletApi = {
     }
   },
   deleteWallet: (walletId) => api.del(`/${walletId}`),
+  getAsset: (assetId) => api.get(`/assets/${assetId}`),
 };

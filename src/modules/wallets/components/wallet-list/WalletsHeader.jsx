@@ -1,8 +1,8 @@
 import React from 'react';
 import { useModalStore } from '/app/src/stores/modalStore';
-import WalletEdit from '/app/src/modules/wallets/modals/WalletEdit';
+import WalletEditModal from '../modals/WalletEdit';
 
-const AllWalletsHeader = () => {
+const WalletsHeader = () => {
   const { openModal } = useModalStore();
 
   return (
@@ -12,7 +12,7 @@ const AllWalletsHeader = () => {
           <h1>Кошельки</h1>
         </div>
         <div class="col-auto ms-auto">
-          <button className="btn btn-primary" onClick={() => openModal(WalletEdit)} >
+          <button className="btn btn-primary" onClick={() => openModal(WalletEditModal)} >
             Добавить кошелек
           </button>
         </div>
@@ -21,4 +21,4 @@ const AllWalletsHeader = () => {
   );
 };
 
-export default AllWalletsHeader;
+export default WalletsHeader;

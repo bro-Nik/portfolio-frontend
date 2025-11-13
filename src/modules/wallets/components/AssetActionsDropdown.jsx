@@ -1,7 +1,6 @@
-import { Dropdown, Button,  } from 'antd';
+import { Dropdown, Button } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import WalletEditModal from './modals/WalletEdit';
-import WalletDeleteModal from './modals/WalletDelete';
+// import AssetDeleteModal from './modals/AssetDelete';
 import { useModalStore } from '/app/src/stores/modalStore';
 import {
   ArchiveBoxXMarkIcon,
@@ -12,27 +11,29 @@ import {
   // EllipsisVerticalIcon,
 } from '@heroicons/react/16/solid'
 
-const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
+const AssetActionsDropdown = ({ wallet, asset, triggerBtn = null }) => {
   const { openModal } = useModalStore();
 
   const menuItems = [
     {
+      key: 'transfer',
+      icon: <PencilIcon />,
+      label: 'Отправить',
+    },
+    {
       key: 'edit',
-      // icon: <EditOutlined />,
       icon: <PencilIcon />,
       label: 'Редактировать',
-      onClick: () => openModal(WalletEditModal, { wallet }),
+      disabled: true,
     },
     {
       key: 'duplicate',
-      // icon: <CopyOutlined />,
       icon: <Square2StackIcon />,
-      label: 'Дублировать',
+      label: 'Переместить',
       disabled: true,
     },
     {
       key: 'export',
-      // icon: <ExportOutlined />,
       icon: <ArrowTopRightOnSquareIcon />,
       label: 'Экспортировать',
       disabled: true,
@@ -48,11 +49,10 @@ const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
     },
     {
       key: 'delete',
-      // icon: <DeleteOutlined />,
       icon: <TrashIcon />,
       label: 'Удалить',
       danger: true,
-      onClick: () => openModal(WalletDeleteModal, { wallet }),
+      // onClick: () => openModal(AssetDeleteModal, { portfolio, asset }),
     },
   ];
 
@@ -82,4 +82,4 @@ const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
   );
 };
 
-export default WalletActionsDropdown;
+export default AssetActionsDropdown;

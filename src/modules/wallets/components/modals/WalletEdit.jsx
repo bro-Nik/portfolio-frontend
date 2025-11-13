@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Button, Space, message } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { useWalletOperations } from '../hooks/useWalletOperations';
+import { useWalletOperations } from '../../hooks/useWalletOperations';
 
 const { TextArea } = Input;
 
-const WalletEdit = () => {
+const WalletEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
   const { 
     wallet = null,
@@ -136,4 +136,4 @@ const WalletEdit = () => {
   );
 };
 
-export default WalletEdit;
+export default WalletEditModal;

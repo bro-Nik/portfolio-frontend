@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { useWalletOperations } from '../hooks/useWalletOperations';
+import { useWalletOperations } from '../../hooks/useWalletOperations';
 
-const WalletDelete = () => {
+const WalletDeleteModal = () => {
   const { modalProps, closeModal } = useModalStore();
   const { wallet } = modalProps;
   const { deleteWallet, loading } = useWalletOperations();
@@ -43,4 +43,4 @@ const WalletDelete = () => {
   );
 };
 
-export default WalletDelete;
+export default WalletDeleteModal;

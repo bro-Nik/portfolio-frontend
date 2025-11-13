@@ -18,55 +18,53 @@ export const useWalletsData = () => {
     if (wallets === null) fetchInitialData();
   }, []); // Только при монтировании
 
-
   // Расчет статистики
   const { walletsWithStats, overallStats } = useMemo(() => {
     if (wallets === null || wallets.length === 0) return { walletsWithStats: [], overallStats: {} };
 
     let totalCostNow = 0;
-    let totalInvested = 0;
     let totalBuyOrders = 0;
     
+    // Расчет статистики для каждого кошелька
     const walletsWithStats = wallets.map(wallet => {
       let costNow = 0;
-      let invested = 0;
       let buyOrders = 0;
 
-      wallet.assets?.forEach(asset => {
-        const currentPrice = prices[asset.asset_id] || 0;
-        costNow += asset.quantity * currentPrice;
-        invested += asset.amount;
-        buyOrders += asset.buy_orders || 0;
-      });
+      // Расчет статистики для каждого актива
+      const assetsWithStats = wallet.assets?.map(asset => {
+        const price = prices[asset.tickerId] || 0;
+        const assetCostNow = asset.quantity * price;
 
-      const profit = costNow - invested;
-      const profitPercentage = invested > 0 ? (profit / invested) * 100 : 0;
+        costNow += assetCostNow;
+        buyOrders += asset.buyOrders || 0;
+
+        return {
+          ...asset,
+          costNow: assetCostNow,
+          price
+        };
+      }) || [];
 
       totalCostNow += costNow;
-      totalInvested += invested;
       totalBuyOrders += buyOrders;
 
       return {
         ...wallet,
+        assets: assetsWithStats,
         costNow,
-        invested,
         buyOrders,
-        profit,
-        profitPercentage
       };
     });
 
     const walletsWithStatsAndShare = walletsWithStats.map(wallet => ({
       ...wallet,
-      share: totalInvested > 0 ? (wallet.invested / totalInvested) * 100 : 0
+      share: totalCostNow > 0 ? (wallet.costNow / totalCostNow) * 100 : 0
     }));
 
     return {
       walletsWithStats: walletsWithStatsAndShare,
       overallStats: {
         totalCostNow,
-        totalInvested,
-        totalProfit: totalCostNow - totalInvested,
         totalBuyOrders
       }
     };
