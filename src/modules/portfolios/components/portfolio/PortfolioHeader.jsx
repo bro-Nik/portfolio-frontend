@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button, Space } from 'antd';
 import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
-import PortfolioActionsDropdown from './PortfolioActionsDropdown'
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import AddAsset from '/app/src/modules/assets/modals/AddAsset';
 import { useModalStore } from '/app/src/stores/modalStore';
-import PortfolioAddAssetModal from './PortfolioAddAssetModal';
+import AssetAddModal from '../modals/AssetAdd';
+import PortfolioActionsDropdown from '../PortfolioActionsDropdown'
 
 const PortfolioHeader = ({ portfolio }) => {
   const { openModal } = useModalStore();
@@ -27,7 +26,7 @@ const PortfolioHeader = ({ portfolio }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            <Button type="primary"  onClick={() => openModal(PortfolioAddAssetModal, { portfolio: portfolio })} >
+            <Button type="primary"  onClick={() => openModal(AssetAddModal, { portfolio: portfolio })} >
               Добавить актив
             </Button>
             <PortfolioActionsDropdown

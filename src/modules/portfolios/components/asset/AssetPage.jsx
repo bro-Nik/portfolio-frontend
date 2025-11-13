@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
-import AssetHeader from '/app/src/modules/portfolios/components/AssetHeader';
 import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 import { useAssetData } from '/app/src/modules/portfolios/hooks/useAssetData';
-import AssetStatistic from '/app/src/modules/portfolios/components/AssetStatistic';
-import AssetDetails from '/app/src/modules/portfolios/components/AssetDetails';
 import { useDataStore } from '/app/src/stores/dataStore';
-import AssetTable from '/app/src/modules/portfolios/components/AssetTable';
+import AssetHeader from './AssetHeader';
+import AssetStatistic from './AssetStatistic';
+import AssetDetails from './AssetDetails';
+import AssetTable from './AssetTable';
 
-const AssetPage = ({ portfolio, asset }) => {
-  const { assetData, loading } = useAssetData(asset);
+const PortfolioAssetPage = ({ portfolio, asset }) => {
+  const { assetData, assetTransactions, loading } = useAssetData(asset);
   const info = useDataStore(state => state.assetInfo);
 
   const preparedAsset = useMemo(() => {
@@ -20,22 +20,20 @@ const AssetPage = ({ portfolio, asset }) => {
       image: ticker.image,
       name: ticker.name,
       symbol: ticker.symbol,
+      free: asset.quantity - asset.buyOrders
     };
   }, [asset]);
 
   if (loading) return <LoadingSpinner />;
 
-  console.log('рендер страницы актива')
-  console.log(assetData)
-
   return (
     <div className="asset-detail">
       <AssetHeader portfolio={portfolio} asset={preparedAsset} data={assetData} />
       <AssetStatistic portfolio={portfolio} asset={preparedAsset} />
-      <AssetDetails data={assetData} />
-      <AssetTable asset={asset} transactions={assetData.transactions} />
+      {/* <AssetDetails data={assetData} /> */}
+      <AssetTable portfolio={portfolio} asset={preparedAsset} transactions={assetTransactions} />
     </div>
   );
 };
 
-export default AssetPage;
+export default PortfolioAssetPage;

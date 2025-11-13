@@ -1,6 +1,6 @@
-import PortfolioTable from '/app/src/modules/portfolios/components/PortfolioTable';
-import PortfolioStatistic from '/app/src/modules/portfolios/components/PortfolioStatistic';
-import PortfolioHeader from '/app/src/modules/portfolios/components/PortfolioHeader';
+import PortfolioTable from './PortfolioTable';
+import PortfolioStatistic from './PortfolioStatistic';
+import PortfolioHeader from './PortfolioHeader';
 
 const PortfolioPage = ({ portfolio }) => {
 

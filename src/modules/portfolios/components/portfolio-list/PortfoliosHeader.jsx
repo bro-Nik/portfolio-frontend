@@ -1,9 +1,8 @@
 import React from 'react';
 import { useModalStore } from '/app/src/stores/modalStore';
-import PortfolioEdit from '/app/src/modules/portfolios/modals/PortfolioEdit';
+import PortfolioEditModal from '../modals/PortfolioEdit';
 
-const AllPortfoliosHeader = () => {
-  // const { portfolio } = useModals();
+const PortfoliosHeader = () => {
   const { openModal } = useModalStore();
 
   return (
@@ -13,7 +12,7 @@ const AllPortfoliosHeader = () => {
           <h1>Портфели</h1>
         </div>
         <div class="col-auto ms-auto">
-          <button className="btn btn-primary" onClick={() => openModal(PortfolioEdit)} >
+          <button className="btn btn-primary" onClick={() => openModal(PortfolioEditModal)} >
             Добавить портфель
           </button>
         </div>
@@ -22,4 +21,4 @@ const AllPortfoliosHeader = () => {
   );
 };
 
-export default AllPortfoliosHeader;
+export default PortfoliosHeader;

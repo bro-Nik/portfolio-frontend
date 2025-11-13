@@ -6,7 +6,6 @@ const AssetDetail = ({ data }) => {
 
   return (
     <div className="row">
-      
       <div className="col-md-6">
         <div className="card">
           <div className="card-header">

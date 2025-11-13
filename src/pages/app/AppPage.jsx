@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 import Sidebar from './components/Sidebar';
-import PortfolioPage from './portfolios/PortfolioPage';
-import AssetPage from './portfolios/AssetPage';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 // import { usePriceSync } from '/app/src/hooks/usePriceSync';
 import './styles/App.css';
-import PortfoliosPage from './portfolios/AllPortfoliosPage'
+import PortfoliosPage from '/app/src/modules/portfolios/components/portfolio-list/PortfoliosPage'
+import PortfolioPage from '/app/src/modules/portfolios/components/portfolio/PortfolioPage';
+import PortfolioAssetPage from '/app/src/modules/portfolios/components/asset/AssetPage';
 import WalletsPage from './wallets/AllWalletsPage'
 import WishlistPage from './WishlistPage'
 import { useModalStore } from '/app/src/stores/modalStore';
@@ -63,7 +63,7 @@ const AppPage = () => {
 
         if (activeSection === `portfolio_asset-${asset.id}`) {
           renderItems.push(
-            <AssetPage key={`asset-${asset.id}`} portfolio={portfolioData} asset={assetData} />
+            <PortfolioAssetPage key={`asset-${asset.id}`} portfolio={portfolioData} asset={assetData} />
           );
         }
       });

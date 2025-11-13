@@ -1,6 +1,6 @@
 import { Dropdown, Button } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import PortfolioDelAssetModal from './PortfolioDelAssetModal';
+import AssetDeleteModal from './modals/AssetDelete';
 import { useModalStore } from '/app/src/stores/modalStore';
 import {
   ArchiveBoxXMarkIcon,
@@ -47,7 +47,7 @@ const AssetActionsDropdown = ({ portfolio, asset, triggerBtn = null }) => {
       icon: <TrashIcon />,
       label: 'Удалить',
       danger: true,
-      onClick: () => openModal(PortfolioDelAssetModal, { portfolio, asset }),
+      onClick: () => openModal(AssetDeleteModal, { portfolio, asset }),
     },
   ];
 

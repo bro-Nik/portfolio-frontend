@@ -3,9 +3,9 @@ import { Modal, Input, List, Avatar, Spin, Empty, Button, message } from 'antd';
 import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { assetApi } from '/app/src/modules/assets/api/assetApi';
-import { usePortfolioOperations } from '../hooks/usePortfolioOperations';
+import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
 
-const PortfolioAddAssetModal = () => {
+const AssetAddModal = () => {
   const { modalProps, closeModal } = useModalStore();
   const { portfolio } = modalProps;
   const { addAsset, loading: addLoading } = usePortfolioOperations();
@@ -21,7 +21,7 @@ const PortfolioAddAssetModal = () => {
   const listRef = useRef();
 
   const getAssetImage = (ticker) => {
-    const imagePath = process.env.REACT_APP_MARKET_SERVICE_URL + '/static/images/tickers/' + ticker.market + '/24/' + ticker.image;
+    const imagePath = process.env.REACT_APP_IMAGE_BASE_URL + ticker.market + '/24/' + ticker.image;
     return imagePath
   };
 
@@ -103,7 +103,6 @@ const PortfolioAddAssetModal = () => {
       closeModal();
     } else {
       message.error(result.error || 'Произошла ошибка при добавлении актива');
-      console.error(result.error || 'Произошла ошибка при добавлении актива');
     }
   };
 
@@ -305,4 +304,4 @@ function debounce(func, wait) {
   };
 }
 
-export default PortfolioAddAssetModal;
+export default AssetAddModal;

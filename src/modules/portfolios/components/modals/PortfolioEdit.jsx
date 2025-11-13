@@ -3,12 +3,12 @@ import { Modal, Form, Input, Select, Button, Space, message } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useModalStore } from '/app/src/stores/modalStore';
-import { usePortfolioOperations } from '../hooks/usePortfolioOperations';
+import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const PortfolioEdit = () => {
+const PortfolioEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
   const { 
     portfolio = null,
@@ -151,4 +151,4 @@ const PortfolioEdit = () => {
   );
 };
 
-export default PortfolioEdit;
+export default PortfolioEditModal;

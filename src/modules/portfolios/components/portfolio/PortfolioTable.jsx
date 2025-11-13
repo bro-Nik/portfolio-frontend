@@ -1,11 +1,18 @@
 import React, { memo, useMemo } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { useNavigation } from '/app/src/hooks/useNavigation';
-import { createCostColumn, createShareColumn, createBuyOrdersColumn,
-  createProfitColumn, createInvestedColumn,
-  createAssetNameColumn, createQuantityColumn, createAveragePriceColumn } from '/app/src/features/tables/tableColumns';
 import { useDataStore } from '/app/src/stores/dataStore';
-import AssetActionsDropdown from './AssetActionsDropdown';
+import AssetActionsDropdown from '../AssetActionsDropdown';
+import {
+  createCostColumn,
+  createShareColumn,
+  createBuyOrdersColumn,
+  createProfitColumn,
+  createInvestedColumn,
+  createAssetNameColumn,
+  createQuantityColumn,
+  createAveragePriceColumn
+} from '/app/src/features/tables/tableColumns';
 
 const PortfolioTable = memo(({ portfolio, assets }) => {
   const { openItem } = useNavigation();

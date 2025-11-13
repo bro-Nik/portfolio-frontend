@@ -1,8 +1,8 @@
-import { Dropdown, Button,  } from 'antd';
+import { Dropdown, Button } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-import PortfolioEdit from '/app/src/modules/portfolios/modals/PortfolioEdit';
-import PortfolioDelete from '/app/src/modules/portfolios/modals/PortfolioDelete';
 import { useModalStore } from '/app/src/stores/modalStore';
+import PortfolioEditModal from './modals/PortfolioEdit';
+import PortfolioDeleteModal from './modals/PortfolioDelete';
 import {
   ArchiveBoxXMarkIcon,
   PencilIcon,
@@ -12,7 +12,7 @@ import {
   // EllipsisVerticalIcon,
 } from '@heroicons/react/16/solid'
 
-const PortfolioActionsDropdown = ({ portfolio }) => {
+const PortfolioActionsDropdown = ({ portfolio, triggerBtn = null }) => {
   const { openModal } = useModalStore();
 
   const menuItems = [
@@ -21,7 +21,7 @@ const PortfolioActionsDropdown = ({ portfolio }) => {
       // icon: <EditOutlined />,
       icon: <PencilIcon />,
       label: 'Редактировать',
-      onClick: () => openModal(PortfolioEdit, { portfolio: portfolio }),
+      onClick: () => openModal(PortfolioEditModal, { portfolio: portfolio }),
     },
     {
       key: 'duplicate',
@@ -52,7 +52,7 @@ const PortfolioActionsDropdown = ({ portfolio }) => {
       icon: <TrashIcon />,
       label: 'Удалить',
       danger: true,
-      onClick: () => openModal(PortfolioDelete, { portfolio: portfolio }),
+      onClick: () => openModal(PortfolioDeleteModal, { portfolio: portfolio }),
     },
   ];
 
@@ -64,12 +64,19 @@ const PortfolioActionsDropdown = ({ portfolio }) => {
         placement="bottomRight"
         arrow
       >
-        <Button 
-          type="text" 
-          icon={<MoreOutlined />}
-          // icon={<EllipsisVerticalIcon />}
-          onClick={(e) => e.stopPropagation()}
-        />
+        {triggerBtn ? (
+          // Кастомный триггер (кнопка "Еще" или другая)
+          <div onClick={(e) => e.stopPropagation()}>
+            {triggerBtn}
+          </div>
+        ) : (
+          // Триггер по умолчанию (иконка)
+          <Button 
+            type="text" 
+            icon={<MoreOutlined />}
+            onClick={(e) => e.stopPropagation()}
+          />
+        )}
       </Dropdown>
     </>
   );

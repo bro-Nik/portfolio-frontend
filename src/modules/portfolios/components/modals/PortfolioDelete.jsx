@@ -1,18 +1,18 @@
 import React from 'react';
 import { Modal, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { usePortfolioOperations } from '/app/src/modules/portfolios/hooks/usePortfolioOperations';
+import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
 
-const PortfolioDelAssetModal = () => {
+const PortfolioDeleteModal = () => {
   const { modalProps, closeModal } = useModalStore();
-  const { portfolio, asset } = modalProps;
-  const { deleteAsset, loading } = usePortfolioOperations();
+  const { portfolio } = modalProps;
+  const { deletePortfolio, loading } = usePortfolioOperations();
 
   const handleSubmit = async () => {
-    const result = await deleteAsset(portfolio, asset);
+    const result = await deletePortfolio(portfolio);
 
     if (result.success) {
-      message.success('Актив удален');
+      message.success('Портфель удален');
     } else {
       message.error(result.error);
     }
@@ -35,7 +35,7 @@ const PortfolioDelAssetModal = () => {
       centered
       confirmLoading={loading}
     >
-      <p>Вы уверены, что хотите удалить актив "{asset.name}"?</p>
+      <p>Вы уверены, что хотите удалить портфель "{portfolio.name}"?</p>
       <p style={{ color: '#ff4d4f', fontSize: '12px' }}>
         Это действие нельзя отменить.
       </p>
@@ -43,4 +43,4 @@ const PortfolioDelAssetModal = () => {
   );
 };
 
-export default PortfolioDelAssetModal;
+export default PortfolioDeleteModal;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Space, Button } from 'antd';
 import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
-import AssetActionsDropdown from './AssetActionsDropdown';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { formatCurrency } from '/app/src/utils/format';
 import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
+import AssetActionsDropdown from '../AssetActionsDropdown';
 
 const AssetHeader = ({ portfolio, asset, data }) => {
   const { openModal } = useModalStore();

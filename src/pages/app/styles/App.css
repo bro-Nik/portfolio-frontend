@@ -1,4 +1,9 @@
+
 /* ToDo */
+#wrapper:has(.close-minimize-btns) {
+    box-shadow: rgba(0, 0, 0, 0.3) -5px 0px 22px -5px;
+}
+
 .close-minimize-btns {
   display: flex;
   flex-direction: row;
@@ -12,7 +17,8 @@
   border-bottom-left-radius: 19px;
   justify-content: center;
   align-items: center;
-  box-shadow: -5px 1px 10px -5px rgba(0, 0, 0, 0.3), inset 3px 0 5px -3px rgba(0, 0, 0, 0.2);
+  /* box-shadow: -5px 1px 10px -5px rgba(0, 0, 0, 0.3), inset 3px 0 5px -3px rgba(0, 0, 0, 0.2); */
+  box-shadow: inset -6px 0 8px -10px rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.3) -5px 0px 22px -5px;
   padding: 0 .5rem;
 }
 
