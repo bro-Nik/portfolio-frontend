@@ -32,20 +32,20 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
         share: portfolio.costNow > 0 ? (asset.costNow / portfolio.costNow) * 100 : 0,
         image: ticker.image,
         name: ticker.name,
-        symbol: ticker.symbol,
+        symbol: ticker.symbol.toUpperCase(),
       };
     });
   }, [assets, prices]);
 
   const columns = useMemo(() => [
     createAssetNameColumn(openItem, 'portfolio_asset', portfolio.id),
-    createQuantityColumn(),
-    createAveragePriceColumn(),
-    createCostColumn(),
-    createInvestedColumn(),
-    createProfitColumn(),
-    createShareColumn(),
-    createBuyOrdersColumn(),
+    createQuantityColumn((a) => a.symbol, (a) => !a.quantity),
+    createAveragePriceColumn((a) => !a.averagePrice),
+    createCostColumn((a) => !a.quantity),
+    createInvestedColumn((a) => !a.quantity),
+    createProfitColumn((a) => !a.quantity),
+    createShareColumn((a) => !a.quantity),
+    createBuyOrdersColumn((a) => !a.quantity && !a.buyOrders),
     createActionsColumn(({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} btn='icon' />),
   ], [openItem]);
 

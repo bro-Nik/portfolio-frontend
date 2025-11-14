@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatCurrency, formatPercentage } from '/app/src/utils/format';
+import { formatCurrency } from '/app/src/utils/format';
 import StatisticCards from '/app/src/features/statistics/StatisticCards';
 
 const AssetStatistic = ({ portfolio, asset }) => {
@@ -7,27 +7,27 @@ const AssetStatistic = ({ portfolio, asset }) => {
   const statCards = [
     {
       title: 'Количество',
-      value: asset.quantity,
+      value: `${asset.quantity || 0} ${asset.symbol}`,
       description: ''
     },
     {
-      title: 'Текущая стоимость',
-      value: formatCurrency(asset.price),
+      title: 'Стоимость',
+      value: formatCurrency(asset.costNow || 0),
       description: 'Общая стоимость активов по текущим ценам'
     },
     {
       title: 'В ордерах на покупку',
-      value: formatCurrency(asset.buyOrders),
+      value: formatCurrency(asset.buyOrders || 0),
       description: ''
     },
     {
       title: 'В ордерах на продажу',
-      value: formatCurrency(asset.sellOrders),
+      value: formatCurrency(asset.sellOrders || 0),
       description: ''
     },
     {
       title: 'Свободно',
-      value: formatCurrency(asset.free),
+      value: formatCurrency(asset.free || 0, asset.symbol),
       description: 'Прибыль/убыток за все время'
     }
   ];

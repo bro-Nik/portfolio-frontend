@@ -33,18 +33,18 @@ const WalletTable = memo(({ wallet, assets }) => {
         share: wallet.costNow > 0 ? (asset.costNow / wallet.costNow) * 100 : 0,
         image: ticker.image,
         name: ticker.name,
-        symbol: ticker.symbol,
+        symbol: ticker.symbol.toUpperCase(),
       };
     });
   }, [assets, prices]);
 
   const columns = useMemo(() => [
     createAssetNameColumn(openItem, 'wallet_asset', wallet.id),
-    createQuantityColumn(),
-    createCostColumn(),
-    createShareColumn(),
-    createBuyOrdersColumn(),
-    createSellOrdersColumn(),
+    createQuantityColumn((a) => a.symbol, (a) => !a.quantity),
+    createCostColumn((a) => !a.quantity),
+    createShareColumn((a) => !a.quantity),
+    createBuyOrdersColumn((a) => !a.quantity && !a.buyOrders),
+    createSellOrdersColumn((a) => !a.quantity && !a.sellOrders),
     createActionsColumn(({ row }) => <AssetActionsDropdown wallet={wallet} asset={row.original} btn='icon' />),
   ], [openItem]);
 

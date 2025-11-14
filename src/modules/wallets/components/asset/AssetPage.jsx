@@ -19,7 +19,7 @@ const WalletAssetPage = ({ wallet, asset }) => {
       share: wallet.costNow > 0 ? (asset.costNow / wallet.costNow) * 100 : 0,
       image: ticker.image,
       name: ticker.name,
-      symbol: ticker.symbol,
+      symbol: ticker.symbol.toUpperCase(),
       free: asset.quantity - asset.buyOrders
     };
   }, [asset]);

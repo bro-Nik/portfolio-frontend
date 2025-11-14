@@ -1,25 +1,29 @@
 import React from 'react';
-import { formatCurrency, formatPercentage } from '/app/src/utils/format';
+import { formatCurrency, formatPercentage, formatProfit, getColorClass } from '/app/src/utils/format';
 import StatisticCards from '/app/src/features/statistics/StatisticCards';
 
 const PortfolioStatistic = ({ stats }) => {
 
   const statCards = [
     {
-      title: 'Текущая стоимость',
+      title: 'Стоимость',
       value: formatCurrency(stats.costNow),
       description: 'Общая стоимость активов по текущим ценам'
     },
     {
-      title: 'Вложено средств',
+      title: 'Вложено',
       value: formatCurrency(stats.invested),
       description: 'Общая сумма инвестиций'
     },
     {
-      title: 'Прибыль/убыток',
-      value: `${formatCurrency(stats.profit)} (${formatPercentage(stats.profitPercentage || 0)})`,
-      class: stats.profit > 0 ? 'text-green' : stats.profit < 0 ? 'text-red' : '',
+      title: 'Прибыль',
+      value: formatProfit(stats.profit || 0, stats.invested || 0),
+      class: getColorClass(stats.profit),
       description: 'Прибыль/убыток за все время'
+    },
+    {
+      title: 'Доля',
+      value: formatPercentage(stats.share || 0),
     },
   ];
 

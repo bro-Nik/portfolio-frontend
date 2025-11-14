@@ -19,8 +19,8 @@ const PortfolioAssetPage = ({ portfolio, asset }) => {
       share: portfolio.costNow > 0 ? (asset.costNow / portfolio.costNow) * 100 : 0,
       image: ticker.image,
       name: ticker.name,
-      symbol: ticker.symbol,
-      free: asset.quantity - asset.buyOrders
+      symbol: ticker.symbol.toUpperCase(),
+      free: asset.quantity - asset.buyOrders,
     };
   }, [asset]);
 

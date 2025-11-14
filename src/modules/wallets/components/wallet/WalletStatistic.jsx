@@ -3,7 +3,6 @@ import { formatCurrency, formatPercentage } from '/app/src/utils/format';
 import StatisticCards from '/app/src/features/statistics/StatisticCards';
 
 const WalletStatistic = ({ wallet }) => {
-
   const statCards = [
     {
       title: 'Стоимость',
