@@ -46,6 +46,11 @@ export const useDataStore = create(
           )
         }));
       },
+
+      getPortfolio: (portfolioId) => {
+        const { portfolios } = get();
+        return portfolios?.find(portfolio => portfolio.id === portfolioId) || null;
+      },
       
       // === ДЕЙСТВИЯ ДЛЯ АКТИВОВ ===
       addAssets: (assetsData) => {
@@ -140,6 +145,11 @@ export const useDataStore = create(
             wallet => wallet.id !== walletId
           )
         }));
+      },
+
+      getWallet: (walletId) => {
+        const { wallets } = get();
+        return wallets?.find(wallet => wallet.id === walletId) || null;
       },
       
     }),

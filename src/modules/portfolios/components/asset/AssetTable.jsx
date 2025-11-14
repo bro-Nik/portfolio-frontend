@@ -5,7 +5,9 @@ import TransactionActionsDropdown from '../TransactionActionsDropdown'
 import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useDataStore } from '/app/src/stores/dataStore';
+import { usePortfolio, useWallet } from '/app/src/hooks/useData';
 import { useNavigation } from '/app/src/hooks/useNavigation';
+import { BriefcaseIcon, WalletIcon } from '@heroicons/react/16/solid'
 import {
   createCostColumn,
   createShareColumn,
@@ -146,19 +148,25 @@ const AssetTable = memo(({ portfolio, asset, transactions }) => {
       size: 200,
     },
     {
-      accessorKey: 'rel',
+      id: 'rel',
       header: 'Связь',
       cell: ({ row }) => {
-        if (row.original.portfolio2Id) return (
-          <div className="text-average d-flex gap-2 name" onClick={() => openItem(row.original.portfolio2Id, 'portfolio')}>
-            Портфель {row.original.portfolio2Id}
-          </div>
-        );
-        if (row.original.walletId) return (
-          <div className="text-average d-flex gap-2 name" onClick={() => openItem(row.original.walletId, 'wallet')}>
-            Кошелек {row.original.walletId}
-          </div>
-        );
+        if (row.original.portfolio2Id) {
+          const portfolio2 = usePortfolio(row.original.portfolio2Id);
+          return (
+            <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => portfolio2 && openItem(portfolio2, 'portfolio')}>
+              <BriefcaseIcon />{portfolio2?.name || 'Портфель удален'}
+            </div>
+          );
+        }
+        if (row.original.walletId) {
+          const wallet = useWallet(row.original.walletId);
+          return (
+            <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => wallet && openItem(wallet, 'wallet')}>
+              <WalletIcon />{wallet?.name || 'Кошелек удален'}
+            </div>
+          );
+        }
         return '-';
       },
       size: 120,
