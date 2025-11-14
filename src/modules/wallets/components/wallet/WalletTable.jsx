@@ -46,7 +46,7 @@ const WalletTable = memo(({ wallet, assets }) => {
     createSellOrdersColumn(),
     {
       id: 'actions',
-      cell: ({ row }) => <AssetActionsDropdown wallet={wallet} asset={row.original} />,
+      cell: ({ row }) => <AssetActionsDropdown wallet={wallet} asset={row.original} btn='icon' />,
       size: 100,
     },
   ], [openItem]);

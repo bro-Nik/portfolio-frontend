@@ -1,11 +1,10 @@
 import React from 'react';
 import { Space, Button } from 'antd';
-import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { formatCurrency } from '/app/src/utils/format';
-import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
+import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import AssetActionsDropdown from '../AssetActionsDropdown';
+import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 
 const AssetHeader = ({ portfolio, asset, data }) => {
   const { openModal } = useModalStore();
@@ -39,9 +38,7 @@ const AssetHeader = ({ portfolio, asset, data }) => {
             <Button type="primary"  onClick={() => openModal(TransactionEdit, { asset, portfolioId: portfolio.id })} >
               Добавить транзакцию
             </Button>
-            <AssetActionsDropdown portfolio={portfolio} asset={asset}
-              triggerBtn={<Button icon={<ChevronDownIcon />}>Еще</Button>}
-            />
+            <AssetActionsDropdown portfolio={portfolio} asset={asset} btn='btn' />
           </Space>
         </div>
       </div>

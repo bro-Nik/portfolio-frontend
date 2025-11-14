@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button, Space } from 'antd';
-import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useModalStore } from '/app/src/stores/modalStore';
+import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import WalletActionsDropdown from '../WalletActionsDropdown'
 
 const WalletHeader = ({ wallet }) => {
@@ -24,10 +23,7 @@ const WalletHeader = ({ wallet }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            <WalletActionsDropdown
-              wallet={wallet}
-              triggerBtn={<Button icon={<ChevronDownIcon />}>Еще</Button>}
-            />
+            <WalletActionsDropdown wallet={wallet} btn='btn' />
           </Space>
         </div>
 

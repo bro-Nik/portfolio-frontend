@@ -1,11 +1,9 @@
 import React from 'react';
 import { Space, Button } from 'antd';
-import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { formatCurrency } from '/app/src/utils/format';
-// import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
 import AssetActionsDropdown from '../AssetActionsDropdown';
+import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 
 const AssetHeader = ({ wallet, asset, data }) => {
   const { openModal } = useModalStore();
@@ -40,9 +38,7 @@ const AssetHeader = ({ wallet, asset, data }) => {
             <Button type="primary" >
               Добавить транзакцию
             </Button>
-            <AssetActionsDropdown wallet={wallet} asset={asset}
-              triggerBtn={<Button icon={<ChevronDownIcon />}>Еще</Button>}
-            />
+            <AssetActionsDropdown wallet={wallet} asset={asset} btn='btn' />
           </Space>
         </div>
       </div>

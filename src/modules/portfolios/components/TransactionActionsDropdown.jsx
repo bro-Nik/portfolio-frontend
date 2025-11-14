@@ -1,6 +1,3 @@
-import { Dropdown, Button } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
-// import PortfolioDelAssetModal from './PortfolioDelAssetModal';
 import { useModalStore } from '/app/src/stores/modalStore';
 import {
   ArchiveBoxXMarkIcon,
@@ -8,12 +5,11 @@ import {
   Square2StackIcon,
   TrashIcon,
   ArrowTopRightOnSquareIcon,
-  // EllipsisVerticalIcon,
 } from '@heroicons/react/16/solid'
+import ActionsDropdown from '/app/src/features/dropdowns/ActionsDropdown';
 
-const TransactionActionsDropdown = ({ transaction, triggerBtn = null }) => {
+const TransactionActionsDropdown = ({ transaction, btn }) => {
   const { openModal } = useModalStore();
-  if (!triggerBtn) triggerBtn = <Button type="text" icon={<MoreOutlined />} />
 
   const menuItems = [
     {
@@ -35,18 +31,7 @@ const TransactionActionsDropdown = ({ transaction, triggerBtn = null }) => {
     },
   ];
 
-  return (
-    <>
-      <Dropdown
-        menu={{ items: menuItems }}
-        trigger={['click']}
-        placement="bottomRight"
-        arrow
-      >
-        <div onClick={(e) => e.stopPropagation()}>{triggerBtn}</div>
-      </Dropdown>
-    </>
-  );
+  return <ActionsDropdown items={menuItems} btn={btn}/>;
 };
 
 export default TransactionActionsDropdown;

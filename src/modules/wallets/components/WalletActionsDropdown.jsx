@@ -1,7 +1,3 @@
-import { Dropdown, Button,  } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
-import WalletEditModal from './modals/WalletEdit';
-import WalletDeleteModal from './modals/WalletDelete';
 import { useModalStore } from '/app/src/stores/modalStore';
 import {
   ArchiveBoxXMarkIcon,
@@ -9,30 +5,29 @@ import {
   Square2StackIcon,
   TrashIcon,
   ArrowTopRightOnSquareIcon,
-  // EllipsisVerticalIcon,
 } from '@heroicons/react/16/solid'
+import ActionsDropdown from '/app/src/features/dropdowns/ActionsDropdown';
+import WalletEditModal from './modals/WalletEdit';
+import WalletDeleteModal from './modals/WalletDelete';
 
-const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
+const WalletActionsDropdown = ({ wallet, btn }) => {
   const { openModal } = useModalStore();
 
   const menuItems = [
     {
       key: 'edit',
-      // icon: <EditOutlined />,
       icon: <PencilIcon />,
       label: 'Редактировать',
       onClick: () => openModal(WalletEditModal, { wallet }),
     },
     {
       key: 'duplicate',
-      // icon: <CopyOutlined />,
       icon: <Square2StackIcon />,
       label: 'Дублировать',
       disabled: true,
     },
     {
       key: 'export',
-      // icon: <ExportOutlined />,
       icon: <ArrowTopRightOnSquareIcon />,
       label: 'Экспортировать',
       disabled: true,
@@ -48,7 +43,6 @@ const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
     },
     {
       key: 'delete',
-      // icon: <DeleteOutlined />,
       icon: <TrashIcon />,
       label: 'Удалить',
       danger: true,
@@ -56,30 +50,7 @@ const WalletActionsDropdown = ({ wallet, triggerBtn = null }) => {
     },
   ];
 
-  return (
-    <>
-      <Dropdown
-        menu={{ items: menuItems }}
-        trigger={['click']}
-        placement="bottomRight"
-        arrow
-      >
-        {triggerBtn ? (
-          // Кастомный триггер (кнопка "Еще" или другая)
-          <div onClick={(e) => e.stopPropagation()}>
-            {triggerBtn}
-          </div>
-        ) : (
-          // Триггер по умолчанию (иконка)
-          <Button 
-            type="text" 
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
-      </Dropdown>
-    </>
-  );
+  return <ActionsDropdown items={menuItems} btn={btn}/>;
 };
 
 export default WalletActionsDropdown;

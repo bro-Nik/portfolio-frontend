@@ -14,7 +14,7 @@ const WalletsTable = memo(({ wallets }) => {
     createBuyOrdersColumn(),
     {
       id: 'actions',
-      cell: ({ row }) => <WalletActionsDropdown wallet={row.original} />,
+      cell: ({ row }) => <WalletActionsDropdown wallet={row.original} btn='icon' />,
       size: 100,
     },
   ], [openItem]);

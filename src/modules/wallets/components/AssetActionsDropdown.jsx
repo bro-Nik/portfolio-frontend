@@ -1,6 +1,3 @@
-import { Dropdown, Button } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
-// import AssetDeleteModal from './modals/AssetDelete';
 import { useModalStore } from '/app/src/stores/modalStore';
 import {
   ArchiveBoxXMarkIcon,
@@ -8,10 +5,11 @@ import {
   Square2StackIcon,
   TrashIcon,
   ArrowTopRightOnSquareIcon,
-  // EllipsisVerticalIcon,
 } from '@heroicons/react/16/solid'
+import ActionsDropdown from '/app/src/features/dropdowns/ActionsDropdown';
+// import AssetDeleteModal from './modals/AssetDelete';
 
-const AssetActionsDropdown = ({ wallet, asset, triggerBtn = null }) => {
+const AssetActionsDropdown = ({ wallet, asset, btn }) => {
   const { openModal } = useModalStore();
 
   const menuItems = [
@@ -56,30 +54,7 @@ const AssetActionsDropdown = ({ wallet, asset, triggerBtn = null }) => {
     },
   ];
 
-  return (
-    <>
-      <Dropdown
-        menu={{ items: menuItems }}
-        trigger={['click']}
-        placement="bottomRight"
-        arrow
-      >
-        {triggerBtn ? (
-          // Кастомный триггер (кнопка "Еще" или другая)
-          <div onClick={(e) => e.stopPropagation()}>
-            {triggerBtn}
-          </div>
-        ) : (
-          // Триггер по умолчанию (иконка)
-          <Button 
-            type="text" 
-            icon={<MoreOutlined />}
-            onClick={(e) => e.stopPropagation()}
-          />
-        )}
-      </Dropdown>
-    </>
-  );
+  return <ActionsDropdown items={menuItems} btn={btn}/>;
 };
 
 export default AssetActionsDropdown;

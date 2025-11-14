@@ -47,7 +47,7 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
     createBuyOrdersColumn(),
     {
       id: 'actions',
-      cell: ({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} />,
+      cell: ({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} btn='icon' />,
       size: 100,
     },
   ], [openItem]);

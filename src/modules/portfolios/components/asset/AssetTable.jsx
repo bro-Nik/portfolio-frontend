@@ -172,7 +172,7 @@ const AssetTable = memo(({ portfolio, asset, transactions }) => {
     },
     {
       id: 'actions',
-      cell: ({ row }) => <TransactionActionsDropdown transaction={row.original} />,
+      cell: ({ row }) => <TransactionActionsDropdown transaction={row.original} btn='icon' />,
       size: 100,
     },
   ], []);
