@@ -11,7 +11,8 @@ import {
   createInvestedColumn,
   createAssetNameColumn,
   createQuantityColumn,
-  createAveragePriceColumn
+  createAveragePriceColumn,
+  createActionsColumn
 } from '/app/src/features/tables/tableColumns';
 
 const PortfolioTable = memo(({ portfolio, assets }) => {
@@ -45,11 +46,7 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
     createProfitColumn(),
     createShareColumn(),
     createBuyOrdersColumn(),
-    {
-      id: 'actions',
-      cell: ({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} btn='icon' />,
-      size: 100,
-    },
+    createActionsColumn(({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} btn='icon' />),
   ], [openItem]);
 
   return (

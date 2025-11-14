@@ -12,7 +12,8 @@ import {
   createInvestedColumn,
   createAssetNameColumn,
   createQuantityColumn,
-  createAveragePriceColumn
+  createAveragePriceColumn,
+  createActionsColumn
 } from '/app/src/features/tables/tableColumns';
 
 const WalletTable = memo(({ wallet, assets }) => {
@@ -44,11 +45,7 @@ const WalletTable = memo(({ wallet, assets }) => {
     createShareColumn(),
     createBuyOrdersColumn(),
     createSellOrdersColumn(),
-    {
-      id: 'actions',
-      cell: ({ row }) => <AssetActionsDropdown wallet={wallet} asset={row.original} btn='icon' />,
-      size: 100,
-    },
+    createActionsColumn(({ row }) => <AssetActionsDropdown wallet={wallet} asset={row.original} btn='icon' />),
   ], [openItem]);
 
   return (

@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { useNavigation } from '/app/src/hooks/useNavigation';
-import { createCostColumn, createShareColumn, createBuyOrdersColumn, createNameColumn } from '/app/src/features/tables/tableColumns';
+import { createCostColumn, createShareColumn, createBuyOrdersColumn, createNameColumn, createActionsColumn } from '/app/src/features/tables/tableColumns';
 import WalletActionsDropdown from '../WalletActionsDropdown'
 
 const WalletsTable = memo(({ wallets }) => {
@@ -12,11 +12,7 @@ const WalletsTable = memo(({ wallets }) => {
     createCostColumn(),
     createShareColumn(),
     createBuyOrdersColumn(),
-    {
-      id: 'actions',
-      cell: ({ row }) => <WalletActionsDropdown wallet={row.original} btn='icon' />,
-      size: 100,
-    },
+    createActionsColumn(({ row }) => <WalletActionsDropdown wallet={row.original} btn='icon' />),
   ], [openItem]);
 
   return (

@@ -22,13 +22,7 @@ const PortfoliosTable = memo(({ portfolios }) => {
     createProfitColumn(),
     createShareColumn(),
     createBuyOrdersColumn(),
-    // createActionsColumn(),
-    {
-      id: 'actions',
-      // header: '',
-      cell: ({ row }) => <PortfolioActionsDropdown portfolio={row.original} btn='icon' />,
-      size: 100,
-    },
+    createActionsColumn(({ row }) => <PortfolioActionsDropdown portfolio={row.original} btn='icon' />),
   ], [openItem]);
 
   return (

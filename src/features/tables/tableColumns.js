@@ -44,12 +44,23 @@ export const createAveragePriceColumn = () => ({
   size: 200,
 });
 
-export const createQuantityColumn = () => ({
+// export const createQuantityColumn = (color = false) => ({
+//   accessorKey: 'quantity',
+//   header: 'Количество',
+//   cell: ({ row }) => (
+//     <span className="">{row.original.quantity}</span>
+//   ),
+//   size: 200,
+// });
+
+export const createQuantityColumn = (ticker = '', className = '', znak = '') => ({
   accessorKey: 'quantity',
   header: 'Количество',
-  cell: ({ row }) => (
-    <span className="">{row.original.quantity}</span>
-  ),
+  cell: ({ row }) => {
+    const quantity = row.original.quantity;
+    ticker = ticker ? ticker.toUpperCase() : '';
+    return (<span className={className}>{znak}{quantity} {ticker}</span>);
+  },
   size: 200,
 });
 
@@ -89,22 +100,21 @@ export const createInvestedColumn = () => ({
 
 export const createBuyOrdersColumn = () => ({
   accessorKey: 'buy_orders',
-  header: 'В ордерах',
-  cell: ({ row }) => (
-    <span>{formatCurrency(row.original.buyOrders)}</span>
-  ),
+  header: 'В ордерах на покупку',
+  cell: ({ row }) => {formatCurrency(row.original.buyOrders)},
   size: 120,
 });
 
-export const createActionsColumn = () => ({
+export const createSellOrdersColumn = () => ({
+  accessorKey: 'sell_orders',
+  header: 'В ордерах на продажу',
+  cell: ({ row }) => {formatCurrency(row.original.sellOrders)},
+  size: 120,
+});
+
+export const createActionsColumn = (renderElement) => ({
   id: 'actions',
   header: '',
-  cell: () => (
-    <div className="action-buttons">
-      <a className="link-secondary">
-        <i className="bi bi-three-dots-vertical"></i>
-      </a>
-    </div>
-  ),
+  cell: (props) => renderElement(props),
   size: 100,
 });
