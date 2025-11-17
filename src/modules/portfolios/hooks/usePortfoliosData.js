@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { portfolioApi } from '../api/portfolioApi';
 import { useDataStore } from '/app/src/stores/dataStore';
 
@@ -8,15 +8,23 @@ export const usePortfoliosData = () => {
   const prices = useDataStore(state => state.assetPrices);
   const setPortfolios = useDataStore(state => state.setPortfolios);
 
+  // Отслеживание первоначальной загрузки
+  const initialLoadRef = useRef(false);
+
+  const getPortfolio = (portfolioId) => {
+    return portfolios?.find(portfolio => portfolio.id === portfolioId) || null;
+  };
+
   useEffect(() => {
     const fetchInitialData = async () => {
+      initialLoadRef.current = true;
       const result = await portfolioApi.getAllPortfolios();
       if (result.success) setPortfolios(result.data.portfolios || []);
     };
 
     // Загружаем только один раз
-    if (portfolios === null) fetchInitialData();
-  }, []); // Только при монтировании
+    if (!initialLoadRef.current) fetchInitialData();
+  }, [setPortfolios]);
 
   // Расчет статистики
   const { portfoliosWithStats, overallStats } = useMemo(() => {
@@ -25,24 +33,27 @@ export const usePortfoliosData = () => {
     let totalCostNow = 0;
     let totalInvested = 0;
     let totalBuyOrders = 0;
+    let totalProfit = 0;
     
     // Расчет статистики для каждого портфеля
     const portfoliosWithStats = portfolios.map(portfolio => {
       let costNow = 0;
       let invested = 0;
       let buyOrders = 0;
+      let profit = 0;
 
       // Расчет статистики для каждого актива
       const assetsWithStats = portfolio.assets?.map(asset => {
         const price = prices[asset.tickerId] || 0;
         const assetCostNow = asset.quantity * price;
         const assetInvested = asset.amount;
-        const assetProfit = assetCostNow - assetInvested;
         const assetAveragePrice = assetInvested / asset.quantity;
+        const assetProfit = assetAveragePrice ? assetCostNow - assetInvested : 0;
 
         costNow += assetCostNow;
         invested += assetInvested;
         buyOrders += asset.buyOrders || 0;
+        profit += assetProfit;
 
         return {
           ...asset,
@@ -50,17 +61,14 @@ export const usePortfoliosData = () => {
           averagePrice: assetAveragePrice,
           invested: assetInvested,
           profit: assetProfit,
-          profitPercentage: assetInvested > 0 ? (assetProfit / assetInvested) * 100 : 0,
           price
         };
       }) || [];
 
-      const profit = costNow - invested;
-      const profitPercentage = invested > 0 ? (profit / invested) * 100 : 0;
-
       totalCostNow += costNow;
       totalInvested += invested;
       totalBuyOrders += buyOrders;
+      totalProfit += profit;
 
       return {
         ...portfolio,
@@ -69,7 +77,6 @@ export const usePortfoliosData = () => {
         invested,
         buyOrders,
         profit,
-        profitPercentage
       };
     });
 
@@ -83,7 +90,7 @@ export const usePortfoliosData = () => {
       overallStats: {
         totalCostNow,
         totalInvested,
-        totalProfit: totalCostNow - totalInvested,
+        totalProfit,
         totalBuyOrders
       }
     };
@@ -92,6 +99,11 @@ export const usePortfoliosData = () => {
   return {
     portfolios: portfoliosWithStats,
     overallStats,
-    loading: portfolios === null
+    loading: portfolios === null,
+    getPortfolio
   };
+};
+
+export const usePortfolio = (portfolioId) => {
+  return useDataStore(state => state.getPortfolio(portfolioId));
 };

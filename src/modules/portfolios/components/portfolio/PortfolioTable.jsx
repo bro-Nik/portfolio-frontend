@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { useNavigation } from '/app/src/hooks/useNavigation';
-import { useDataStore } from '/app/src/stores/dataStore';
+import { useTicker } from '/app/src/hooks/useTicker';
 import AssetActionsDropdown from '../AssetActionsDropdown';
 import {
   createCostColumn,
@@ -17,25 +17,24 @@ import {
 
 const PortfolioTable = memo(({ portfolio, assets }) => {
   const { openItem } = useNavigation();
-  const prices = useDataStore(state => state.assetPrices);
-  const info = useDataStore(state => state.assetInfo);
+  const { getTicker } = useTicker();
 
   // Подготавливаем данные для таблицы
   const preparedAssets = useMemo(() => {
     if (!assets) return [];
 
     return assets.map(asset => {
-      const ticker = info[asset.tickerId];
+      const ticker = getTicker(asset.tickerId);
 
       return {
         ...asset,
         share: portfolio.costNow > 0 ? (asset.costNow / portfolio.costNow) * 100 : 0,
-        image: ticker.image,
-        name: ticker.name,
-        symbol: ticker.symbol.toUpperCase(),
+        image: ticker?.image,
+        name: ticker?.name,
+        symbol: ticker?.symbol,
       };
     });
-  }, [assets, prices]);
+  }, [assets, portfolio.costNow]);
 
   const columns = useMemo(() => [
     createAssetNameColumn(openItem, 'portfolio_asset', portfolio.id),
@@ -47,7 +46,7 @@ const PortfolioTable = memo(({ portfolio, assets }) => {
     createShareColumn((a) => !a.quantity),
     createBuyOrdersColumn((a) => !a.quantity && !a.buyOrders),
     createActionsColumn(({ row }) => <AssetActionsDropdown portfolio={portfolio} asset={row.original} btn='icon' />),
-  ], [openItem]);
+  ], [openItem, portfolio]);
 
   return (
     <DataTable 

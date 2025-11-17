@@ -15,8 +15,7 @@ export const useAssetData = (asset) => {
       setAssetTransactions(result.data.transactions || []);
     }
     setLoading(false);
-  }, [asset]);
-  // }, [asset.id]);
+  }, [asset.id]);
 
   useEffect(() => {
     fetchAssetData();

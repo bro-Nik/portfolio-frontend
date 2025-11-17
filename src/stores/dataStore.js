@@ -5,8 +5,8 @@ import { apiService } from '/app/src/services/api';
 export const useDataStore = create(
   devtools(
     (set, get) => ({
-      portfolios: null,
-      wallets: null,
+      portfolios: [],
+      wallets: [],
       wishlist: [],
       
       assetPrices: {},        // { assetId: price }
@@ -16,7 +16,7 @@ export const useDataStore = create(
       
       // ДЕЙСТВИЯ ДЛЯ ПОРТФЕЛЕЙ
       setPortfolios: (portfolios) => {
-        set({ portfolios }),
+        set({ portfolios });
         // Автоматически добавляем активы портфелей
         get().addAssets(portfolios);
       },
@@ -47,11 +47,6 @@ export const useDataStore = create(
         }));
       },
 
-      getPortfolio: (portfolioId) => {
-        const { portfolios } = get();
-        return portfolios?.find(portfolio => portfolio.id === portfolioId) || null;
-      },
-      
       // === ДЕЙСТВИЯ ДЛЯ АКТИВОВ ===
       addAssets: (assetsData) => {
         const assetIds = extractUniqueAssets(assetsData);
@@ -68,7 +63,7 @@ export const useDataStore = create(
         });
         
         // Загружаем цены для новых активов
-        console.log('Загружаем цены для новых активов')
+        console.log('Загружаем цены для новых активов');
         get().fetchAssetPrices(newAssetIds);
 
         // Загружаем информацию для новых активов
@@ -104,7 +99,7 @@ export const useDataStore = create(
           const result = await api.post('/info', ids);
           
           if (result.success) {
-            console.log(result.data.info)
+            console.log(result.data.info);
             set(state => ({
               assetInfo: { ...state.assetInfo, ...result.data.info },
             }));
@@ -126,7 +121,7 @@ export const useDataStore = create(
       
       addWallet: (wallet) => {
         set(state => ({
-          wallets: [...state.wallets, wallet]
+          wallets: [...state.wallets || [], wallet]
         }));
         get().addAssets([wallet]);
       },
@@ -145,11 +140,6 @@ export const useDataStore = create(
             wallet => wallet.id !== walletId
           )
         }));
-      },
-
-      getWallet: (walletId) => {
-        const { wallets } = get();
-        return wallets?.find(wallet => wallet.id === walletId) || null;
       },
       
     }),

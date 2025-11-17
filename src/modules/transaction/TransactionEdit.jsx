@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, Button, Space, Radio, Checkbox, message, InputNumber } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
@@ -9,14 +9,15 @@ import { usePortfolios } from './hooks/usePortfolios';
 import { useTransactionCalculations } from './hooks/useTransactionCalculations';
 import { PORTFOLIO_TYPES } from './constants/transactionTypes';
 import { useTransactionForm } from './hooks/useTransactionForm';
-import { getTickerInfo } from './utils/transactionHelpers';
 import { usePortfolioOperations } from '/app/src/modules/portfolios/hooks/usePortfolioOperations';
+import { useTicker } from '/app/src/hooks/useTicker';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 const TransactionEdit = () => {
   const { modalProps, closeModal } = useModalStore();
+  const { getTicker, getTickerPrice } = useTicker();
   const { 
     asset = null,
     portfolioId = null,
@@ -28,7 +29,6 @@ const TransactionEdit = () => {
 
   const [form] = Form.useForm();
   const availableTypes = PORTFOLIO_TYPES;
-  const { tickerSymbol, tickerPrice } = getTickerInfo();
 
   const { 
     showMore, 
@@ -52,7 +52,7 @@ const TransactionEdit = () => {
   } = useWallets(asset, transaction, transactionType);
 
   const { handleQuantityChange, handleAmountChange, handlePriceChange } = useTransactionCalculations(form, calculationType);
-  const { portfolios, fetchPortfolios } = usePortfolios(transactionType);
+  const { portfolios } = usePortfolios(transactionType);
 
   const isSellType = ['Sell', 'Output', 'TransferOut'].includes(transactionType);
   const showOrderSection = !!portfolioId && ['Buy', 'Sell'].includes(transactionType);
@@ -60,10 +60,17 @@ const TransactionEdit = () => {
   const showPriceSection = ['Buy', 'Sell'].includes(transactionType);
   const showAmountField = ['Buy', 'Sell'].includes(transactionType);
 
+  const assetTickerPrice = getTickerPrice(asset?.tickerId);
+  const assetTickerSimbol = getTicker(asset?.tickerId).simbol;
+  const selectedTickerPrice = getTickerPrice(selectedTicker);
+  const selectedTickerSimbol = getTicker(selectedTicker).simbol;
+  const currentTicker = getTicker(transaction?.tickerId || asset?.tickerId);
+  const selectedTickerData = getTicker(selectedTicker);
+
   useEffect(() => {
-    const price = tickerPrice(asset.tickerId) / tickerPrice(selectedTicker);
+    const price = selectedTickerPrice !== 0 ? assetTickerPrice / selectedTickerPrice : 0;
     form.setFieldValue('price', price || '');
-  }, [selectedTicker]);
+  }, [selectedTickerPrice]);
 
   const handleSubmit = async (values) => {
     const submitData = {
@@ -72,7 +79,7 @@ const TransactionEdit = () => {
       ...(transaction && { id: transaction.id }),
       assetId: asset?.id,
       tickerId: asset?.tickerId,
-      priceUsd: form.getFieldValue('price') * tickerPrice(selectedTicker),
+      priceUsd: form.getFieldValue('price') * selectedTickerPrice,
       portfolioId: portfolioId,
       // walletId: asset?.walletId,
     };
@@ -165,7 +172,7 @@ const TransactionEdit = () => {
                   >
                     {wallet.name}
                     {isSellType && (
-                      <span style={{ marginLeft: '0.5rem', fontWeight: 300 }}>({wallet.free} {tickerSymbol(asset.tickerId)})</span>
+                      <span style={{ marginLeft: '0.5rem', fontWeight: 300 }}>({wallet.free} {assetTickerSimbol})</span>
                     )}
                   </Option>
                 ))}
@@ -222,8 +229,8 @@ const TransactionEdit = () => {
                     disabled={!selectedWalletId || walletAssets.length === 0}
                   >
                     {walletAssets.map(asset => (
-                      <Option key={asset.id} value={asset.tickerId} label={tickerSymbol(asset.tickerId)} >
-                        {tickerSymbol(asset.tickerId)}
+                      <Option key={asset.id} value={asset.tickerId} label={assetTickerSimbol} >
+                        {assetTickerSimbol}
                         <span style={{ marginLeft: '0.5rem', fontWeight: 300 }}>{asset.free}</span>
                       </Option>
                     ))}
@@ -280,7 +287,7 @@ const TransactionEdit = () => {
             rules={[{ required: true, message: 'Введите количество' }]}
           >
             <InputNumber
-              addonBefore={tickerSymbol(transaction?.tickerId || asset.tickerId)}
+              addonBefore={currentTicker?.simbol || '—'}
               placeholder="0.00"
               step="0.00001"
               min="0.00001"
@@ -311,7 +318,7 @@ const TransactionEdit = () => {
               rules={[{ required: true, message: 'Введите сумму' }]}
             >
               <InputNumber
-                addonBefore={selectedTicker ? tickerSymbol(selectedTicker) : <span>—</span>}
+                addonBefore={selectedTickerSimbol || <span>—</span>}
                 placeholder="0.00"
                 step="0.01"
                 min="0.01"

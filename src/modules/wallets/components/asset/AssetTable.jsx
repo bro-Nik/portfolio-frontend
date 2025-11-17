@@ -4,10 +4,11 @@ import { formatCurrency } from '/app/src/utils/format';
 // import TransactionActionsDropdown from '../TransactionActionsDropdown'
 // import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
-import { useDataStore } from '/app/src/stores/dataStore';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { BriefcaseIcon, WalletIcon } from '@heroicons/react/16/solid'
-import { usePortfolio, useWallet } from '/app/src/hooks/useData';
+import { useTicker } from '/app/src/hooks/useTicker';
+import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
+import { useWalletsData } from '/app/src/modules/wallets/hooks/useWalletsData';
 import {
   createCostColumn,
   createShareColumn,
@@ -22,13 +23,10 @@ import {
 
 const AssetTable = memo(({ wallet, asset, transactions }) => {
   const { openModal } = useModalStore();
-  const info = useDataStore(state => state.assetInfo);
   const { openItem } = useNavigation();
-
-  const getSymbol = (tickerId) => {
-    const ticker = info[tickerId];
-    return ticker.symbol.toUpperCase();
-  };
+  const { getTicker } = useTicker();
+  const { getPortfolio } = usePortfoliosData();
+  const { getWallet } = useWalletsData();
 
   const inverted = (transaction) => {
     if (isTrade(transaction.type)) return !(transaction.tickerId == asset.tickerId);
@@ -64,7 +62,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
     if (isTrade(transaction.type)) name = oppositeMap[transaction.type];
     else if (isTransfer(transaction.type)) name = oppositeMap[getType(transaction)];
     else name = oppositeMap[transaction.type];
-    if (inverted(transaction) && isTrade(transaction.type)) name += ' ' + getSymbol(transaction.tickerId);
+    if (inverted(transaction) && isTrade(transaction.type)) name += ' ' + getTicker(transaction.tickerId).simbol;
     return name;
   };
 
@@ -141,7 +139,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
         const quantity = row.original.quantity;
         return (
           <span className={inverted(row.original) ? '' : getClass(row.original.type)}>
-            {isSellType(row.original.type) ? '-' : '+'}{quantity} {getSymbol(row.original.tickerId)}
+            {isSellType(row.original.type) ? '-' : '+'}{quantity} {getTicker(row.original.tickerId).simbol}
           </span>
         );
       },
@@ -152,7 +150,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
       header: 'Связь',
       cell: ({ row }) => {
         if (row.original.wallet2Id) {
-          const wallet2 = useWallet(row.original.wallet2Id);
+          const wallet2 = getWallet(row.original.wallet2Id);
           return (
             <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => wallet2 && openItem(wallet2, 'wallet')}>
               <WalletIcon />{wallet2?.name || 'Кошелек удален'}
@@ -160,7 +158,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
           );
         }
         if (row.original.portfolioId) {
-          const portfolio = usePortfolio(row.original.portfolioId);
+          const portfolio = getPortfolio(row.original.portfolioId);
           return (
             <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => portfolio && openItem(portfolio, 'portfolio')}>
               <BriefcaseIcon />{portfolio?.name || 'Портфель удален'}

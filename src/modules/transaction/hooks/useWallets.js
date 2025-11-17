@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiService } from '/app/src/services/api';
 import { authService } from '/app/src/services/auth';
-import { getTickerInfo } from '../utils/transactionHelpers';
 
 export const useWallets = (asset, transaction, transactionType) => {
   const [wallets, setWallets] = useState([]);
@@ -15,8 +14,6 @@ export const useWallets = (asset, transaction, transactionType) => {
 
   const { getValidToken } = authService();
   const api = apiService('/api/wallets', getValidToken);
-
-  const { tickerSymbol, tickerPrice } = getTickerInfo();
 
   // Загрузка кошельков при изменении типа транзакции
   useEffect(() => {

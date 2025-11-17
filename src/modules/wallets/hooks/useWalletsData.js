@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useDataStore } from '/app/src/stores/dataStore';
 import { walletApi } from '../api/walletApi';
 
@@ -8,15 +8,23 @@ export const useWalletsData = () => {
   const prices = useDataStore(state => state.assetPrices);
   const setWallets = useDataStore(state => state.setWallets);
 
+  // Отслеживание первоначальной загрузки
+  const initialLoadRef = useRef(false);
+
+  const getWallet = (walletId) => {
+    return wallets?.find(wallet => wallet.id === walletId) || null;
+  };
+
   useEffect(() => {
     const fetchInitialData = async () => {
+      initialLoadRef.current = true;
       const result = await walletApi.getAllWallets();
       if (result.success) setWallets(result.data.wallets || []);
     };
 
     // Загружаем только один раз
-    if (wallets === null) fetchInitialData();
-  }, []); // Только при монтировании
+    if (!initialLoadRef.current) fetchInitialData();
+  }, [setWallets]);
 
   // Расчет статистики
   const { walletsWithStats, overallStats } = useMemo(() => {
@@ -73,6 +81,7 @@ export const useWalletsData = () => {
   return {
     wallets: walletsWithStats,
     overallStats,
-    loading: wallets === null
+    loading: wallets === null,
+    getWallet
   };
 };
