@@ -1,7 +1,7 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { formatCurrency } from '/app/src/utils/format';
-import TransactionActionsDropdown from '../TransactionActionsDropdown'
+import TransactionActionsDropdown from '/app/src/modules/transaction/components/TransactionActionsDropdown'
 import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useTicker } from '/app/src/hooks/useTicker';
@@ -9,156 +9,54 @@ import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoli
 import { useWalletsData } from '/app/src/modules/wallets/hooks/useWalletsData';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { BriefcaseIcon, WalletIcon } from '@heroicons/react/16/solid'
+import { isTradeTransaction, isTransferTransaction } from '/app/src/modules/transaction/utils/type';
 import {
-  createCostColumn,
-  createShareColumn,
-  createBuyOrdersColumn,
-  createProfitColumn,
-  createInvestedColumn,
-  createAssetNameColumn,
-  createQuantityColumn,
-  createAveragePriceColumn,
-  createActionsColumn
+  createActionsColumn,
+  createTransactionLinkColumn,
+  createTransactionPriceColumn,
+  createTransactionQuantityColumn,
+  createTransactionSumColumn,
+  createCommentColumn,
 } from '/app/src/features/tables/tableColumns';
 
 const AssetTable = memo(({ portfolio, asset, transactions }) => {
   const { openModal } = useModalStore();
   const { openItem } = useNavigation();
-  const { getTicker } = useTicker();
+  const { getTickerSymbol } = useTicker();
   const { getPortfolio } = usePortfoliosData();
   const { getWallet } = useWalletsData();
 
-  const inverted = (transaction) => {
-    if (isTrade(transaction.type)) return !(transaction.tickerId == asset.tickerId);
-    if (isTransfer(transaction.type)) return !(transaction.portfolioId == portfolio.id);
+  const isCounterTransaction = useCallback((transaction) => {
+    if (isTradeTransaction(transaction.type)) 
+      return !(transaction.tickerId === asset.tickerId);
+    if (isTransferTransaction(transaction.type)) 
+      return !(transaction.portfolioId === portfolio.id);
     return false;
-  };
+  }, [asset.tickerId, portfolio.id]);
 
-  const getType = (transaction) => {
-    if (!inverted(transaction)) return transaction.type;
+  const handleTransactionClick = useCallback((transaction) => {
+    openModal(TransactionEdit, { asset, portfolioId: portfolio.id, transaction });
+  }, [openModal, asset, portfolio.id]);
 
-    const oppositeMap = {
-      'Buy': 'Sell',
-      'Sell': 'Buy',
-      'Input': 'Output',
-      'Output': 'Input',
-      'TransferIn': 'TransferOut',
-      'TransferOut': 'TransferIn',
-    };
-    return oppositeMap[transaction.type];
-  };
-
-  const getTypeName = (transaction) => {
-    const oppositeMap = {
-      'Buy': 'Покупка',
-      'Sell': 'Продажа',
-      'Earning': 'Заработок',
-      'Input': 'Ввод',
-      'Output': 'Вывод',
-      'TransferIn': 'Поступление',
-      'TransferOut': 'Перевод',
-    };
-    let name = '';
-    if (isTrade(transaction.type)) name = oppositeMap[transaction.type];
-    else if (isTransfer(transaction.type)) name = oppositeMap[getType(transaction)];
-    else name = oppositeMap[transaction.type];
-    if (inverted(transaction) && isTrade(transaction.type)) name += ' ' + getTicker(transaction.tickerId).simbol;
-    return name;
-  };
-
-  const getClass = (type) => {
-    return isSellType(type) ? 'text-red' : 'text-green';
-  };
-
-  const isSellType = (type) => {
-    return ['Sell', 'Output', 'TransferOut'].includes(type);
-  };
-
-  const isTrade = (type) => {
-    return ['Buy', 'Sell'].includes(type);
-  };
-
-  const isTransfer = (type) => {
-    return ['TransferIn', 'TransferOut'].includes(type);
-  };
-
-  const isInputOutput = (type) => {
-    return ['Input', 'Output'].includes(type);
-  };
-
-  console.log(asset)
-  console.log(transactions)
   const columns = useMemo(() => [
+    createTransactionLinkColumn(getTickerSymbol, isCounterTransaction, handleTransactionClick),
+    createTransactionPriceColumn(getTickerSymbol),
+    createTransactionSumColumn(getTickerSymbol, isCounterTransaction),
+    createTransactionQuantityColumn(getTickerSymbol, isCounterTransaction),
     {
-      accessorKey: 'type',
-      header: 'Тип',
-      cell: ({ row }) => (
-        <div onClick={() => openModal(TransactionEdit, { asset, portfolioId: portfolio.id, transaction: row.original })} >
-          <span className={getClass(getType(row.original))}>{getTypeName(row.original)}{row.original.order ? '(Ордер)' : ''}</span>
-          <br />
-          <span className="small-text text-muted">{row.original.date}</span>
-        </div>
-      ),
-      size: 120,
-    },
-    {
-      accessorKey: 'price',
-      header: 'Цена',
-      cell: ({ row }) => {
-        if (isTrade(row.original.type)) return (
-          <>
-          <span>{formatCurrency(row.original.priceUsd)}</span>
-          <br />
-          {/* ToDo динамические тикеры */}
-          <span class="small-text text-muted">{formatCurrency(row.original.price, 'USDT')}</span>
-          </>
-        );
-        return '-';
-      },
-      size: 120,
-    },
-    {
-      accessorKey: 'sum',
-      header: 'Сумма',
-      cell: ({ row }) => {
-        if (isTrade(row.original.type)) return (
-        <>
-        <span>{isSellType(row.original.type) ? '+' : '-'}{formatCurrency(row.original.priceUsd * row.original.quantity)}</span>
-        <br />
-        {/* ToDo динамические тикеры */}
-        <span className={!inverted(row.original) ? 'text-muted' : getClass(getType(row.original)) + ' small-text'}>{isSellType(row.original.type) ? '+' : '-'}{formatCurrency(row.original.quantity2, 'USDT')}</span>
-        </>
-        );
-        return '-';
-      },
-    },
-    {
-      accessorKey: 'quantity',
-      header: 'Количество',
-      cell: ({ row }) => {
-        const quantity = row.original.quantity;
-        return (
-          <span className={inverted(row.original) ? '' : getClass(row.original.type)}>
-            {isSellType(row.original.type) ? '-' : '+'}{quantity} {getTicker(row.original.tickerId).simbol}
-          </span>
-        );
-      },
-      size: 200,
-    },
-    {
-      id: 'rel',
+      id: 'relation',
       header: 'Связь',
-      cell: ({ row }) => {
-        if (row.original.portfolio2Id) {
-          const portfolio2 = getPortfolio(row.original.portfolio2Id);
+      cell: ({ row: { original: transaction } }) => {
+        if (transaction.portfolio2Id) {
+          const portfolio2 = getPortfolio(transaction.portfolio2Id);
           return (
             <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => portfolio2 && openItem(portfolio2, 'portfolio')}>
               <BriefcaseIcon />{portfolio2?.name || 'Портфель удален'}
             </div>
           );
         }
-        if (row.original.walletId) {
-          const wallet = getWallet(row.original.walletId);
+        if (transaction.walletId) {
+          const wallet = getWallet(transaction.walletId);
           return (
             <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => wallet && openItem(wallet, 'wallet')}>
               <WalletIcon />{wallet?.name || 'Кошелек удален'}
@@ -169,25 +67,14 @@ const AssetTable = memo(({ portfolio, asset, transactions }) => {
       },
       size: 120,
     },
-    {
-      accessorKey: 'comment',
-      header: 'Комментарий',
-      cell: ({ row }) => (
-        <span>{row.original.comment}</span>
-      ),
-      size: 120,
-    },
+    createCommentColumn(),
     createActionsColumn(({ row }) => <TransactionActionsDropdown transaction={row.original} btn='icon' />),
-  ], []);
+  ], [
+    getTickerSymbol, isCounterTransaction, handleTransactionClick, 
+    getPortfolio, getWallet, openItem
+  ]);
 
-  return (
-    <DataTable 
-      data={transactions}
-      columnsConfig={columns}
-      // placeholder="Поиск по активам..."
-      // children={portfolio.comment}
-    />
-  );
+  return <DataTable data={transactions} columnsConfig={columns} />;
 });
 
 export default AssetTable;

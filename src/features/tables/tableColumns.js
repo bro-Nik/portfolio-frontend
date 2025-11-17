@@ -1,4 +1,11 @@
 import { formatCurrency, formatPercentage, formatProfit, getColorClass } from '/app/src/utils/format';
+import {
+  getTransactionTypeColor,
+  getAdjustedTransactionType,
+  getTransactionTypeLabel,
+  isTradeTransaction,
+  isOutgoingTransaction,
+} from '/app/src/modules/transaction/utils/type';
 
 const DEFAULT_VALUE = '-';
 
@@ -136,4 +143,88 @@ export const createActionsColumn = (renderElement) => ({
   header: '',
   cell: (props) => renderElement(props),
   size: 100,
+});
+
+export const createTransactionLinkColumn = (getTicker, isCounterTransaction, onClick) => ({
+  id: 'transactionLink',
+  header: 'Тип',
+  cell: ({ row: { original: transaction } }) => {
+
+    const colorClassName = getTransactionTypeColor(getAdjustedTransactionType(transaction, isCounterTransaction));
+
+    return (
+      <div onClick={() => onClick(transaction)}>
+        <span className={colorClassName}>
+          {getTransactionTypeLabel(transaction, isCounterTransaction, getTicker)}
+          {transaction.order ? ' (Ордер)' : ''}
+        </span>
+        <br />
+        <span className="small-text text-muted">{transaction.date}</span>
+      </div>
+    );
+  },
+  size: 200,
+});
+
+export const createTransactionPriceColumn = (getTicker) => ({
+  accessorKey: 'price',
+  header: 'Цена',
+  cell: ({ row: { original: transaction } }) => {
+    if (isTradeTransaction(transaction.type)) return (
+      <>
+      {/* В валюте пользователя */}
+      {formatCurrency(transaction.priceUsd)}
+      <br />
+      {/* В валюте актива */}
+      <span className="small-text text-muted">
+        {formatCurrency(transaction.price, getTicker(transaction.ticker2Id))}
+      </span>
+      </>
+    );
+
+    return '-';
+  },
+  size: 200,
+});
+
+export const createTransactionSumColumn = (getTicker, isCounterTransaction) => ({
+  accessorKey: 'quantity2',
+  header: 'Сумма',
+  cell: ({ row: { original: transaction } }) => {
+    if (isTradeTransaction(transaction.type)) return (
+      <>
+      {/* В валюте пользователя */}
+      {isOutgoingTransaction(transaction.type) ? '+' : '-'}
+      {formatCurrency(transaction.priceUsd * transaction.quantity)}
+      <br />
+      {/* В валюте актива */}
+      <span className={'small-text ' + (!isCounterTransaction(transaction) ? 'text-muted' : getTransactionTypeColor(getAdjustedTransactionType(transaction, isCounterTransaction)))}>
+        {isOutgoingTransaction(transaction.type) ? '+' : '-'}{formatCurrency(transaction.quantity2, getTicker(transaction.ticker2Id))}
+      </span>
+      </>
+    );
+
+    return '-';
+  },
+  size: 200,
+});
+
+export const createTransactionQuantityColumn = (getTicker, isCounterTransactionFn) => ({
+  accessorKey: 'quantity',
+  header: 'Количество',
+  cell: ({ row: { original: transaction } }) => {
+    return (
+      <span className={isCounterTransactionFn(transaction) ? '' : getTransactionTypeColor(transaction.type)}>
+        {isOutgoingTransaction(transaction.type) ? '-' : '+'}{transaction.quantity} {getTicker(transaction.tickerId)}
+      </span>
+    );
+  },
+  size: 200,
+});
+
+export const createCommentColumn = () => ({
+  accessorKey: 'comment',
+  header: 'Комментарий',
+  cell: ({ row: { original: obj } }) => obj.comment,
+  size: 120,
 });

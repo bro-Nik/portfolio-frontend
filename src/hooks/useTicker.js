@@ -8,6 +8,10 @@ export const useTicker = () => {
     return tickers[tickerId];
   };
 
+  const getTickerSymbol = (tickerId) => {
+    return tickers[tickerId]?.symbol?.toUpperCase();
+  };
+
   const getTickerPrice = (tickerId) => {
     return prices[tickerId] || 0;
   };
@@ -15,6 +19,7 @@ export const useTicker = () => {
   return {
     tickers,
     getTicker,
+    getTickerSymbol,
     getTickerPrice
   };
 };

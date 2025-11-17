@@ -7,15 +7,21 @@ export const PORTFOLIO_TYPES = [
   { value: 'TransferOut', label: 'Отправка' },
 ];
 
-// export const WALLET_TYPES = {
-//   TransferOut: [{ value: 'TransferOut', label: 'Отправка' }],
-//   TransferIn: [{ value: 'TransferIn', label: 'Поступление' }],
-// };
-//
-// export const TRANSACTION_CONFIG = {
-//   showOrderSection: ['Buy', 'Sell'],
-//   showWalletSection: ['Buy', 'Input', 'Earning', 'TransferOut', 'Sell', 'Output', 'TransferIn'],
-//   showPriceField: ['Buy', 'Sell'],
-//   showAmountField: ['Buy', 'Sell'],
-//   isSellType: ['Sell', 'Output', 'TransferOut'],
-// };
+export const TYPE_OPPOSITE_MAP = {
+  'Buy': 'Sell',
+  'Sell': 'Buy',
+  'Input': 'Output',
+  'Output': 'Input',
+  'TransferIn': 'TransferOut',
+  'TransferOut': 'TransferIn',
+};
+
+export const TYPE_NAME_MAP = {
+  'Buy': 'Покупка',
+  'Sell': 'Продажа',
+  'Earning': 'Заработок',
+  'Input': 'Ввод',
+  'Output': 'Вывод',
+  'TransferIn': 'Поступление',
+  'TransferOut': 'Перевод',
+};
