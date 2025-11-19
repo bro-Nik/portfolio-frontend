@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select, Button, Space, message } from 'antd';
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
+import { Modal, Form, Input, Select, Space, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
 import CommentField from '/app/src/features/forms/CommentField';
 import ActionBtnsField from '/app/src/features/forms/ActionBtnsField';
+import SelectField from '/app/src/features/forms/SelectField';
 import ShowMore from '/app/src/components/ui/ShowMore';
-
-const { Option } = Select;
 
 const PortfolioEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
@@ -50,6 +48,12 @@ const PortfolioEditModal = () => {
     closeModal();
   };
 
+  const markets = [
+    {id: 'crypto', name: 'Крипто'},
+    {id: 'stocks', name: 'Акции'},
+    {id: 'forex', name: 'Форекс'},
+  ];
+
   return (
     <Modal
       title={title}
@@ -85,17 +89,13 @@ const PortfolioEditModal = () => {
               />
             </Form.Item>
 
-            <Form.Item
-              label="Рынок"
+            <SelectField
               name="market"
+              label="Рынок"
               rules={[{ required: true, message: 'Выберите рынок' }]}
-            >
-              <Select disabled={!!portfolio} suffixIcon=<ChevronDownIcon /> >
-                <Option value="crypto">Крипто</Option>
-                <Option value="stocks">Акции</Option>
-                <Option value="forex">Форекс</Option>
-              </Select>
-            </Form.Item>
+              options={markets}
+              disabled={!!portfolio}
+            />
           </div>
 
           {/* Кнопка "Еще" */}
