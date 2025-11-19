@@ -4,6 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useModalStore } from '/app/src/stores/modalStore';
 import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
 import CommentField from '/app/src/features/forms/CommentField';
+import ActionBtnsField from '/app/src/features/forms/ActionBtnsField';
 import ShowMore from '/app/src/components/ui/ShowMore';
 
 const { Option } = Select;
@@ -101,21 +102,12 @@ const PortfolioEditModal = () => {
           <ShowMore content={<CommentField />} show={!!portfolio?.comment}/>
 
           {/* Кнопки действий */}
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-              <Button onClick={handleCancel}>
-                Отмена
-              </Button>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                loading={loading}
-                // icon={portfolio ? <EditOutlined /> : <PlusOutlined />}
-              >
-                {portfolio ? 'Сохранить' : 'Добавить'}
-              </Button>
-            </Space>
-          </Form.Item>
+          <ActionBtnsField
+            title={portfolio ? 'Сохранить' : 'Добавить'} 
+            onCancel={handleCancel}
+            loading={loading}
+          />
+
         </Space>
       </Form>
     </Modal>

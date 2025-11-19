@@ -3,6 +3,7 @@ import { Modal, Form, Input, Button, Space, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useWalletOperations } from '../../hooks/useWalletOperations';
 import CommentField from '/app/src/features/forms/CommentField';
+import ActionBtnsField from '/app/src/features/forms/ActionBtnsField';
 import ShowMore from '/app/src/components/ui/ShowMore';
 
 const WalletEditModal = () => {
@@ -85,21 +86,12 @@ const WalletEditModal = () => {
           <ShowMore content={<CommentField />} show={!!wallet?.comment}/>
 
           {/* Кнопки действий */}
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-              <Button onClick={handleCancel}>
-                Отмена
-              </Button>
-              <Button 
-                type="primary" 
-                htmlType="submit" 
-                loading={loading}
-                // icon={portfolio ? <EditOutlined /> : <PlusOutlined />}
-              >
-                {wallet ? 'Сохранить' : 'Добавить'}
-              </Button>
-            </Space>
-          </Form.Item>
+          <ActionBtnsField
+            title={wallet ? 'Сохранить' : 'Добавить'} 
+            onCancel={handleCancel}
+            loading={loading}
+          />
+
         </Space>
       </Form>
     </Modal>
