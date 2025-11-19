@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, Button, Space, message } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useWalletOperations } from '../../hooks/useWalletOperations';
-
-const { TextArea } = Input;
+import CommentField from '/app/src/features/forms/CommentField';
+import ShowMore from '/app/src/components/ui/ShowMore';
 
 const WalletEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
@@ -14,7 +13,6 @@ const WalletEditModal = () => {
   } = modalProps;
 
   const [form] = Form.useForm();
-  const [showMore, setShowMore] = useState(false);
   const { editWallet, loading } = useWalletOperations();
 
   useEffect(() => {
@@ -22,7 +20,6 @@ const WalletEditModal = () => {
       name: wallet?.name || '',
       comment: wallet?.comment || ''
     });
-    setShowMore(!!(wallet?.comment));
   }, [wallet, form]);
 
   const handleSubmit = async (values) => {
@@ -85,34 +82,7 @@ const WalletEditModal = () => {
           </div>
 
           {/* Кнопка "Еще" */}
-          <Button 
-            type="link" 
-            icon={showMore ? <MinusOutlined /> : <PlusOutlined />}
-            onClick={() => setShowMore(!showMore)}
-            style={{ padding: 0, height: 'auto', }}
-          >
-            {showMore ? 'Скрыть' : 'Еще'}
-          </Button>
-
-          {/* Дополнительные поля */}
-          {showMore && (
-            <div style={{ animation: 'fadeIn 0.3s ease-in' }}>
-              <Form.Item
-                label="Комментарий"
-                name="comment"
-                rules={[
-                  { max: 500, message: 'Максимум 500 символов' }
-                ]}
-              >
-                <TextArea
-                  placeholder="Дополнительная информация о кошельке..."
-                  rows={3}
-                  showCount
-                  maxLength={500}
-                />
-              </Form.Item>
-            </div>
-          )}
+          <ShowMore content={<CommentField />} show={!!wallet?.comment}/>
 
           {/* Кнопки действий */}
           <Form.Item style={{ marginBottom: 0 }}>
