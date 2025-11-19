@@ -1,6 +1,6 @@
 import { Space, Form, Button } from 'antd';
 
-const ActionBtnsField = ({ title, disabled, onCancel, loading }) => {
+const FormActionBtns = ({ title, disabled, onCancel, loading }) => {
 
   return (
     <Form.Item style={{ marginBottom: 0 }}>
@@ -21,4 +21,4 @@ const ActionBtnsField = ({ title, disabled, onCancel, loading }) => {
   );
 };
 
-export default ActionBtnsField;
+export default FormActionBtns;

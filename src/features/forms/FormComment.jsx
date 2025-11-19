@@ -3,7 +3,7 @@ import { Form, Input } from 'antd';
 
 const { TextArea } = Input;
 
-const CommentField = ({ placeholder = null, max = null }) => {
+const FormComment = ({ placeholder = null, max = null }) => {
 
   placeholder = placeholder ? placeholder : 'Дополнительная информация...';
   max = max ? max : 500
@@ -24,4 +24,4 @@ const CommentField = ({ placeholder = null, max = null }) => {
   );
 };
 
-export default CommentField;
+export default FormComment;

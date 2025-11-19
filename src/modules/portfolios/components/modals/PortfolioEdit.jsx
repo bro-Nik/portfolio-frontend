@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, Space, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { usePortfolioOperations } from '../../hooks/usePortfolioOperations';
-import CommentField from '/app/src/features/forms/CommentField';
-import ActionBtnsField from '/app/src/features/forms/ActionBtnsField';
-import SelectField from '/app/src/features/forms/SelectField';
+import FormComment from '/app/src/features/forms/FormComment';
+import FormActionBtns from '/app/src/features/forms/FormActionBtns';
+import FormSelect from '/app/src/features/forms/FormSelect';
 import ShowMore from '/app/src/components/ui/ShowMore';
 
 const PortfolioEditModal = () => {
@@ -49,9 +49,9 @@ const PortfolioEditModal = () => {
   };
 
   const markets = [
-    {id: 'crypto', name: 'Крипто'},
-    {id: 'stocks', name: 'Акции'},
-    {id: 'forex', name: 'Форекс'},
+    {value: 'crypto', label: 'Крипто'},
+    {value: 'stocks', label: 'Акции'},
+    {value: 'forex', label: 'Форекс'},
   ];
 
   return (
@@ -89,7 +89,7 @@ const PortfolioEditModal = () => {
               />
             </Form.Item>
 
-            <SelectField
+            <FormSelect
               name="market"
               label="Рынок"
               rules={[{ required: true, message: 'Выберите рынок' }]}
@@ -99,10 +99,10 @@ const PortfolioEditModal = () => {
           </div>
 
           {/* Кнопка "Еще" */}
-          <ShowMore content={<CommentField />} show={!!portfolio?.comment}/>
+          <ShowMore content={<FormComment />} show={!!portfolio?.comment}/>
 
           {/* Кнопки действий */}
-          <ActionBtnsField
+          <FormActionBtns
             title={portfolio ? 'Сохранить' : 'Добавить'} 
             onCancel={handleCancel}
             loading={loading}

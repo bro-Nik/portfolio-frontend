@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Button, Space, message } from 'antd';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useWalletOperations } from '../../hooks/useWalletOperations';
-import CommentField from '/app/src/features/forms/CommentField';
-import ActionBtnsField from '/app/src/features/forms/ActionBtnsField';
 import ShowMore from '/app/src/components/ui/ShowMore';
+import FormComment from '/app/src/features/forms/FormComment';
+import FormActionBtns from '/app/src/features/forms/FormActionBtns';
 
 const WalletEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
@@ -83,10 +83,10 @@ const WalletEditModal = () => {
           </div>
 
           {/* Кнопка "Еще" */}
-          <ShowMore content={<CommentField />} show={!!wallet?.comment}/>
+          <ShowMore content={<FormComment />} show={!!wallet?.comment}/>
 
           {/* Кнопки действий */}
-          <ActionBtnsField
+          <FormActionBtns
             title={wallet ? 'Сохранить' : 'Добавить'} 
             onCancel={handleCancel}
             loading={loading}
