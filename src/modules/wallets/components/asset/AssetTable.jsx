@@ -4,7 +4,7 @@ import { formatCurrency } from '/app/src/utils/format';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { BriefcaseIcon, WalletIcon } from '@heroicons/react/16/solid'
-import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
+import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
 import TransactionActionsDropdown from '/app/src/modules/transaction/components/TransactionActionsDropdown'
 import { useTicker } from '/app/src/hooks/useTicker';
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
@@ -47,19 +47,20 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
       id: 'relation',
       header: 'Связь',
       cell: ({ row: { original: transaction } }) => {
-        if (transaction.wallet2Id) {
-          const wallet2 = getWallet(transaction.wallet2Id);
-          return (
-            <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => wallet2 && openItem(wallet2, 'wallet')}>
-              <WalletIcon />{wallet2?.name || 'Кошелек удален'}
-            </div>
-          );
-        }
-        if (transaction.portfolioId) {
+        if (isTradeTransaction(transaction.type) && transaction.portfolioId) {
           const portfolio = getPortfolio(transaction.portfolioId);
           return (
             <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => portfolio && openItem(portfolio, 'portfolio')}>
               <BriefcaseIcon />{portfolio?.name || 'Портфель удален'}
+            </div>
+          );
+        }
+        const relationWalletId = isCounterTransaction(transaction) ? transaction.walletId : transaction.wallet2Id
+        if (isTransferTransaction(transaction.type) && relationWalletId) {
+          const wallet2 = getWallet(relationWalletId);
+          return (
+            <div className="d-flex align-items-center gap-2 cursor-pointer" onClick={() => wallet2 && openItem(wallet2, 'wallet')}>
+              <WalletIcon />{wallet2?.name || 'Кошелек удален'}
             </div>
           );
         }

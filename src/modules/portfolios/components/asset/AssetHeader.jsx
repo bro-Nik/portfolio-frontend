@@ -4,7 +4,7 @@ import { formatCurrency } from '/app/src/utils/format';
 import { useModalStore } from '/app/src/stores/modalStore';
 import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import AssetActionsDropdown from '../AssetActionsDropdown';
-import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
+import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
 
 const AssetHeader = ({ portfolio, asset, data }) => {
   const { openModal } = useModalStore();

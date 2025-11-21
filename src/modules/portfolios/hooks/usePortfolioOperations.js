@@ -103,34 +103,12 @@ export const usePortfolioOperations = () => {
     setLoading(false);
     return result;
   };
-
-  const editTransaction = async (transaction) => {
-    // Валидация бизнес-правилами
-    const validation = portfolioService.validateEditTransaction(transaction);
-    if (!validation.isValid) {
-      return { success: false, error: validation.error };
-    }
-    
-    setLoading(true);
-
-    // Вызов API
-    const result = await portfolioApi.saveTransaction(transaction);
-
-    // Редактирование
-    if (result.success) {
-      updatePortfolioInStore(transaction.portfolioId, result.data);
-    }
-    
-    setLoading(false);
-    return result;
-  };
   
   return { 
     editPortfolio,
     deletePortfolio,
     addAsset,
     deleteAsset,
-    editTransaction,
     loading
   };
 };

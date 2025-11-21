@@ -22,7 +22,7 @@ const FormSelect = ({
     >
       <Select
         suffixIcon={<ChevronDownIcon />}
-        optionLabelProp="label"
+        // optionLabelProp="label"
         {...props}
       />
     </Form.Item>

@@ -1,28 +1,27 @@
 import { useState, useCallback, useEffect } from 'react';
+import { Form } from 'antd';
 
-export const useTransactionForm = (transaction, form) => {
-  const [showMore, setShowMore] = useState(!!transaction?.comment);
-  const [transactionType, setTransactionType] = useState(transaction?.type || 'Buy');
+export const useTransactionForm = (transaction, type) => {
+  const [transactionType, setTransactionType] = useState(transaction?.type || type);
   const [calculationType, setCalculationType] = useState('amount');
+  const [form] = Form.useForm();
 
-  const toggleShowMore = useCallback(() => setShowMore(prev => !prev), []);
   const toggleCalculationType = useCallback(() => setCalculationType(prev => prev === 'amount' ? 'quantity' : 'amount'), []);
 
   useEffect(() => {
     const initialValues = {
-      type: transaction?.type || 'Buy',
+      type: transaction?.type || type,
       order: transaction?.order || false,
       date: transaction?.date ? new Date(transaction.date).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
       price: transaction?.price || '',
       quantity: transaction?.quantity ? Math.abs(transaction.quantity) : '',
       quantity2: transaction?.quantity2 ? Math.abs(transaction.quantity2) : '',
       comment: transaction?.comment || '',
-      walletId: transaction?.walletId || '',
+      // walletId: transaction?.walletId || '',
     };
 
     form.setFieldsValue(initialValues);
     setTransactionType(initialValues.type);
-    setShowMore(!!transaction?.comment);
   }, [transaction, form]);
 
   const handleTypeChange = useCallback((e) => {
@@ -37,10 +36,9 @@ export const useTransactionForm = (transaction, form) => {
   }, [form]);
 
   return {
-    showMore,
+    form,
     transactionType,
     calculationType,
-    toggleShowMore,
     toggleCalculationType,
     handleTypeChange,
   };

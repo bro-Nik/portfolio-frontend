@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { formatCurrency } from '/app/src/utils/format';
 import TransactionActionsDropdown from '/app/src/modules/transaction/components/TransactionActionsDropdown'
-import TransactionEdit from '/app/src/modules/transaction/TransactionEdit';
+import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useTicker } from '/app/src/hooks/useTicker';
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';

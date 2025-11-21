@@ -38,17 +38,5 @@ export const portfolioService = {
 
     return { isValid: true };
   },
-
-  validateEditTransaction(transaction) {
-    if (!transaction?.portfolioId) {
-      return { isValid: false, error: 'Портфель не указан' };
-    }
-
-    if (!transaction?.assetId) {
-      return { isValid: false, error: 'Актив не указан' };
-    }
-
-    return { isValid: true };
-  },
   
 };

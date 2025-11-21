@@ -7,6 +7,10 @@ export const PORTFOLIO_TYPES = [
   { value: 'TransferOut', label: 'Отправка' },
 ];
 
+export const WALLET_TYPES = [
+  { value: 'TransferOut', label: 'Отправка' },
+];
+
 export const TYPE_OPPOSITE_MAP = {
   'Buy': 'Sell',
   'Sell': 'Buy',
