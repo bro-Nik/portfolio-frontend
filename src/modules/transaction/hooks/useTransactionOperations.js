@@ -6,8 +6,8 @@ import { transactionApi } from '/app/src/modules/transaction/api/transactionApi'
 export const useTransactionOperations = () => {
   const [loading, setLoading] = useState(false);
 
-  const updatePortfoliosInStore = useDataStore(state => state.updatePortfolios);
-  const updateWalletsInStore = useDataStore(state => state.updateWallets);
+  const updatePortfolioAssets = useDataStore(state => state.updatePortfolioAssets);
+  const updateWalletAssets = useDataStore(state => state.updateWalletAssets);
 
   const editTransaction = async (oldTransaction, newTransaction) => {
     // Валидация бизнес-правилами
@@ -24,12 +24,11 @@ export const useTransactionOperations = () => {
     // Редактирование
     if (result.success) {
 
-      // Обновление портфелей
-      if (result.data.portfolios) updatePortfoliosInStore(result.data.portfolios);
+      // Обновление активов портфелей
+      if (result.data.portfolioAssets) updatePortfolioAssets(result.data.portfolioAssets);
 
-      // Обновление кошельков
-      if (result.data.wallets) updateWalletsInStore(result.data.wallets);
-
+      // Обновление активов кошельков
+      if (result.data.walletAssets) updateWalletAssets(result.data.walletAssets);
     }
     
     setLoading(false);

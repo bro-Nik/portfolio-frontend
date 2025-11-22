@@ -1,29 +1,43 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { useDataStore } from '/app/src/stores/dataStore';
 import { walletApi } from '../api/walletApi';
+import { useTicker } from '/app/src/hooks/useTicker';
 
-export const useAssetData = (asset) => {
-  const [assetData, setAssetData] = useState(null);
-  const [assetTransactions, setAssetTransactions] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [chartData, setChartData] = useState(null);
+export const useAssetData = (wallet, asset) => {
+  const { getTicker } = useTicker();
+  const addAssetData = useDataStore(state => state.addAssetData);
 
-  const fetchAssetData = useCallback(async () => {
-    setLoading(true);
-    const result = await walletApi.getAsset(asset.id);
-    if (result.success) {
-      setAssetData(result.data || []);
-      setAssetTransactions(result.data.transactions || []);
-    }
-    setLoading(false);
-  }, [asset.id]);
+  const assetIdInData = `p-${asset.id}`; // префикс для разделения (портфели, кошельки)
+  const assetData = useDataStore(
+    useShallow(state => state.assetData[assetIdInData]) 
+  );
 
   useEffect(() => {
-    fetchAssetData();
-  }, [fetchAssetData]);
+    if (assetData) return;
+
+    const loadAssetData = async () => {
+      const result = await walletApi.getAsset(asset.id);
+      if (result.success) {
+        const ticker = getTicker(asset.tickerId);
+        const newAssetData = { 
+          ...asset,
+          ...result.data,
+          share: wallet.costNow > 0 ? (asset.costNow / wallet.costNow) * 100 : 0,
+          image: ticker.image,
+          name: ticker.name,
+          symbol: ticker.symbol,
+          free: asset.quantity - asset.buyOrders
+        };
+        addAssetData(assetIdInData, newAssetData);
+      }
+    };
+
+    loadAssetData();
+  }, [asset, assetData, wallet, getTicker, addAssetData, assetIdInData]);
 
   return {
+    loading: !assetData,
     assetData,
-    assetTransactions,
-    loading,
   };
 };

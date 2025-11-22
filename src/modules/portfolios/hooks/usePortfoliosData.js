@@ -12,23 +12,18 @@ export const usePortfoliosData = () => {
   // Отслеживание первоначальной загрузки
   const initialLoadRef = useRef(false);
 
-  // Загрузка данных
-  const loadPortfolios = async (ids = null) => {
-    setLoading(true);
-    const result = await portfolioApi.getPortfolios(ids);
-    if (result.success) setPortfolios(result.data.portfolios || []);
-    setLoading(false);
-  };
-
   useEffect(() => {
     const fetchInitialData = async () => {
       initialLoadRef.current = true;
-      loadPortfolios();
+      setLoading(true);
+      const result = await portfolioApi.getPortfolios();
+      if (result.success) setPortfolios(result.data.portfolios || []);
+      setLoading(false);
     };
 
     // Загружаем только один раз
-    if (!initialLoadRef.current) fetchInitialData();
-  }, []);
+    if (portfolios.length === 0 && !initialLoadRef.current) fetchInitialData();
+  }, [portfolios.length, setPortfolios]);
 
   // Расчет статистики
   const { portfoliosWithStats, overallStats } = useMemo(() => {
@@ -101,6 +96,7 @@ export const usePortfoliosData = () => {
   }, [portfolios, prices]);
 
   const getPortfolio = (id) => portfolios?.find(p => p.id === id);
+  const getPortfolioAsset = (portfolio, id) => portfolio.assets?.find(a => a.id === id);
 
   return {
     // Данные с расчетами
@@ -112,5 +108,6 @@ export const usePortfoliosData = () => {
 
     // Методы
     getPortfolio,
+    getPortfolioAsset,
   };
 };

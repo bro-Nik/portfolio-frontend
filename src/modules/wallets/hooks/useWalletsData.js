@@ -23,8 +23,8 @@ export const useWalletsData = () => {
     };
 
     // Загружаем только один раз
-    if (!initialLoadRef.current) fetchInitialData();
-  }, [setWallets]);
+    if (wallets.length === 0 && !initialLoadRef.current) fetchInitialData();
+  }, [setWallets, wallets.length]);
 
   // Расчет статистики
   const { walletsWithStats, overallStats } = useMemo(() => {

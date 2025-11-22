@@ -1,36 +1,22 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 import { useAssetData } from '/app/src/modules/portfolios/hooks/useAssetData';
-import { useTicker } from '/app/src/hooks/useTicker';
 import AssetHeader from './AssetHeader';
 import AssetStatistic from './AssetStatistic';
-import AssetDetails from './AssetDetails';
+// import AssetDetails from './AssetDetails';
 import AssetTable from './AssetTable';
 
 const PortfolioAssetPage = ({ portfolio, asset }) => {
-  const { assetData, assetTransactions, loading } = useAssetData(asset);
-  const { getTicker } = useTicker();
-
-  const preparedAsset = useMemo(() => {
-    const ticker = getTicker(asset.tickerId);
-    return {
-      ...asset,
-      share: portfolio.costNow > 0 ? (asset.costNow / portfolio.costNow) * 100 : 0,
-      image: ticker.image,
-      name: ticker.name,
-      symbol: ticker.symbol,
-      free: asset.quantity - asset.buyOrders,
-    };
-  }, [asset]);
+  const { assetData, loading } = useAssetData(portfolio, asset);
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="asset-detail">
-      <AssetHeader portfolio={portfolio} asset={preparedAsset} data={assetData} />
-      <AssetStatistic portfolio={portfolio} asset={preparedAsset} />
+      <AssetHeader portfolio={portfolio} asset={assetData} />
+      <AssetStatistic portfolio={portfolio} asset={assetData} />
       {/* <AssetDetails data={assetData} /> */}
-      <AssetTable portfolio={portfolio} asset={preparedAsset} transactions={assetTransactions} />
+      <AssetTable portfolio={portfolio} asset={assetData} transactions={assetData.transactions} />
     </div>
   );
 };

@@ -1,36 +1,22 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import LoadingSpinner from '/app/src/components/ui/LoadingSpinner';
 import { useAssetData } from '/app/src/modules/wallets/hooks/useAssetData';
-import { useTicker } from '/app/src/hooks/useTicker';
 import AssetHeader from './AssetHeader';
 import AssetStatistic from './AssetStatistic';
 // import AssetDetails from './AssetDetails';
 import AssetTable from './AssetTable';
 
 const WalletAssetPage = ({ wallet, asset }) => {
-  const { assetData, assetTransactions, loading } = useAssetData(asset);
-  const { getTicker } = useTicker();
-
-  const preparedAsset = useMemo(() => {
-  const ticker = getTicker(asset.tickerId);
-    return {
-      ...asset,
-      share: wallet.costNow > 0 ? (asset.costNow / wallet.costNow) * 100 : 0,
-      image: ticker.image,
-      name: ticker.name,
-      symbol: ticker.symbol,
-      free: asset.quantity - asset.buyOrders
-    };
-  }, [asset]);
+  const { assetData, loading } = useAssetData(wallet, asset);
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="asset-detail">
-      <AssetHeader wallet={wallet} asset={preparedAsset} data={assetData} />
-      <AssetStatistic wallet={wallet} asset={preparedAsset} />
+      <AssetHeader wallet={wallet} asset={assetData} />
+      <AssetStatistic wallet={wallet} asset={assetData} />
       {/* <AssetDetails data={assetData} /> */}
-      <AssetTable wallet={wallet} asset={preparedAsset} transactions={assetTransactions} />
+      <AssetTable wallet={wallet} asset={assetData} transactions={assetData.transactions} />
     </div>
   );
 };

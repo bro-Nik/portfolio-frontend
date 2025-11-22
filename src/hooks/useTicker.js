@@ -5,7 +5,8 @@ export const useTicker = () => {
   const prices = useDataStore(state => state.assetPrices);
 
   const getTicker = (tickerId) => {
-    return tickers[tickerId];
+    const ticker = tickers[tickerId];
+    return {...ticker, symbol: ticker.symbol?.toUpperCase()};
   };
 
   const getTickerSymbol = (tickerId) => {

@@ -6,7 +6,7 @@ import AssetActionsDropdown from '../AssetActionsDropdown';
 import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
 
-const AssetHeader = ({ wallet, asset, data }) => {
+const AssetHeader = ({ wallet, asset }) => {
   const { openModal } = useModalStore();
   return (
     <div className="asset-header mb-4">
@@ -21,7 +21,7 @@ const AssetHeader = ({ wallet, asset, data }) => {
               </h1>
 
               <div className="hstack gap-2">
-                <img className="img-asset" src={asset.image.replace('/24/', '/40/')} />
+                <img className="img-asset" src={asset.image?.replace('/24/', '/40/')} alt={`${asset.name} logo`} />
                 <span className="fs-1 fw-semibold">{formatCurrency(asset.price)}</span>
               </div>
 

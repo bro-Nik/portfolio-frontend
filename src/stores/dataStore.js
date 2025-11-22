@@ -11,6 +11,7 @@ export const useDataStore = create(
       
       assetPrices: {},        // { assetId: price }
       assetInfo: {},        // { assetId: info }
+      assetData: {},   // { assetId: детали, транзакции }
       uniqueAssets: new Set(), // Set для отслеживания уникальных активов
       lastPriceUpdate: null,
       
@@ -29,33 +30,49 @@ export const useDataStore = create(
         get().addAssets([portfolio]);
       },
 
-      updatePortfolios: (portfoliosToUpdate) => {
-        set(state => ({
-          portfolios: state.portfolios.map(portfolio => {
-            const updatedPortfolio = portfoliosToUpdate.find(p => p.id === portfolio.id);
-            return updatedPortfolio ? { ...portfolio, ...updatedPortfolio } : portfolio;
-          })
-        }));
-        
-        // Собираем все активы
-        const allAssets = portfoliosToUpdate.flatMap(portfolio => portfolio.assets || []);
-        get().addAssets(allAssets);
-      },
-      
       updatePortfolio: (portfolioToUpdate) => {
         set(state => ({
           portfolios: state.portfolios.map(portfolio =>
             portfolio.id === portfolioToUpdate.id ? { ...portfolio, ...portfolioToUpdate } : portfolio
           )
         }));
-        // Автоматически добавляем активы портфеля
-        get().addAssets([portfolioToUpdate]);
       },
       
       deletePortfolio: (portfolioId) => {
         set(state => ({
           portfolios: state.portfolios.filter(
             portfolio => portfolio.id !== portfolioId
+          )
+        }));
+      },
+ 
+      // === ДЕЙСТВИЯ ДЛЯ КОШЕЛЬКОВ ===
+      setWallets: (wallets) => {
+        set({ wallets });
+        // Автоматически добавляем активы кошельков
+        get().addAssets(wallets);
+      },
+      
+      addWallet: (wallet) => {
+        set(state => ({
+          wallets: [...state.wallets || [], wallet]
+        }));
+        // Автоматически добавляем активы кошелька
+        get().addAssets([wallet]);
+      },
+
+      updateWallet: (walletId, updatedData) => {
+        set(state => ({
+          wallets: state.wallets.map(wallet =>
+            wallet.id === walletId ? { ...wallet, ...updatedData } : wallet
+          )
+        }));
+      },
+
+      deleteWallet: (walletId) => {
+        set(state => ({
+          wallets: state.wallets.filter(
+            wallet => wallet.id !== walletId
           )
         }));
       },
@@ -120,51 +137,131 @@ export const useDataStore = create(
           console.warn('Ошибка загрузки информации:', err);
         }
       },
-      
-      // === ГЕТТЕРЫ ДЛЯ АКТИВОВ ===
-      getAssetPrice: (assetId) => get().assetPrices[assetId] || 0,
-      
-      // === ДЕЙСТВИЯ ДЛЯ КОШЕЛЬКОВ ===
-      setWallets: (wallets) => {
-        set({ wallets });
-        // Автоматически добавляем активы кошельков
-        get().addAssets(wallets);
-      },
-      
-      addWallet: (wallet) => {
-        set(state => ({
-          wallets: [...state.wallets || [], wallet]
-        }));
-        get().addAssets([wallet]);
+
+      addAssetData: (assetId, data) => {
+        set(state => {
+          return {
+            assetData: {
+              ...state.assetData,
+              [assetId]: data
+            }
+          };
+        });
       },
 
-      updateWallets: (walletsToUpdate) => {
-        set(state => ({
-          wallets: state.wallets.map(wallet => {
-            const updatedWallet = walletsToUpdate.find(w => w.id === wallet.id);
-            return updatedWallet ? { ...wallet, ...updatedWallet } : wallet;
-          })
-        }));
+      // Очистка данных активов для переданных assetIds
+      clearAssetData: (assetIds) => {
+        set(state => {
+          const updatedAssetData = { ...state.assetData };
+          
+          assetIds.forEach(assetId => {
+            delete updatedAssetData[assetId];
+          });
+          
+          return { assetData: updatedAssetData };
+        });
+      },
+
+      // Обновление активов портфелей
+      updatePortfolioAssets: (portfolioAssets) => {
+        set(state => {
+          const updatedPortfolios = state.portfolios.map(portfolio => {
+            // Находим активы, которые принадлежат этому портфелю
+            const portfolioAssetsToUpdate = portfolioAssets.filter(
+              asset => asset.portfolio_id === portfolio.id
+            );
+            
+            if (portfolioAssetsToUpdate.length === 0) {
+              return portfolio;
+            }
+            
+            // Обновляем или добавляем активы в портфель
+            const updatedAssets = [...(portfolio.assets || [])];
+            
+            portfolioAssetsToUpdate.forEach(updatedAsset => {
+              const existingIndex = updatedAssets.findIndex(
+                asset => asset.id === updatedAsset.id
+              );
+              
+              if (existingIndex >= 0) {
+                // Обновляем существующий актив
+                updatedAssets[existingIndex] = {
+                  ...updatedAssets[existingIndex],
+                  ...updatedAsset
+                };
+              } else {
+                // Добавляем новый актив
+                updatedAssets.push(updatedAsset);
+              }
+            });
+            
+            return {
+              ...portfolio,
+              assets: updatedAssets
+            };
+          });
+          
+          return { portfolios: updatedPortfolios };
+        });
         
-        // Собираем все активы
-        const allAssets = walletsToUpdate.flatMap(wallet => wallet.assets || []);
-        get().addAssets(allAssets);
-      },
+        // Добавляем тикеры
+        const tickerIds = portfolioAssets.map(asset => asset.ticker_id);
+        get().addAssets({ tickerIds });
 
-      updateWallet: (walletId, updatedData) => {
-        set(state => ({
-          wallets: state.wallets.map(wallet =>
-            wallet.id === walletId ? { ...wallet, ...updatedData } : wallet
-          )
-        }));
+        // Очищаем кэш данных для обновленных активов
+        const assetIds = portfolioAssets.map(asset => `p-${asset.id}`);
+        get().clearAssetData(assetIds);
       },
+      
+      // Обновление активов кошельков
+      updateWalletAssets: (walletAssets) => {
+        set(state => {
+          const updatedWallets = state.wallets.map(wallet => {
+            // Находим активы, которые принадлежат этому кошельку
+            const walletAssetsToUpdate = walletAssets.filter(
+              asset => asset.wallet_id === wallet.id
+            );
+            
+            if (walletAssetsToUpdate.length === 0) {
+              return wallet;
+            }
+            
+            // Обновляем или добавляем активы в кошелек
+            const updatedAssets = [...(wallet.assets || [])];
+            
+            walletAssetsToUpdate.forEach(updatedAsset => {
+              const existingIndex = updatedAssets.findIndex(
+                asset => asset.id === updatedAsset.id
+              );
+              
+              if (existingIndex >= 0) {
+                // Обновляем существующий актив
+                updatedAssets[existingIndex] = {
+                  ...updatedAssets[existingIndex],
+                  ...updatedAsset
+                };
+              } else {
+                // Добавляем новый актив
+                updatedAssets.push(updatedAsset);
+              }
+            });
+            
+            return {
+              ...wallet,
+              assets: updatedAssets
+            };
+          });
+          
+          return { wallets: updatedWallets };
+        });
+        
+        // Добавляем тикеры
+        const tickerIds = walletAssets.map(asset => asset.ticker_id);
+        get().addAssets({ tickerIds });
 
-      deleteWallet: (walletId) => {
-        set(state => ({
-          wallets: state.wallets.filter(
-            wallet => wallet.id !== walletId
-          )
-        }));
+        // Очищаем кэш данных для обновленных активов
+        const assetIds = walletAssets.map(asset => `w-${asset.id}`);
+        get().clearAssetData(assetIds);
       },
       
     }),
@@ -180,6 +277,10 @@ const extractUniqueAssets = (data) => {
     if (item.assets) {
       item.assets.forEach(asset => {
         if (asset.tickerId) assetSet.add(asset.tickerId);
+      });
+    } else if (item.tickerIds) {
+      item.tickerIds.forEach(tickerId => {
+        assetSet.add(tickerId);
       });
     }
     if (item.portfolios) item.portfolios.forEach(processItem);
