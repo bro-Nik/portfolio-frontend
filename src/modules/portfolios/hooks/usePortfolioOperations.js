@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { portfolioService } from '../services/portfolioService'
 import { useNavigation } from '/app/src/hooks/useNavigation';
-import { useDataStore } from '/app/src/stores/dataStore';
 import { portfolioApi } from '../api/portfolioApi';
+import { useDataStore } from '/app/src/stores/dataStore';
 
 export const usePortfolioOperations = () => {
   const [loading, setLoading] = useState(false);
 
+  const { closeItem } = useNavigation();
   const addPortfolioToStore = useDataStore(state => state.addPortfolio);
   const updatePortfolioInStore = useDataStore(state => state.updatePortfolio);
   const deletePortfolioFromStore = useDataStore(state => state.deletePortfolio);
-  const { closeItem } = useNavigation();
 
   const editPortfolio = async (portfolio) => {
     // Валидация бизнес-правилами
@@ -24,14 +24,14 @@ export const usePortfolioOperations = () => {
     // Вызов API
     const result = await portfolioApi.savePortfolio(portfolio);
 
-    // Редактирование
-    if (result.success && portfolio.id) {
-      updatePortfolioInStore(portfolio.id, result.data);
-    }
-    
-    // Создание
-    if (result.success && !portfolio.id) {
-      addPortfolioToStore(result.data);
+    if (result.success) {
+      if (portfolio.id) {
+        // Редактирование
+        updatePortfolioInStore(result.data);
+      } else {
+        // Создание
+        addPortfolioToStore(result.data);
+      }
     }
     
     setLoading(false);
@@ -73,11 +73,7 @@ export const usePortfolioOperations = () => {
     const result = await portfolioApi.addAssetToPortfolio(portfolio.id, asset.id);
 
     if (result.success) {
-      updatePortfolioInStore(portfolio.id, result.data);
-      
-      // Добавляем актив в общее хранилище активов
-      // const { addAssets } = useDataStore.getState();
-      // addAssets([result.data]);
+      updatePortfolioInStore(result.data);
     }
     
     setLoading(false);
@@ -97,7 +93,7 @@ export const usePortfolioOperations = () => {
     const result = await portfolioApi.delAssetFromPortfolio(portfolio.id, asset.id);
       
     if (result.success) {
-      updatePortfolioInStore(portfolio.id, result.data);
+      updatePortfolioInStore(result.data);
     }
       
     setLoading(false);

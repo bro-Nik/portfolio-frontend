@@ -5,8 +5,10 @@ const { getValidToken } = authService();
 const api = apiService('/api/portfolios', getValidToken);
 
 export const portfolioApi = {
-  getAllPortfolios: () => api.get('/'),
-  getPortfoliosByIds: (ids) => api.get('/', { params: { ids } }),
+  getPortfolios: (ids = null) => {
+    const params = ids ? { ids } : {};
+    return api.get('/', { params });
+  },
   savePortfolio: (portfolioData) => {
     if (portfolioData.id) {
       // Редактирование

@@ -28,15 +28,28 @@ export const useDataStore = create(
         // Автоматически добавляем активы нового портфеля
         get().addAssets([portfolio]);
       },
+
+      updatePortfolios: (portfoliosToUpdate) => {
+        set(state => ({
+          portfolios: state.portfolios.map(portfolio => {
+            const updatedPortfolio = portfoliosToUpdate.find(p => p.id === portfolio.id);
+            return updatedPortfolio ? { ...portfolio, ...updatedPortfolio } : portfolio;
+          })
+        }));
+        
+        // Собираем все активы
+        const allAssets = portfoliosToUpdate.flatMap(portfolio => portfolio.assets || []);
+        get().addAssets(allAssets);
+      },
       
-      updatePortfolio: (portfolioId, updatedData) => {
+      updatePortfolio: (portfolioToUpdate) => {
         set(state => ({
           portfolios: state.portfolios.map(portfolio =>
-            portfolio.id === portfolioId ? { ...portfolio, ...updatedData } : portfolio
+            portfolio.id === portfolioToUpdate.id ? { ...portfolio, ...portfolioToUpdate } : portfolio
           )
         }));
         // Автоматически добавляем активы портфеля
-        get().addAssets([updatedData]);
+        get().addAssets([portfolioToUpdate]);
       },
       
       deletePortfolio: (portfolioId) => {
@@ -99,7 +112,6 @@ export const useDataStore = create(
           const result = await api.post('/info', ids);
           
           if (result.success) {
-            console.log(result.data.info);
             set(state => ({
               assetInfo: { ...state.assetInfo, ...result.data.info },
             }));
@@ -124,6 +136,19 @@ export const useDataStore = create(
           wallets: [...state.wallets || [], wallet]
         }));
         get().addAssets([wallet]);
+      },
+
+      updateWallets: (walletsToUpdate) => {
+        set(state => ({
+          wallets: state.wallets.map(wallet => {
+            const updatedWallet = walletsToUpdate.find(w => w.id === wallet.id);
+            return updatedWallet ? { ...wallet, ...updatedWallet } : wallet;
+          })
+        }));
+        
+        // Собираем все активы
+        const allAssets = walletsToUpdate.flatMap(wallet => wallet.assets || []);
+        get().addAssets(allAssets);
       },
 
       updateWallet: (walletId, updatedData) => {
@@ -169,6 +194,3 @@ const extractUniqueAssets = (data) => {
   
   return Array.from(assetSet);
 };
-
-
-// export const useAssetPrice = (id) => useDataStore(state => state.assetPrices[id]);

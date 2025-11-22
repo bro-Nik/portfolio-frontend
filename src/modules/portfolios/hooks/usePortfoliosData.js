@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { portfolioApi } from '../api/portfolioApi';
 import { useDataStore } from '/app/src/stores/dataStore';
 
 export const usePortfoliosData = () => {
-  // Берем данные из единого store
+  const [loading, setLoading] = useState(false);
+
   const portfolios = useDataStore(state => state.portfolios);
   const prices = useDataStore(state => state.assetPrices);
   const setPortfolios = useDataStore(state => state.setPortfolios);
@@ -11,20 +12,23 @@ export const usePortfoliosData = () => {
   // Отслеживание первоначальной загрузки
   const initialLoadRef = useRef(false);
 
-  const getPortfolio = (portfolioId) => {
-    return portfolios?.find(portfolio => portfolio.id === portfolioId) || null;
+  // Загрузка данных
+  const loadPortfolios = async (ids = null) => {
+    setLoading(true);
+    const result = await portfolioApi.getPortfolios(ids);
+    if (result.success) setPortfolios(result.data.portfolios || []);
+    setLoading(false);
   };
 
   useEffect(() => {
     const fetchInitialData = async () => {
       initialLoadRef.current = true;
-      const result = await portfolioApi.getAllPortfolios();
-      if (result.success) setPortfolios(result.data.portfolios || []);
+      loadPortfolios();
     };
 
     // Загружаем только один раз
     if (!initialLoadRef.current) fetchInitialData();
-  }, [setPortfolios]);
+  }, []);
 
   // Расчет статистики
   const { portfoliosWithStats, overallStats } = useMemo(() => {
@@ -96,14 +100,17 @@ export const usePortfoliosData = () => {
     };
   }, [portfolios, prices]);
 
+  const getPortfolio = (id) => portfolios?.find(p => p.id === id);
+
   return {
+    // Данные с расчетами
     portfolios: portfoliosWithStats,
     overallStats,
-    loading: portfolios === null,
-    getPortfolio
-  };
-};
 
-export const usePortfolio = (portfolioId) => {
-  return useDataStore(state => state.getPortfolio(portfolioId));
+    // Состояние
+    loading,
+
+    // Методы
+    getPortfolio,
+  };
 };

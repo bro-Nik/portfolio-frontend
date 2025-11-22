@@ -3,17 +3,11 @@ import { useDataStore } from '/app/src/stores/dataStore';
 import { transactionService } from '/app/src/modules/transaction/services/transactionService'
 import { transactionApi } from '/app/src/modules/transaction/api/transactionApi';
 
-const getUniqueIds = (...idArrays) => {
-  const allIds = idArrays.flat();
-  return [...new Set(allIds)].filter(id => id !== undefined && id !== null);
-};
-
 export const useTransactionOperations = () => {
   const [loading, setLoading] = useState(false);
 
-  // const addPortfolioToStore = useDataStore(state => state.addPortfolio);
-  // const updatePortfolioInStore = useDataStore(state => state.updatePortfolio);
-  // const deletePortfolioFromStore = useDataStore(state => state.deletePortfolio);
+  const updatePortfoliosInStore = useDataStore(state => state.updatePortfolios);
+  const updateWalletsInStore = useDataStore(state => state.updateWallets);
 
   const editTransaction = async (oldTransaction, newTransaction) => {
     // Валидация бизнес-правилами
@@ -31,19 +25,11 @@ export const useTransactionOperations = () => {
     if (result.success) {
 
       // Обновление портфелей
-      const portfolioIds = getUniqueIds(
-        oldTransaction?.portfolioId, oldTransaction?.portfolio2Id,
-        newTransaction.portfolioId, newTransaction.portfolio2Id
-      );
-
-      // ToDo обновление связанных портфелей и кошельков
-      // const portfoliosResult = await portfolioApi.getPortfoliosByIds(portfolioIds);
+      if (result.data.portfolios) updatePortfoliosInStore(result.data.portfolios);
 
       // Обновление кошельков
-      const walletIds = getUniqueIds(
-        oldTransaction?.walletId, oldTransaction?.wallet2Id,
-        newTransaction.walletId, newTransaction.wallet2Id
-      );
+      if (result.data.wallets) updateWalletsInStore(result.data.wallets);
+
     }
     
     setLoading(false);
