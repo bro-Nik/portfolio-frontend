@@ -35,7 +35,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
   }, [asset.tickerId, wallet.id]);
 
   const handleTransactionClick = useCallback((transaction) => {
-    openModal(TransactionEdit, { asset, walletId: wallet.id, transaction });
+    openModal(TransactionEdit, { tickerId: asset.tickerId, walletId: wallet.id, transaction });
   }, [openModal, asset, wallet.id]);
 
   const columns = useMemo(() => [

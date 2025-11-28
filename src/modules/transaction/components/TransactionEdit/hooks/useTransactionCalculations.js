@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 const exists = (value) => value !== undefined && value !== null && value !== '';
 
 export const useTransactionCalculations = (form, calculationType) => {
-
   const handleQuantityChange = useCallback(() => {
     const quantity = form.getFieldValue('quantity');
     const price = form.getFieldValue('price');
@@ -14,20 +13,19 @@ export const useTransactionCalculations = (form, calculationType) => {
   }, [form]);
 
   const handleAmountChange = useCallback(() => {
-    if (calculationType === 'amount') {
-      const amount = form.getFieldValue('quantity2');
-      const price = form.getFieldValue('price');
-      if (price) {
-        const quantity = (parseFloat(amount) || 0) / (parseFloat(price) || 1);
-        form.setFieldValue('quantity', quantity);
-      }
+    const amount = form.getFieldValue('quantity2');
+    const price = form.getFieldValue('price');
+    if (price) {
+      const quantity = (parseFloat(amount) || 0) / (parseFloat(price) || 1);
+      form.setFieldValue('quantity', quantity);
     }
-  }, [form, calculationType]);
+  }, [form]);
 
   const handlePriceChange = useCallback(() => {
     const price = form.getFieldValue('price');
     let quantity = form.getFieldValue('quantity');
     let amount = form.getFieldValue('quantity2');
+
     
     if (exists(quantity) && (!exists(amount) || calculationType === 'amount')) {
       // Если не заполненна сумма или включен режим количество

@@ -2,35 +2,29 @@ import { Form, Button, InputNumber } from 'antd';
 
 const exists = (value) => value !== undefined && value !== null && value !== false;
 
-const FormQuantityInput = ({ showFree, walletFree, portfolioFree, ticker, onChange, disabled }) => {
+const FormSumInput = ({ showFree, walletFree, ticker, onChange, disabled }) => {
   const form = Form.useFormInstance();
 
   const freeAmount = (() => {
     if (!showFree) return undefined;
 
-    if (exists(walletFree) && exists(portfolioFree)) {
-      return Math.min(walletFree, portfolioFree);
-    }
-    else if (exists(walletFree)) {
+    if (exists(walletFree)) {
       return walletFree;
-    }
-    else if (exists(portfolioFree)) {
-      return portfolioFree;
     }
     return 0;
   })();
 
   const handlePasteMax = () => {
-    form.setFieldValue('quantity', freeAmount);
+    form.setFieldValue('quantity2', freeAmount);
     if (onChange) onChange();
   };
 
   // Правила валидации
-  const rules = [{ required: true, message: 'Введите количество' }];
+  const rules = [{ required: true, message: 'Введите сумму' }];
 
   // Добавляем правило максимального значения только если freeAmount определен
   if (exists(freeAmount)) {
-    rules.push({ max: freeAmount, message: 'Больше, чем доступно', type: 'number' });
+    rules.push({ max: freeAmount, message: 'Превышает доступную сумму в кошельке', type: 'number' });
   }
 
   return (
@@ -44,11 +38,6 @@ const FormQuantityInput = ({ showFree, walletFree, portfolioFree, ticker, onChan
                 В кошельке: {walletFree} {ticker}
               </div>
             )}
-            {showFree && exists(portfolioFree) && (
-              <div style={{ fontSize: '12px', color: portfolioFree > 0 ? 'inherit' : 'red' }}>
-                В портфеле: {portfolioFree} {ticker}
-              </div>
-            )}
           </div>
           {showFree && freeAmount > 0 && (
             <Button type="link" onClick={handlePasteMax} style={{ padding: 0, marginLeft: 'auto' }}>MAX</Button>
@@ -56,20 +45,20 @@ const FormQuantityInput = ({ showFree, walletFree, portfolioFree, ticker, onChan
         </div>
       }
       label={
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-          <span>Количество</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          Сумма транзакции
         </div>
       }
-      name="quantity"
+      name="quantity2"
       rules={rules}
     >
       <InputNumber
         addonBefore={ticker || '—'}
         placeholder="0.00"
-        // step="0.00001"
-        // min="0.00001"
+        // step="0.01"
+        // min="0.01"
         max={freeAmount}
-        // precision={5}
+        // precision={2}
         style={{ width: '100%' }}
         disabled={disabled}
         onChange={onChange}
@@ -78,4 +67,4 @@ const FormQuantityInput = ({ showFree, walletFree, portfolioFree, ticker, onChan
   );
 };
 
-export default FormQuantityInput;
+export default FormSumInput;

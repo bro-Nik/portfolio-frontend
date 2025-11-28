@@ -32,3 +32,30 @@ export const getTransactionTypeLabel = (transaction, isCounterTransaction, getTi
   }
   return label;
 };
+
+
+  // Определение встречной транзакции
+export const isCounterTransactionFn = ({ tickerId, walletId, portfolioId, transaction }) => {
+  if (!transaction) return false;
+
+  if (isTradeTransaction(transaction.type)) 
+    return !(transaction?.tickerId === tickerId);
+  if (isTransferTransaction(transaction.type)) {
+    if (portfolioId) return !(transaction?.portfolioId === portfolioId);
+    else if (walletId) return !(transaction?.walletId === walletId);
+  }
+  return false;
+};
+
+export const getTransactionTypeInfo = (type) => ({
+  // isOutgoing: isOutgoingTransaction(type),
+  isSell: type === 'Sell',
+  // color: getTransactionTypeColor(type)
+  isTrade: ['Buy', 'Sell'].includes(type),
+  isTransfer: ['TransferOut', 'TransferIn'].includes(type),
+  isEarning: ['Earning'].includes(type),
+  isInOut: ['Input', 'Output'].includes(type),
+  isBuy: ['Buy'].includes(type),
+  isSpend: ['Sell', 'Output', 'TransferOut'].includes(type),
+  isReceive: ['Input', 'Earning'].includes(type),
+});

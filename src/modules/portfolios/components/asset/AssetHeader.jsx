@@ -35,7 +35,7 @@ const AssetHeader = ({ portfolio, asset }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            <Button type="primary"  onClick={() => openModal(TransactionEdit, { asset, portfolioId: portfolio.id })} >
+            <Button type="primary"  onClick={() => openModal(TransactionEdit, { tickerId: asset.tickerId, portfolioId: portfolio.id })} >
               Добавить транзакцию
             </Button>
             <AssetActionsDropdown portfolio={portfolio} asset={asset} btn='btn' />

@@ -4,11 +4,11 @@ export const PORTFOLIO_TYPES = [
   { value: 'Input', label: 'Ввод' },
   { value: 'Output', label: 'Вывод' },
   { value: 'Earning', label: 'Заработок' },
-  { value: 'TransferOut', label: 'Отправка' },
+  { value: 'TransferOut', label: 'Перевод' },
 ];
 
 export const WALLET_TYPES = [
-  { value: 'TransferOut', label: 'Отправка' },
+  { value: 'TransferOut', label: 'Перевод' },
 ];
 
 export const TYPE_OPPOSITE_MAP = {

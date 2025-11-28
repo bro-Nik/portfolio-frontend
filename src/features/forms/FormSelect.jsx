@@ -1,14 +1,13 @@
 import { Form, Select } from 'antd';
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 
-const { Option } = Select;
-
 const FormSelect = ({
   name,
   label,
   value,
   rules,
   noStyle,
+  hidden,
   ...props
 }) => {
 
@@ -19,6 +18,7 @@ const FormSelect = ({
       initialValue={value}
       rules={rules}
       noStyle={noStyle}
+      hidden={hidden}
     >
       <Select
         suffixIcon={<ChevronDownIcon />}

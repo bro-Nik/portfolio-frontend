@@ -168,7 +168,7 @@ export const useDataStore = create(
           const updatedPortfolios = state.portfolios.map(portfolio => {
             // Находим активы, которые принадлежат этому портфелю
             const portfolioAssetsToUpdate = portfolioAssets.filter(
-              asset => asset.portfolio_id === portfolio.id
+              asset => asset.portfolioId === portfolio.id
             );
             
             if (portfolioAssetsToUpdate.length === 0) {
@@ -205,7 +205,7 @@ export const useDataStore = create(
         });
         
         // Добавляем тикеры
-        const tickerIds = portfolioAssets.map(asset => asset.ticker_id);
+        const tickerIds = portfolioAssets.map(asset => asset.tickerId);
         get().addAssets({ tickerIds });
 
         // Очищаем кэш данных для обновленных активов
@@ -219,7 +219,7 @@ export const useDataStore = create(
           const updatedWallets = state.wallets.map(wallet => {
             // Находим активы, которые принадлежат этому кошельку
             const walletAssetsToUpdate = walletAssets.filter(
-              asset => asset.wallet_id === wallet.id
+              asset => asset.walletId === wallet.id
             );
             
             if (walletAssetsToUpdate.length === 0) {
@@ -256,7 +256,7 @@ export const useDataStore = create(
         });
         
         // Добавляем тикеры
-        const tickerIds = walletAssets.map(asset => asset.ticker_id);
+        const tickerIds = walletAssets.map(asset => asset.tickerId);
         get().addAssets({ tickerIds });
 
         // Очищаем кэш данных для обновленных активов
