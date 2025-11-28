@@ -3,15 +3,17 @@ import { useShallow } from 'zustand/react/shallow';
 import { useDataStore } from '/app/src/stores/dataStore';
 import { walletApi } from '../api/walletApi';
 import { useTicker } from '/app/src/hooks/useTicker';
+import { sortTransactions } from '/app/src/modules/assets/utils/assetUtils'
 
 export const useAssetData = (wallet, asset) => {
   const { getTicker } = useTicker();
   const addAssetData = useDataStore(state => state.addAssetData);
 
-  const assetIdInData = `p-${asset.id}`; // префикс для разделения (портфели, кошельки)
+  const assetIdInData = `w-${asset.id}`; // префикс для разделения (портфели, кошельки)
   const assetData = useDataStore(
     useShallow(state => state.assetData[assetIdInData]) 
   );
+
 
   useEffect(() => {
     if (assetData) return;
@@ -27,7 +29,8 @@ export const useAssetData = (wallet, asset) => {
           image: ticker.image,
           name: ticker.name,
           symbol: ticker.symbol,
-          free: asset.quantity - asset.buyOrders
+          free: asset.quantity - asset.buyOrders,
+          transactions: sortTransactions(result.data.transactions),
         };
         addAssetData(assetIdInData, newAssetData);
       }

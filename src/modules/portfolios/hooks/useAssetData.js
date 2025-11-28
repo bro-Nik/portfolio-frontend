@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useDataStore } from '/app/src/stores/dataStore';
 import { portfolioApi } from '../api/portfolioApi';
 import { useTicker } from '/app/src/hooks/useTicker';
+import { sortTransactions } from '/app/src/modules/assets/utils/assetUtils'
 
 export const useAssetData = (portfolio, asset) => {
   const { getTicker } = useTicker();
@@ -28,6 +29,7 @@ export const useAssetData = (portfolio, asset) => {
           name: ticker.name,
           symbol: ticker.symbol,
           free: asset.quantity - asset.buyOrders,
+          transactions: sortTransactions(result.data.transactions),
         };
         addAssetData(assetIdInData, newAssetData);
       }
