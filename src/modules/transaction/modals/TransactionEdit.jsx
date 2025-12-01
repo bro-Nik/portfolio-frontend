@@ -1,10 +1,10 @@
 import React from 'react';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { Modal, message } from 'antd';
-import BaseTransactionForm from './BaseTransactionForm';
+import BaseTransactionForm from '/app/src/modules/transaction/components/TransactionEdit/BaseTransactionForm';
 import { useTransactionOperations } from '/app/src/modules/transaction/hooks/useTransactionOperations';
 
-const TransactionEdit = () => {
+const TransactionEditModal = () => {
   const { modalProps, closeModal } = useModalStore();
   const { tickerId = null, portfolioId = null, walletId = null, transaction = null } = modalProps;
   const { editTransaction, loading } = useTransactionOperations();
@@ -44,4 +44,4 @@ const TransactionEdit = () => {
   );
 };
 
-export default TransactionEdit;
+export default TransactionEditModal;

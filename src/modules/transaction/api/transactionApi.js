@@ -6,14 +6,13 @@ const api = apiService('/api/transactions', getValidToken);
 
 export const transactionApi = {
   saveTransaction: (transactionData) => {
-    const url = `/transaction`;
-
     if (transactionData.id) {
       // Редактирование
-      return api.put(`${url}/${transactionData.id}`, transactionData, true);
+      return api.put(`/${transactionData.id}`, transactionData, true);
     } else {
       // Создание
-      return api.post(url, transactionData, true);
+      return api.post('/', transactionData, true);
     }
   },
+  deleteTransaction: (transactionId) => api.del(`/${transactionId}`),
 };

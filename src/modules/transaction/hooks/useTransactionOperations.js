@@ -34,9 +34,36 @@ export const useTransactionOperations = () => {
     setLoading(false);
     return result;
   };
+
+  const deleteTransaction = async (transaction) => {
+    // Валидация бизнес-правилами
+    const validation = transactionService.validateDelete(transaction);
+    if (!validation.isValid) {
+      return { success: false, error: validation.error };
+    }
+    
+    setLoading(true);
+
+    // Вызов API
+    const result = await transactionApi.deleteTransaction(transaction.id);
+
+    // Редактирование
+    if (result.success) {
+
+      // Обновление активов портфелей
+      if (result.data.portfolioAssets) updatePortfolioAssets(result.data.portfolioAssets);
+
+      // Обновление активов кошельков
+      if (result.data.walletAssets) updateWalletAssets(result.data.walletAssets);
+    }
+    
+    setLoading(false);
+    return result;
+  };
   
   return { 
     editTransaction,
+    deleteTransaction,
     loading
   };
 };

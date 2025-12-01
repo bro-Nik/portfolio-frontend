@@ -7,8 +7,10 @@ import {
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/16/solid'
 import ActionsDropdown from '/app/src/features/dropdowns/ActionsDropdown';
+import TransactionEditModal from '/app/src/modules/transaction/modals/TransactionEdit';
+import TransactionDeleteModal from '/app/src/modules/transaction/modals/TransactionDelete';
 
-const TransactionActionsDropdown = ({ transaction, btn }) => {
+const TransactionActionsDropdown = ({ portfolio, wallet, asset, transaction, btn }) => {
   const { openModal } = useModalStore();
 
   const menuItems = [
@@ -16,7 +18,7 @@ const TransactionActionsDropdown = ({ transaction, btn }) => {
       key: 'edit',
       icon: <PencilIcon />,
       label: 'Редактировать',
-      disabled: true,
+      onClick: () => openModal(TransactionEditModal, { tickerId: asset.tickerId, portfolioId: portfolio.id, transaction }),
     },
     {
       type: 'divider',
@@ -26,8 +28,7 @@ const TransactionActionsDropdown = ({ transaction, btn }) => {
       icon: <TrashIcon />,
       label: 'Удалить',
       danger: true,
-      disabled: true,
-      // onClick: () => openModal(PortfolioDelAssetModal, { portfolio, asset }),
+      onClick: () => openModal(TransactionDeleteModal, { transaction }),
     },
   ];
 

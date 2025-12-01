@@ -60,5 +60,5 @@ export const useWalletOperations = () => {
     return result;
   };
   
-  return { editWallet, deleteWallet, editTransaction, loading };
+  return { editWallet, deleteWallet, loading };
 };

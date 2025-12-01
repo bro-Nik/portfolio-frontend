@@ -68,6 +68,7 @@ export const useTransactionData = ({ tickerId, walletId, portfolioId, transactio
     return {
       ...wallet,
       baseAssetFree: getWalletAvailableBalanceByTicker(wallet, baseTicker?.id),
+      quoteAssetFree: getWalletAvailableBalanceByTicker(wallet, quoteTicker?.id),
       assets: wallet.assets.filter(a => a.tickerId !== baseTicker?.id).map(a => ({
         ...a,
         free: calculateWalletAssetAvailableBalance(a, wallet),

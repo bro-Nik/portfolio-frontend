@@ -2,7 +2,7 @@ import React, { memo, useMemo, useCallback } from 'react';
 import DataTable from '/app/src/features/tables/DataTable';
 import { formatCurrency } from '/app/src/utils/format';
 import TransactionActionsDropdown from '/app/src/modules/transaction/components/TransactionActionsDropdown'
-import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
+import TransactionEditModal from '/app/src/modules/transaction/modals/TransactionEdit';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { useTicker } from '/app/src/hooks/useTicker';
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
@@ -35,7 +35,7 @@ const AssetTable = memo(({ portfolio, asset, transactions }) => {
   }, [asset.tickerId, portfolio.id]);
 
   const handleTransactionClick = useCallback((transaction) => {
-    openModal(TransactionEdit, { tickerId: asset.tickerId, portfolioId: portfolio.id, transaction });
+    openModal(TransactionEditModal, { tickerId: asset.tickerId, portfolioId: portfolio.id, transaction });
   }, [openModal, asset, portfolio.id]);
 
   const columns = useMemo(() => [
@@ -68,7 +68,7 @@ const AssetTable = memo(({ portfolio, asset, transactions }) => {
       size: 120,
     },
     createCommentColumn(),
-    createActionsColumn(({ row }) => <TransactionActionsDropdown transaction={row.original} btn='icon' />),
+    createActionsColumn(({ row }) => <TransactionActionsDropdown portfolio={portfolio} asset={asset} transaction={row.original} btn='icon' />),
   ], [
     getTickerSymbol, isCounterTransaction, handleTransactionClick, 
     getPortfolio, getWallet, openItem

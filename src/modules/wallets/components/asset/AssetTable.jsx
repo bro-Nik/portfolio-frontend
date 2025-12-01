@@ -4,7 +4,7 @@ import { formatCurrency } from '/app/src/utils/format';
 import { useNavigation } from '/app/src/hooks/useNavigation';
 import { useModalStore } from '/app/src/stores/modalStore';
 import { BriefcaseIcon, WalletIcon } from '@heroicons/react/16/solid'
-import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
+import TransactionEditModal from '/app/src/modules/transaction/modals/TransactionEdit';
 import TransactionActionsDropdown from '/app/src/modules/transaction/components/TransactionActionsDropdown'
 import { useTicker } from '/app/src/hooks/useTicker';
 import { usePortfoliosData } from '/app/src/modules/portfolios/hooks/usePortfoliosData';
@@ -35,7 +35,7 @@ const AssetTable = memo(({ wallet, asset, transactions }) => {
   }, [asset.tickerId, wallet.id]);
 
   const handleTransactionClick = useCallback((transaction) => {
-    openModal(TransactionEdit, { tickerId: asset.tickerId, walletId: wallet.id, transaction });
+    openModal(TransactionEditModal, { tickerId: asset.tickerId, walletId: wallet.id, transaction });
   }, [openModal, asset, wallet.id]);
 
   const columns = useMemo(() => [

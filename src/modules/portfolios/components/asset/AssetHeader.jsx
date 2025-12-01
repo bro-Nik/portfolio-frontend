@@ -4,7 +4,7 @@ import { formatCurrency } from '/app/src/utils/format';
 import { useModalStore } from '/app/src/stores/modalStore';
 import CloseMinimizeBtns from '/app/src/components/ui/CloseMinimizeBtns';
 import AssetActionsDropdown from '../AssetActionsDropdown';
-import TransactionEdit from '/app/src/modules/transaction/components/TransactionEdit/TransactionEdit';
+import TransactionEditModal from '/app/src/modules/transaction/modals/TransactionEdit';
 
 const AssetHeader = ({ portfolio, asset }) => {
   const { openModal } = useModalStore();
@@ -35,7 +35,7 @@ const AssetHeader = ({ portfolio, asset }) => {
 
         <div class="col-auto ms-auto">
           <Space>
-            <Button type="primary"  onClick={() => openModal(TransactionEdit, { tickerId: asset.tickerId, portfolioId: portfolio.id })} >
+            <Button type="primary"  onClick={() => openModal(TransactionEditModal, { tickerId: asset.tickerId, portfolioId: portfolio.id })} >
               Добавить транзакцию
             </Button>
             <AssetActionsDropdown portfolio={portfolio} asset={asset} btn='btn' />
